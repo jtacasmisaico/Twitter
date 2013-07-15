@@ -23,11 +23,27 @@ public class UserRepository {
     }
 
     public User findById(Long id) {
-        return jdbcTemplate.queryForObject("select name, userid, username, email from users where userid = ?",
+        try {
+            return jdbcTemplate.queryForObject("select name, userid, username, email from users where userid = ?",
                 new Object[]{id}, new BeanPropertyRowMapper<User>(User.class));
+        }
+        catch (Exception e) {
+            return null;
+        }
+    }
+
+    public User findByEmail(String email) {
+        try {
+            return jdbcTemplate.queryForObject("select name, username, password from users where email = ?",
+                new Object[]{email}, new BeanPropertyRowMapper<User>(User.class));
+        }
+        catch(Exception e) {
+            return null;
+        }
     }
 
     public long createUser(String username, String password, String email, String name) {
+        System.out.println(username+":"+password+":"+email+":"+name+":");
         final SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate);
         insert.setTableName("users");
         insert.setColumnNames(Arrays.asList("username", "password", "email", "name"));

@@ -1,6 +1,5 @@
 package com.springapp.mvc;
 
-import com.springapp.mvc.data.UserRepository;
 import com.springapp.mvc.web.AuthenticationInterceptor;
 import org.postgresql.ds.PGPoolingDataSource;
 import org.springframework.beans.factory.annotation.Value;
@@ -53,6 +52,7 @@ public class AppConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry){
-        registry.addInterceptor(new AuthenticationInterceptor()).addPathPatterns("/test");
+        registry.addInterceptor(new AuthenticationInterceptor()).addPathPatterns("/login");
+        registry.addInterceptor(new AuthenticationInterceptor()).addPathPatterns("/register");
     }
 }

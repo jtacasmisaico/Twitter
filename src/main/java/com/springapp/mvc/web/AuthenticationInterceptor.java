@@ -16,6 +16,10 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle( HttpServletRequest request, HttpServletResponse response,
                               Object handler ) throws Exception {
+        System.out.println(request.getMethod());
+        response.setHeader("Access-Control-Allow-Origin", "http://localhost");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.setHeader("Access-Control-Allow-Headers", "*");
         System.out.println("Intercepting...");
         return true;
 

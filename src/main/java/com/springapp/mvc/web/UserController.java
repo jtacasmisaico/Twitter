@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
@@ -34,16 +35,13 @@ public class UserController {
         return mapper.writeValueAsString(user);
     }
 
-    @RequestMapping(value = "/users", method = RequestMethod.POST, headers={"Accept=application/json"})
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ResponseBody
-    public String createUser(@RequestBody final User user, HttpServletResponse response){
-        long id = repository.createUser(user.getUsername(), user.getPassword(), user.getEmail(), user.getName());
+    public String CreateUser(@RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("email") String email, @RequestParam("name") String name){
+        long id = repository.createUser(username, name, email, password);
         if (id != -1){
-            response.setStatus(201);
-            response.setHeader("Location", "http://localhost:8080/users/"+ id);
-        } else {
-            response.setStatus(409);
+            return "Ooga";
         }
-        return "";
+        return "Boo";
     }
 }
