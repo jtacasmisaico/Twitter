@@ -22,7 +22,7 @@ public class UserRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public User findById(Long id) {
+    public User findById(int id) {
         try {
             return jdbcTemplate.queryForObject("select name, userid, username, email from users where userid = ?",
                 new Object[]{id}, new BeanPropertyRowMapper<User>(User.class));

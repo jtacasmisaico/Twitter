@@ -34,7 +34,7 @@ public class TweetRepository {
         }
     }
 
-    public List<Tweet> findByUserId(Long userid) {
+    public List<Tweet> findByUserId(int userid) {
         try {
             return jdbcTemplate.query("select tweetid, content, timestamp from tweets where userid= ?",
                     new Object[]{userid}, new BeanPropertyRowMapper<>(Tweet.class));
@@ -45,7 +45,7 @@ public class TweetRepository {
         }
     }
 
-    public long createTweet(String content, Long userid) {
+    public int createTweet(String content, int userid) {
         final SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate);
         insert.setTableName("tweets");
         insert.setColumnNames(Arrays.asList("content", "userid"));
@@ -54,7 +54,7 @@ public class TweetRepository {
         param.put("content", content);
         param.put("userid", userid);
         try{
-            return  (Long) insert.executeAndReturnKey(param);
+            return  (int) insert.executeAndReturnKey(param);
         }
         catch(Exception e){
             e.printStackTrace();

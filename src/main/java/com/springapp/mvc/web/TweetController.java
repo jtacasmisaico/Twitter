@@ -37,7 +37,7 @@ public class TweetController {
     @ResponseBody
     public String createTweet(@RequestBody final Tweet tweet){
         System.out.println("Creating Tweet...");
-        long id = repository.createTweet(tweet.getContent(), tweet.getUserid());
+        int id = repository.createTweet(tweet.getContent(), tweet.getUserid());
         if (id != -1){
             return "Success";
         }
@@ -47,7 +47,7 @@ public class TweetController {
     @RequestMapping(value = "/feed", method = RequestMethod.POST)
     @ResponseBody
     public List<Tweet> fetchFeed(@RequestBody Map<String,Object> requestParameters){
-        Long userid = Long.valueOf(requestParameters.get("userid").toString());
+        int userid = (int) requestParameters.get("userid");
         return repository.findByUserId(userid);
     }
 }

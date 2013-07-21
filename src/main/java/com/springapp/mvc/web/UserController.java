@@ -24,7 +24,7 @@ public class UserController {
 
     @RequestMapping(value = "/users/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public String fetchUser(@PathVariable("id") Long id) throws IOException {
+    public String fetchUser(@PathVariable("id") int id) throws IOException {
         User user = repository.findById(id);
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(user);

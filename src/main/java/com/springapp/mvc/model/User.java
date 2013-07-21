@@ -2,13 +2,13 @@ package com.springapp.mvc.model;
 
 public class User {
 
-    public Long userid;
+    public int userid;
     public String username;
     public String password;
     public String name;
     public String email;
 
-    public Long getUserid() {
+    public int getUserid() {
         return userid;
     }
 
@@ -28,7 +28,7 @@ public class User {
         return email;
     }
 
-    public void setUserid(Long userid) {
+    public void setUserid(int userid) {
         this.userid = userid;
     }
 
