@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -58,6 +59,34 @@ public class UserRepository {
         }
         catch( DuplicateKeyException e){
             return -1;
+        }
+    }
+
+    public int follow(int follower, int followed) {
+        final SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate);
+        insert.setTableName("followers");
+        insert.setColumnNames(Arrays.asList("follower", "followed"));
+        Map<String, Object> param = new HashMap<>();
+        param.put("follower", follower);
+        param.put("followed", followed);
+        try{
+            insert.execute(param);
+            return 1;
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    public List<User> fetchFollowers(int userid) {
+        try {
+                return jdbcTemplate.query("select name, users.userid, users.username, users.email, users.name from followers inner join users on followers.follower=users.userid where followers.followed  = ?",
+                    new Object[]{userid}, new BeanPropertyRowMapper<>(User.class));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

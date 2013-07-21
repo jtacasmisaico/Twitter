@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -29,6 +30,15 @@ public class UserController {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(user);
     }
+
+    @RequestMapping(value = "/users/{id}/followers", method = RequestMethod.GET)
+    @ResponseBody
+    public String fetchFollowers(@PathVariable("id") int userid) throws IOException {
+        List<User> user = repository.fetchFollowers(userid);
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(user);
+    }
+
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ResponseBody
