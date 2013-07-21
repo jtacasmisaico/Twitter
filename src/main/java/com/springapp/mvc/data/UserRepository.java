@@ -89,4 +89,15 @@ public class UserRepository {
             return null;
         }
     }
+
+    public List<User> fetchFollows(int userid) {
+        try {
+            return jdbcTemplate.query("select name, users.userid, users.username, users.email, users.name from followers inner join users on followers.followed=users.userid where followers.follower  = ?",
+                    new Object[]{userid}, new BeanPropertyRowMapper<>(User.class));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

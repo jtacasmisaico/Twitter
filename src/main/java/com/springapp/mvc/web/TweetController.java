@@ -2,7 +2,6 @@ package com.springapp.mvc.web;
 
 import com.springapp.mvc.data.TweetRepository;
 import com.springapp.mvc.model.Tweet;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +38,13 @@ public class TweetController {
             return "Success";
         }
         return "Fail";
+    }
+
+    @RequestMapping(value = "/posts", method = RequestMethod.POST)
+    @ResponseBody
+    public List<Tweet> fetchPosts(@RequestBody Map<String,Object> requestParameters){
+        int userid = (int) requestParameters.get("userid");
+        return repository.findByUserId(userid);
     }
 
     @RequestMapping(value = "/feed", method = RequestMethod.POST)

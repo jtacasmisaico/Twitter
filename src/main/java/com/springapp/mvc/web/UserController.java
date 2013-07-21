@@ -35,6 +35,12 @@ public class UserController {
         return repository.fetchFollowers(userid);
     }
 
+    @RequestMapping(value = "/users/{id}/follows", method = RequestMethod.GET)
+    @ResponseBody
+    public List<User> fetchFollows(@PathVariable("id") int userid) throws IOException {
+        return repository.fetchFollows(userid);
+    }
+
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ResponseBody
