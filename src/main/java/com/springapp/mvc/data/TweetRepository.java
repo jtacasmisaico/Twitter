@@ -1,6 +1,7 @@
 package com.springapp.mvc.data;
 
 import com.springapp.mvc.model.Tweet;
+import com.springapp.mvc.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,7 +23,7 @@ public class TweetRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Tweet findByTweetId(Long tweetid) {
+    public Tweet findTweetByTweetId(Long tweetid) {
         try {
             System.out.println("Tweet : "+tweetid);
             return jdbcTemplate.queryForObject("select tweetid, content, userid, timestamp from tweets where tweetid = ?",
@@ -34,7 +35,7 @@ public class TweetRepository {
         }
     }
 
-    public List<Tweet> findByUserId(int userid) {
+    public List<Tweet> findTweetsByUserId(int userid) {
         try {
             return jdbcTemplate.query("select tweetid, content, timestamp from tweets where userid= ?",
                     new Object[]{userid}, new BeanPropertyRowMapper<>(Tweet.class));
@@ -61,4 +62,17 @@ public class TweetRepository {
             return -1;
         }
     }
+
+    public List<Tweet> fetchFeed(int userid) {
+        try {
+            return jdbcTemplate.query("select tweets.tweetid, tweets.content, tweets.userid, tweets.timestamp from tweets inner join followers on followers.followed=tweets.userid where followers.follower  = ? ORDER BY tweets.timestamp DESC",
+                    new Object[]{userid}, new BeanPropertyRowMapper<>(Tweet.class));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
+
+
