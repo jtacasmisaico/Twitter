@@ -27,16 +27,13 @@ public class TweetController {
 
     @RequestMapping(value = "/tweet/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public String fetchUser(@PathVariable("id") Long id) throws IOException {
-        Tweet tweet = repository.findByTweetId(id);
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.writeValueAsString(tweet);
+    public Tweet fetchUser(@PathVariable("id") Long id) throws IOException {
+        return repository.findByTweetId(id);
     }
 
     @RequestMapping(value = "/tweet", method = RequestMethod.POST)
     @ResponseBody
     public String createTweet(@RequestBody final Tweet tweet){
-        System.out.println("Creating Tweet...");
         int id = repository.createTweet(tweet.getContent(), tweet.getUserid());
         if (id != -1){
             return "Success";

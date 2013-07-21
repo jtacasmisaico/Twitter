@@ -25,18 +25,14 @@ public class UserController {
 
     @RequestMapping(value = "/users/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public String fetchUser(@PathVariable("id") int id) throws IOException {
-        User user = repository.findById(id);
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.writeValueAsString(user);
+    public User fetchUser(@PathVariable("id") int id) throws IOException {
+        return repository.findById(id);
     }
 
     @RequestMapping(value = "/users/{id}/followers", method = RequestMethod.GET)
     @ResponseBody
-    public String fetchFollowers(@PathVariable("id") int userid) throws IOException {
-        List<User> user = repository.fetchFollowers(userid);
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.writeValueAsString(user);
+    public List<User> fetchFollowers(@PathVariable("id") int userid) throws IOException {
+        return repository.fetchFollowers(userid);
     }
 
 
