@@ -2,7 +2,6 @@ package com.springapp.mvc.model;
 
 public class User {
 
-
     public Long userid;
     public String username;
     public String password;

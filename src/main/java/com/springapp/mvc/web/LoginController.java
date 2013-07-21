@@ -4,10 +4,10 @@ import com.springapp.mvc.data.UserRepository;
 import com.springapp.mvc.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * Created with IntelliJ IDEA.
@@ -25,11 +25,23 @@ public class LoginController implements AuthenticatedController{
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ResponseBody
-    public String login(@RequestParam("email") String email, @RequestParam("password") String password){
+    public String login(HttpSession session, @RequestParam("email") String email, @RequestParam("password") String password){
         User user = repository.findByEmail(email);
         if(user == null) return "No Such User";
         System.out.println(password+" : "+user.getPassword());
-        if(password.equals(user.getPassword())) return "Logged In";
-        else return "Wrong Password";
+        if(password.equals(user.getPassword())) {
+            session.setAttribute("loggedIn","true");
+            return "Success";
+        }
+        else return "Error";
+    }
+
+    @RequestMapping(value = "/logout", method = RequestMethod.POST)
+    public String logout(HttpServletRequest request) {
+        HttpSession httpSession;
+        httpSession = request.getSession(false);
+        httpSession.invalidate();
+        return "Success";
+
     }
 }
