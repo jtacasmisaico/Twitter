@@ -42,9 +42,9 @@ public class UserController {
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ResponseBody
-    public String CreateUser(@RequestBody final User user){
+    public String createUser(@RequestBody final User user){
         System.out.println(user.getName());
-        long id = repository.createUser(user.getUsername(), user.getName(), user.getEmail(), user.getPassword());
+        int id = repository.createUser(user.getUsername(), user.getName(), user.getEmail(), user.getPassword());
         if (id != -1){
             return "Success";
         }

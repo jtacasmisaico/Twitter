@@ -26,7 +26,7 @@ public class UserRepository {
     public User findById(int id) {
         try {
             return jdbcTemplate.queryForObject("select name, userid, username, email from users where userid = ?",
-                new Object[]{id}, new BeanPropertyRowMapper<User>(User.class));
+                new Object[]{id}, new BeanPropertyRowMapper<>(User.class));
         }
         catch (Exception e) {
             return null;
@@ -36,15 +36,15 @@ public class UserRepository {
     public User findByEmail(String email) {
         try {
             return jdbcTemplate.queryForObject("select name, username, password from users where email = ?",
-                new Object[]{email}, new BeanPropertyRowMapper<User>(User.class));
+                new Object[]{email}, new BeanPropertyRowMapper<>(User.class));
         }
         catch(Exception e) {
             return null;
         }
     }
 
-    public long createUser(String username, String password, String email, String name) {
-        System.out.println(username+":"+password+":"+email+":"+name+":");
+    public int createUser(String username, String name, String email, String password) {
+        System.out.println(username+":"+password+":"+email+":"+name);
         final SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate);
         insert.setTableName("users");
         insert.setColumnNames(Arrays.asList("username", "password", "email", "name"));
@@ -55,7 +55,7 @@ public class UserRepository {
         param.put("name", name);
         param.put("email", email);
         try{
-            return  (Long) insert.executeAndReturnKey(param);
+            return (int) insert.executeAndReturnKey(param);
         }
         catch( DuplicateKeyException e){
             return -1;

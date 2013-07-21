@@ -1,7 +1,9 @@
 package com.springapp.mvc.model;
 
-public class User {
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+public class User {
     public int userid;
     public String username;
     public String password;
