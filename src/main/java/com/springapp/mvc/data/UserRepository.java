@@ -62,7 +62,7 @@ public class UserRepository {
         }
     }
 
-    public int follow(int follower, int followed) {
+    public String follow(int follower, int followed) {
         final SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate);
         insert.setTableName("followers");
         insert.setColumnNames(Arrays.asList("follower", "followed"));
@@ -71,11 +71,11 @@ public class UserRepository {
         param.put("followed", followed);
         try{
             insert.execute(param);
-            return 1;
+            return "Success";
         }
         catch(Exception e){
             e.printStackTrace();
-            return -1;
+            return "Error";
         }
     }
 

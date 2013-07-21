@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -41,6 +42,11 @@ public class UserController {
         return repository.fetchFollows(userid);
     }
 
+    @RequestMapping(value = "/users/follow", method = RequestMethod.POST)
+    @ResponseBody
+    public String follow(@RequestBody Map<String,Object> requestParameters) throws IOException {
+        return repository.follow((int)requestParameters.get("follower"), (int)requestParameters.get("followed"));
+    }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ResponseBody
