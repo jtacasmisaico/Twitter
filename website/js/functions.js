@@ -16,6 +16,7 @@ var displayLoggedIn = function() {
     $('#splash').hide();
     $('#navBarLoggedIn').show();
     $('#newsFeed').show();
+    fetchFollows();
     fetchFeed();
 }
 
@@ -63,9 +64,26 @@ var login = function() {
             localStorage.userid = response.responseJSON.user.userid;
             console.log(localStorage.sessionid);
             displayLoggedIn();
-            fetchFeed();
         });
     return false;
+}
+
+var fetchFollows = function() {
+    console.log("Fetching followers");
+   $.ajax({
+        url: "http://localhost:8080/users/"+localStorage.userid+"/follows",
+        type: 'GET',
+        error: function(jqXHR){
+            logout();
+        }
+        }).done(function(data, textStatus, response) {
+            localStorage.follows = JSON.stringify(response.responseJSON);
+            renderFollows(response.responseJSON);
+        });
+}
+
+var renderFollows = function(follows) {
+    console.log("Followers set");
 }
 
 var fetchFeed = function() {
@@ -82,16 +100,36 @@ headers: {
             logout();
         }
         }).done(function(data, textStatus, response) {
-            console.log("Tweets fetched");
-            console.log(response.responseJSON);
+            localStorage.feed = JSON.stringify(response.responseJSON);
+            console.log(response.responseText);
+            renderFeed(response.responseJSON)
         });
-    return false;
+}
+
+var findUsername = function(userid) {
+    var list = JSON.parse(localStorage.follows);
+    for(var i=0;i<list.length;i++) {
+        if(list[i].userid==userid)
+            return list[i].username;
+    }
+}
+
+var renderFeed = function(tweets) {
+    var feedDiv = document.getElementById('newsFeed');
+    for(var i=0;i<tweets.length;i++) {
+        var tweet = document.createElement('div');
+        tweet.setAttribute('class', 'media');
+        console.log(findUsername(tweets[i].userid));
+        tweet.innerHTML = '<a class="pull-left" href="#users/'+findUsername(tweets[i].userid)+'"><img class="media-object" src="./img/avatar.png"></a><div class="media-body"><h4 class="media-heading">'+findUsername(tweets[i].userid)+'</h4>'+tweets[i].content+'</div></div>'
+        feedDiv.appendChild(tweet);
+    }
 }
 
 var logout = function() {
     delete localStorage.sessionid;
     delete localStorage.user;
-    displayLoggedOut();
+    delete localStorage.follows;
+    document.location.reload();
 }
 
 var checkKeyRegister = function(event) {

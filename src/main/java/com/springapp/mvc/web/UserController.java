@@ -5,6 +5,8 @@ import com.springapp.mvc.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +39,8 @@ public class UserController {
 
     @RequestMapping(value = "/users/{id}/follows", method = RequestMethod.GET)
     @ResponseBody
-    public List<User> fetchFollows(@PathVariable("id") int userid) throws IOException {
+    public List<User> fetchFollows(HttpServletResponse response, @PathVariable("id") int userid) throws IOException {
+        response.addHeader("Access-Control-Allow-Origin", "*");
         return repository.fetchFollows(userid);
     }
 
