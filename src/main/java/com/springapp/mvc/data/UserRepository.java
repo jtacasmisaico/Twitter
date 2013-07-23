@@ -35,7 +35,7 @@ public class UserRepository {
 
     public User findByEmail(String email) {
         try {
-            return jdbcTemplate.queryForObject("select name, username, password from users where email = ?",
+            return jdbcTemplate.queryForObject("select userid, name, username, password from users where email = ?",
                 new Object[]{email}, new BeanPropertyRowMapper<>(User.class));
         }
         catch(Exception e) {

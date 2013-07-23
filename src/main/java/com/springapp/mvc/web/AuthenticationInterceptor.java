@@ -1,9 +1,14 @@
 package com.springapp.mvc.web;
 
+import com.springapp.mvc.data.SessionRepository;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,24 +20,20 @@ import javax.servlet.http.HttpServletResponse;
 public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle( HttpServletRequest request, HttpServletResponse response,
-                              Object handler ) throws Exception {
-        System.out.println(request.getMethod());
-        response.setHeader("Access-Control-Allow-Origin", "http://localhost");
-        response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("Access-Control-Allow-Headers", "*");
-        System.out.println("Intercepting...");
+                              Object handler) {
+        response.addHeader("Access-Control-Allow-Origin", "*");
+        response.addHeader("Access-Control-Allow-Headers", "Content-Type, token");
+        response.addHeader("Access-Control-Allow-Methods", "OPTIONS, POST");
+        System.out.println("Interceptor Request Received : "+request.getMethod());
+        if("POST".equals(request.getMethod())) {
+            System.out.println(request.getHeader("token"));
+            if(SessionRepository.isValidSession(request.getHeader("token")))
+                return true;
+            else {
+                response.setStatus(403);
+                return false;
+            }
+        }
         return true;
-
-//        if ( !( handler instanceof AuthenticatedController ) ) {
-//            System.out.println("Not instance");
-//            return true;
-//        }
-//        boolean isAuthenticated = false; // Check here
-//        if ( !isAuthenticated ) {
-//            System.out.println("Not authenticated");
-//            response.setStatus( HttpServletResponse.SC_FORBIDDEN );
-//            return false;
-//        }
-//        return true;
     }
 }

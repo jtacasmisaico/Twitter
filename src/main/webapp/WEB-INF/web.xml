@@ -8,6 +8,14 @@
     <servlet>
 		<servlet-name>mvc-dispatcher</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>dispatchOptionsRequest</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>cors.supportedHeaders</param-name>
+            <param-value>Accept, Origin, X-Requested-With, Content-Type, Last-Modified</param-value>
+        </init-param>
         <load-on-startup>1</load-on-startup>
 	</servlet>
 

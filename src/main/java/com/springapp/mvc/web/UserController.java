@@ -2,7 +2,6 @@ package com.springapp.mvc.web;
 
 import com.springapp.mvc.data.UserRepository;
 import com.springapp.mvc.model.User;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;

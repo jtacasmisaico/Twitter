@@ -1,13 +1,19 @@
 package com.springapp.mvc.web;
 
+import com.springapp.mvc.data.SessionRepository;
 import com.springapp.mvc.data.UserRepository;
+import com.springapp.mvc.model.Session;
 import com.springapp.mvc.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.security.SecureRandom;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,24 +22,45 @@ import javax.servlet.http.HttpSession;
  * Time: 2:28 PM
  */
 @Controller
-public class LoginController implements AuthenticatedController{
+public class LoginController{
     private final UserRepository repository;
+    private SecureRandom random = new SecureRandom();
     @Autowired
     public LoginController(UserRepository repository) {
         this.repository = repository;
     }
 
+    @RequestMapping(value = "/login", method = RequestMethod.OPTIONS)
+    public void getOptions(HttpServletResponse response) {
+        response.addHeader("Access-Control-Allow-Origin", "*");
+        response.addHeader("Access-Control-Allow-Headers", "Content-Type");
+        response.addHeader("Access-Control-Allow-Methods", "OPTIONS, POST");
+    }
+
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ResponseBody
-    public String login(HttpSession session, @RequestParam("email") String email, @RequestParam("password") String password){
+    public Session login(HttpServletResponse response, @RequestBody Map<String,
+            Object> requestParameters){
+        response.addHeader("Access-Control-Allow-Origin", "*");
+        String email = (String) requestParameters.get("email");
+        String password = (String) requestParameters.get("password");
         User user = repository.findByEmail(email);
-        if(user == null) return "No Such User";
-        System.out.println(password+" : "+user.getPassword());
-        if(password.equals(user.getPassword())) {
-            session.setAttribute("loggedIn","true");
-            return "Success";
+        if(user == null) {
+            response.setStatus(403);
+            return null;
         }
-        else return "Error";
+        if(password.equals(user.getPassword())) {
+            String sessionid = new BigInteger(130, random).toString(32);
+            SessionRepository.addSession(sessionid);
+            response.setStatus(200);
+            User authenticatedUser = repository.findById(user.getUserid());
+            Session session = new Session(sessionid, authenticatedUser);
+            return session;
+        }
+        else {
+            response.setStatus(403);
+            return null;
+        }
     }
 
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
@@ -43,5 +70,10 @@ public class LoginController implements AuthenticatedController{
         httpSession.invalidate();
         return "Success";
 
+    }
+
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public void printWelcome(HttpServletResponse response) throws IOException {
+        response.sendRedirect("http://localhost/twitter");
     }
 }

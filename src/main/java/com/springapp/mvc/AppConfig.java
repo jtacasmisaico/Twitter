@@ -52,7 +52,8 @@ public class AppConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry){
-        registry.addInterceptor(new AuthenticationInterceptor()).addPathPatterns("/login");
-        registry.addInterceptor(new AuthenticationInterceptor()).addPathPatterns("/register");
+        registry.addInterceptor(new AuthenticationInterceptor()).addPathPatterns("/users/follow");
+        registry.addInterceptor(new AuthenticationInterceptor()).addPathPatterns("/tweet");
+        registry.addInterceptor(new AuthenticationInterceptor()).addPathPatterns("/feed");
     }
 }
