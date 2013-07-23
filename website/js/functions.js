@@ -1,11 +1,9 @@
 window.onload = function() {
     displayPage();
-    var intervalID = setInterval(function(){displayPage();}, 1000);
+    //var intervalID = setInterval(function(){displayPage();}, 1000);
 };
 
-var displayPage = function () {    
-    console.log('Displaying Page');
-    console.log(loggedIn());
+var displayPage = function () {  
     if(loggedIn())
         displayLoggedIn();
     else displayLoggedOut();
@@ -18,6 +16,7 @@ var displayLoggedIn = function() {
     $('#splash').hide();
     $('#navBarLoggedIn').show();
     $('#newsFeed').show();
+    fetchFeed();
 }
 
 var displayLoggedOut = function() {
@@ -42,14 +41,14 @@ var checkKeyLogin = function(event) {
 }
 
 var loggedIn = function() {
-    if($.cookie('sessionId') == undefined)
+    if(localStorage.sessionid == undefined)
         return false;
     else return true;
 }
 
 var login = function() {
     $.ajax({
-        url: "http://172.16.155.26:8080/login",
+        url: "http://localhost:8080/login",
         type: 'POST',
         contentType : "application/json",
         data: JSON.stringify({ email: document.getElementById('inputEmail').value, password: document.getElementById('inputPassword').value }),
@@ -58,16 +57,40 @@ var login = function() {
             $('#inputEmail').focus();
             setTimeout(function() {$('#loginDiv').popover('hide');}, 3000);
         }
-        }).done(function(data, textStatus, jqXHR) {
+        }).done(function(data, textStatus, response) {
             console.log("Logged in");
-            $.cookie('sessionId',jqXHR.responseText);
+            localStorage.sessionid = response.responseJSON.sessionid;
+            localStorage.userid = response.responseJSON.user.userid;
+            console.log(localStorage.sessionid);
             displayLoggedIn();
+            fetchFeed();
+        });
+    return false;
+}
+
+var fetchFeed = function() {
+    $.ajax({
+        url: "http://localhost:8080/feed",
+        type: 'POST',
+        data: JSON.stringify({ userid: localStorage.userid }),
+headers: { 
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'token':localStorage.sessionid
+        },
+        error: function(jqXHR){
+            logout();
+        }
+        }).done(function(data, textStatus, response) {
+            console.log("Tweets fetched");
+            console.log(response.responseJSON);
         });
     return false;
 }
 
 var logout = function() {
-    $.removeCookie('sessionId');
+    delete localStorage.sessionid;
+    delete localStorage.user;
     displayLoggedOut();
 }
 
