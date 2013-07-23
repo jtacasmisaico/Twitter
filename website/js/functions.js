@@ -1,12 +1,27 @@
 window.onload = function() {
+    init();
     displayPage();
     //var intervalID = setInterval(function(){displayPage();}, 1000);
 };
+
+var init = function() {
+}
 
 var displayPage = function () {  
     if(loggedIn())
         displayLoggedIn();
     else displayLoggedOut();
+}
+
+var changeTweetButtonState = function () {
+    if(document.getElementById("tweetBox").value.length>0) { 
+        document.getElementById("tweetButton").removeAttribute('disabled'); 
+        document.getElementById("tweetButton").setAttribute('class','btn btn-info'); 
+    }
+    else { 
+        document.getElementById("tweetButton").setAttribute('disabled'); 
+        document.getElementById("tweetButton").setAttribute('class','btn disabled'); 
+    }
 }
 
 var displayLoggedIn = function() {
@@ -16,6 +31,7 @@ var displayLoggedIn = function() {
     $('#splash').hide();
     $('#navBarLoggedIn').show();
     $('#newsFeed').show();
+    $('#tweetForm').show();
     fetchFollows();
     fetchFeed();
 }
@@ -45,6 +61,26 @@ var loggedIn = function() {
     if(localStorage.sessionid == undefined)
         return false;
     else return true;
+}
+
+var postTweet = function() {
+   $.ajax({
+        url: "http://localhost:8080/tweet",
+        type: 'POST',
+        data: JSON.stringify({ content: document.getElementById('tweetBox').value, userid: localStorage.userid }),
+        headers: { 
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'token':localStorage.sessionid
+        },
+        error: function(jqXHR){
+                console.log(jqXHR.responseText);
+                //logout();
+            }
+        }).done(function(data, textStatus, response) {
+            console.log("Tweeted");
+        });
+    return false;
 }
 
 var login = function() {
@@ -91,11 +127,11 @@ var fetchFeed = function() {
         url: "http://localhost:8080/feed",
         type: 'POST',
         data: JSON.stringify({ userid: localStorage.userid }),
-headers: { 
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'token':localStorage.sessionid
-        },
+        headers: { 
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'token':localStorage.sessionid
+            },
         error: function(jqXHR){
             logout();
         }

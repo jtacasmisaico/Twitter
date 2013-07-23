@@ -72,9 +72,20 @@ body {
 }
 
 .feed {
-	padding:40;
-	margin:60 auto;
-	width:700px;
+	padding:20;
+	margin:10 auto;
+	width:500px;
+	border-style:dashed;
+	border-width:2px;
+	border-radius:5px;
+	border-color: #696969;
+	background-color: rgba(255,255,255,0.2);
+}
+
+#tweetForm {
+	padding:20;
+	margin : 60 auto 0 auto;
+	width:500px;
 	border-style:dashed;
 	border-width:2px;
 	border-radius:5px;

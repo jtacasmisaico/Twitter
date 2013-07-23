@@ -32,6 +32,12 @@ public class TweetController {
         return tweetRepository.findTweetByTweetId(id);
     }
 
+    @RequestMapping(value = "/tweet", method = RequestMethod.OPTIONS)
+    @ResponseBody
+    public void getOptions(){
+        System.out.println("Options for Tweet");
+    }
+
     @RequestMapping(value = "/tweet", method = RequestMethod.POST)
     @ResponseBody
     public String createTweet(@RequestBody final Tweet tweet){
@@ -49,11 +55,7 @@ public class TweetController {
         return tweetRepository.findTweetsByUserId(userid);
     }
 
-    @RequestMapping(value = "/feed", method = RequestMethod.OPTIONS)
-    @ResponseBody
-    public void getOptions(){ System.out.println("Fetch Optoins");}
-
-    @RequestMapping(value = "/feed", method = RequestMethod.POST)
+    @RequestMapping(value = "/feed", method = {RequestMethod.OPTIONS, RequestMethod.POST})
     @ResponseBody
     public List<Tweet> fetchFeed(@RequestBody final User user){
         System.out.println("Fetch Feed");
