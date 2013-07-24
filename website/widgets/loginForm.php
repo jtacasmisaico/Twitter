@@ -12,4 +12,54 @@
       </div>
     </div>
   </form>
-  </div>
+</div>
+
+<script>
+
+var validateLogin = function(e) {
+    if(validate('inputEmail') && validate('inputPassword')) {login(); return false;}
+    else return false;
+}
+
+var checkKeyLogin = function(event) {
+    if(event.keyCode == 13) {
+        return validateLogin();
+    }
+    else return true;
+}
+
+var loggedIn = function() {
+    if(localStorage.sessionid == undefined)
+        return false;
+    else return true;
+}
+
+var login = function() {
+    $.ajax({
+        url: "http://localhost:8080/login",
+        type: 'POST',
+        contentType : "application/json",
+        data: JSON.stringify({ email: document.getElementById('inputEmail').value, password: document.getElementById('inputPassword').value }),
+        error: function(jqXHR){
+            $('#loginDiv').popover('show');
+            $('#inputEmail').focus();
+            setTimeout(function() {$('#loginDiv').popover('hide');}, 3000);
+        }
+    }).done(function(data, textStatus, response) {
+            localStorage.sessionid = response.responseJSON.sessionid;
+            localStorage.userid = response.responseJSON.user.userid;
+            localStorage.username = response.responseJSON.user.username;
+            localStorage.name = response.responseJSON.user.name;
+            displayLoggedIn();
+    });
+    return false;
+}
+
+var logout = function() {
+    delete localStorage.sessionid;
+    delete localStorage.user;
+    delete localStorage.follows;
+    document.location.reload();
+}
+
+</script>

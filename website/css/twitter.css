@@ -84,11 +84,48 @@ body {
 
 #tweetForm {
 	padding:20;
-	margin : 60 auto 0 auto;
+	margin : 60 auto 20 auto;
 	width:500px;
 	border-style:dashed;
 	border-width:2px;
 	border-radius:5px;
 	border-color: #696969;
 	background-color: rgba(255,255,255,0.2);
+}
+#profileSideBar {
+	text-align: center;
+	padding:20;
+	left:300px;
+	float:left;
+	margin : 0 0 0 0;
+	width:200px;
+	height:500px;
+	position:fixed;
+	border-style:dashed;
+	border-width:2px;
+	border-radius:5px;
+	border-color: #696969;
+	background-color: rgba(255,255,255,0.2);
+}
+#tweetsFromSelf {
+	text-align: left;
+	width:180px;
+	height:300px;
+	overflow-y:scroll;
+	overflow-x:none;
+	padding: 0,10,0,0;
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+ 
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,1); 
+    border-radius: 10px;
+}
+ 
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,1); 
 }

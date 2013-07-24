@@ -28,3 +28,38 @@
   </div>
 </form>
 </div>
+
+<script>
+var checkKeyRegister = function(event) {
+    if(event.keyCode == 13) {
+        return validateRegistrationForm();
+    }
+    else return true;
+}
+
+var validateRegistrationForm = function(e) {
+    if(validate('inputNameRegistration') && validate('inputUsernameRegistration') && validate('inputEmailRegistration') && validate('inputPasswordRegistration')) {register(); return false;}
+    else return false;
+}
+
+var register = function() {
+    alert("Register");
+    $.ajax({
+        url: "http://localhost:8080/register",
+        contentType : "application/json",
+        type: 'POST',
+        data: JSON.stringify({
+            username: document.getElementById('inputUsernameRegistration').value, 
+            email: document.getElementById('inputEmailRegistration').value, 
+            password: document.getElementById('inputPasswordRegistration').value, 
+            name: document.getElementById('inputNameRegistration').value 
+        }),
+        beforeSend: function() {console.log("Before send");},
+        error: function(jqXHR){console.log("Errorwa :("); console.log(jqXHR.responseText);},
+        dataFilter: function(){console.log("DataFilter")},
+        success: function(success){console.log(success)}
+    }).done(function(data, textStatus, jqXHR) {
+        alert(jqXHR.responseText);
+    });
+}
+</script>
