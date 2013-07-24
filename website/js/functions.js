@@ -25,6 +25,7 @@ var displayLoggedIn = function() {
     $('#profileSideBar').show();
     fetchTweets(localStorage.userid);
     fetchFollows();
+    fetchFollowers();
     fetchFeed();    
     renderProfileSideBar();
 }

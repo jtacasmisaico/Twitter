@@ -107,10 +107,10 @@ body {
 	border-color: #696969;
 	background-color: rgba(255,255,255,0.2);
 }
-#tweetsFromSelf {
+#tweetsFromSelf, #ownFollowers, #ownFollowing {
 	text-align: left;
-	width:180px;
-	height:300px;
+	width:160px;
+	max-height:300px;
 	overflow-y:scroll;
 	overflow-x:none;
 	padding: 0,10,0,0;

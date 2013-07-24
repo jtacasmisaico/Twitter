@@ -33,7 +33,8 @@ public class UserController {
 
     @RequestMapping(value = "/users/{id}/followers", method = RequestMethod.GET)
     @ResponseBody
-    public List<User> fetchFollowers(@PathVariable("id") int userid) throws IOException {
+    public List<User> fetchFollowers(HttpServletResponse response, @PathVariable("id") int userid) throws IOException {
+        response.addHeader("Access-Control-Allow-Origin", "*");
         return repository.fetchFollowers(userid);
     }
 

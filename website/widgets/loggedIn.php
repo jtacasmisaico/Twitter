@@ -1,12 +1,38 @@
 <div id="profileSideBar" style="display:none;">
 	<div id="username"></div>
-	<h6><u>My Tweets</u></h6>
-	<ul id="tweetsFromSelf" class="nav nav-list"></ul>
+
+	<div class="accordion" id="sidebarAccordion">
+		<div class="accordion-group" style="border:0px;">
+			<button class="btn btn-inverse" style="width:198px;" data-toggle="collapse" data-parent="#sidebarAccordion" data-target="#ownTweets">
+			Tweets
+			</button>
+			<div id="ownTweets" class="collapse in">
+				<ul id="tweetsFromSelf" class="nav nav-list"></ul>
+			</div>
+
+			<button class="btn btn-inverse" style="width:198px;" data-toggle="collapse" data-parent="#sidebarAccordion" data-target="#followersOwn">
+			Followers
+			</button>
+			<div id="followersOwn" class="collapse">
+				<ul id="ownFollowers" class="nav nav-list"></ul>
+			</div>
+
+			<button class="btn btn-inverse" style="width:198px;" data-toggle="collapse" data-parent="#sidebarAccordion" data-target="#followingOwn">
+			Following
+			</button>
+			<div id="followingOwn" class="collapse">
+				<ul id="ownFollowing" class="nav nav-list"></ul>
+			</div>
+		</div>
+	</div>
+
 </div>
+
 <form id="tweetForm" style="display:none;" onsubmit="postTweet()">
         <textarea id="tweetBox" rows="3" style="width:500px;" onkeyup="changeTweetButtonState()"></textarea>
         <button type="button" style="width:500px;" id="tweetButton" class="btn disabled" disabled onclick="postTweet()">Tweet</button>
 </form>
+
 <div id="newsFeed" class="feed" style="display:none;">
 </div>
 
@@ -22,6 +48,7 @@ var changeTweetButtonState = function () {
         document.getElementById("tweetButton").setAttribute('class','btn disabled'); 
     }
 }
+
 var fetchTweets = function(userid) {
     $.ajax({
         url: "http://localhost:8080/posts/"+localStorage.userid,
@@ -34,8 +61,32 @@ var fetchTweets = function(userid) {
     });
 }
 
+var fetchFollows = function() {
+   $.ajax({
+        url: "http://localhost:8080/users/"+localStorage.userid+"/follows",
+        type: 'GET',
+        error: function(jqXHR){
+            logout();
+        }
+    }).done(function(data, textStatus, response) {
+            localStorage.follows = JSON.stringify(response.responseJSON);
+    });
+}
+
+var fetchFollowers = function() {
+   $.ajax({
+        url: "http://localhost:8080/users/"+localStorage.userid+"/followers",
+        type: 'GET',
+        error: function(jqXHR){
+            logout();
+        }
+    }).done(function(data, textStatus, response) {
+            localStorage.followers = JSON.stringify(response.responseJSON);
+    		console.log(localStorage.followers);
+    });
+}
+
 var renderProfileSideBar = function() {
-	console.log("Rendered Side Bar");
     var sidebar = document.getElementById('profileSideBar');
     document.getElementById('username').innerHTML = "<h4>"+localStorage.name+"</h4>";
     var tweets = JSON.parse(localStorage.tweets);
@@ -43,6 +94,15 @@ var renderProfileSideBar = function() {
         pushOwnTweets(tweets[i]);
     }
 
+    var follows = JSON.parse(localStorage.follows);
+    for(var i=0; i<follows.length; i++) {
+        pushOwnFollows(follows[i]);
+    }
+
+    var followers = JSON.parse(localStorage.followers);
+    for(var i=0; i<followers.length; i++) {
+        pushOwnFollowers(followers[i]);
+    }
 }
 
 var pushOwnTweets = function(tweet) {    
@@ -53,6 +113,26 @@ var pushOwnTweets = function(tweet) {
     var feedDiv = document.getElementById('tweetsFromSelf');
     feedDiv.insertBefore(separator, feedDiv.firstChild);
     feedDiv.insertBefore(element, feedDiv.firstChild);
+}
+
+var pushOwnFollows = function(user) {    
+    var element = document.createElement('li');
+    element.innerHTML = user.username;
+    var separator = document.createElement('li');
+    separator.setAttribute('class','divider');
+    var followingDiv = document.getElementById('ownFollowing');
+    followingDiv.insertBefore(separator, followingDiv.firstChild);
+    followingDiv.insertBefore(element, followingDiv.firstChild);
+}
+
+var pushOwnFollowers = function(user) {    
+    var element = document.createElement('li');
+    element.innerHTML = user.username;
+    var separator = document.createElement('li');
+    separator.setAttribute('class','divider');
+    var followerDiv = document.getElementById('ownFollowers');
+    followerDiv.insertBefore(separator, followerDiv.firstChild);
+    followerDiv.insertBefore(element, followerDiv.firstChild);
 }
 
 var postTweet = function() {
@@ -77,22 +157,6 @@ var postTweet = function() {
             pushOwnTweets(pushedTweet);
     });
     return false;
-}
-
-var fetchFollows = function() {
-   $.ajax({
-        url: "http://localhost:8080/users/"+localStorage.userid+"/follows",
-        type: 'GET',
-        error: function(jqXHR){
-            logout();
-        }
-    }).done(function(data, textStatus, response) {
-            localStorage.follows = JSON.stringify(response.responseJSON);
-            renderFollows(response.responseJSON);
-    });
-}
-
-var renderFollows = function(follows) {
 }
 
 var fetchFeed = function() {
