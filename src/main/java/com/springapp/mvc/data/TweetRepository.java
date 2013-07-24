@@ -23,7 +23,7 @@ public class TweetRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Tweet findTweetByTweetId(Long tweetid) {
+    public Tweet findTweetByTweetId(int tweetid) {
         try {
             System.out.println("Tweet : "+tweetid);
             return jdbcTemplate.queryForObject("select tweetid, content, userid, timestamp from tweets where tweetid = ?",
@@ -65,7 +65,7 @@ public class TweetRepository {
 
     public List<Tweet> fetchFeed(int userid) {
         try {
-            return jdbcTemplate.query("select tweets.tweetid, tweets.content, tweets.userid, tweets.timestamp from tweets inner join followers on followers.followed=tweets.userid where followers.follower  = ? ORDER BY tweets.timestamp DESC",
+            return jdbcTemplate.query("select tweets.tweetid, tweets.content, tweets.userid, tweets.timestamp from tweets inner join followers on followers.followed=tweets.userid where followers.follower  = ? ORDER BY tweets.timestamp ASC",
                     new Object[]{userid}, new BeanPropertyRowMapper<>(Tweet.class));
         }
         catch (Exception e) {

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -28,8 +29,8 @@ public class TweetController {
 
     @RequestMapping(value = "/tweet/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public Tweet fetchUser(@PathVariable("id") Long id) throws IOException {
-        return tweetRepository.findTweetByTweetId(id);
+    public Tweet fetchUser(@PathVariable("tweetid") int tweetid) throws IOException {
+        return tweetRepository.findTweetByTweetId(tweetid);
     }
 
     @RequestMapping(value = "/tweet", method = RequestMethod.OPTIONS)
@@ -40,27 +41,31 @@ public class TweetController {
 
     @RequestMapping(value = "/tweet", method = RequestMethod.POST)
     @ResponseBody
-    public String createTweet(@RequestBody final Tweet tweet){
+    public Tweet createTweet(@RequestBody final Tweet tweet, HttpServletResponse response){
         int id = tweetRepository.createTweet(tweet.getContent(), tweet.getUserid());
         if (id != -1){
-            return "Success";
+            response.setStatus(200);
+            return tweetRepository.findTweetByTweetId(id);
         }
-        return "Fail";
+        response.setStatus(403);
+        return null;
     }
 
-    @RequestMapping(value = "/posts", method = RequestMethod.POST)
+    @RequestMapping(value = "/posts/{userid}", method = RequestMethod.GET)
     @ResponseBody
-    public List<Tweet> fetchPosts(@RequestBody Map<String,Object> requestParameters){
-        int userid = (int) requestParameters.get("userid");
+    public List<Tweet> fetchPosts(@PathVariable("userid") int userid, HttpServletResponse response){
+        response.addHeader("Access-Control-Allow-Origin", "*");
         return tweetRepository.findTweetsByUserId(userid);
     }
 
-    @RequestMapping(value = "/feed", method = {RequestMethod.OPTIONS, RequestMethod.POST})
+    @RequestMapping(value = "/feed", method = RequestMethod.OPTIONS)
+    @ResponseBody
+    public void getOptionsForFetchFeed(){
+    }
+    @RequestMapping(value = "/feed", method = RequestMethod.POST)
     @ResponseBody
     public List<Tweet> fetchFeed(@RequestBody final User user){
-        System.out.println("Fetch Feed");
         int userid = user.getUserid();
-        System.out.println(userid);
         return tweetRepository.fetchFeed(userid);
     }
 }
