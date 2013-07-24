@@ -56,9 +56,8 @@ var login = function() {
 }
 
 var logout = function() {
-    delete localStorage.sessionid;
-    delete localStorage.user;
-    delete localStorage.follows;
+    console.log("Logout");
+    localStorage.clear();
     document.location.reload();
 }
 

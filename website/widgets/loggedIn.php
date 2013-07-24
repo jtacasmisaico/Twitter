@@ -1,41 +1,38 @@
-<div id="profileSideBar" style="display:none;">
-	<div id="username"></div>
+<div id="loggedIn">
+	<div id="profileSideBar" style="display:none;">
+		<div id="username"></div>
+		<div class="accordion" id="sidebarAccordion">
+			<div class="accordion-group" style="border:0px;">
+				<button class="btn btn-inverse" style="width:198px;" data-toggle="collapse" data-parent="#sidebarAccordion" data-target="#ownTweets">
+				Tweets
+				</button>
+				<div id="ownTweets" class="collapse in">
+					<ul id="tweetsFromSelf" class="nav nav-list"></ul>
+				</div>
 
-	<div class="accordion" id="sidebarAccordion">
-		<div class="accordion-group" style="border:0px;">
-			<button class="btn btn-inverse" style="width:198px;" data-toggle="collapse" data-parent="#sidebarAccordion" data-target="#ownTweets">
-			Tweets
-			</button>
-			<div id="ownTweets" class="collapse in">
-				<ul id="tweetsFromSelf" class="nav nav-list"></ul>
-			</div>
+				<button class="btn btn-inverse" style="width:198px;" data-toggle="collapse" data-parent="#sidebarAccordion" data-target="#followersOwn">
+				Followers
+				</button>
+				<div id="followersOwn" class="collapse">
+					<ul id="ownFollowers" class="nav nav-list"></ul>
+				</div>
 
-			<button class="btn btn-inverse" style="width:198px;" data-toggle="collapse" data-parent="#sidebarAccordion" data-target="#followersOwn">
-			Followers
-			</button>
-			<div id="followersOwn" class="collapse">
-				<ul id="ownFollowers" class="nav nav-list"></ul>
-			</div>
-
-			<button class="btn btn-inverse" style="width:198px;" data-toggle="collapse" data-parent="#sidebarAccordion" data-target="#followingOwn">
-			Following
-			</button>
-			<div id="followingOwn" class="collapse">
-				<ul id="ownFollowing" class="nav nav-list"></ul>
+				<button class="btn btn-inverse" style="width:198px;" data-toggle="collapse" data-parent="#sidebarAccordion" data-target="#followingOwn">
+				Following
+				</button>
+				<div id="followingOwn" class="collapse">
+					<ul id="ownFollowing" class="nav nav-list"></ul>
+				</div>
 			</div>
 		</div>
 	</div>
-
+	<form id="tweetForm" style="display:none;" onsubmit="postTweet()">
+	        <textarea id="tweetBox" rows="3" style="width:500px;" onkeyup="changeTweetButtonState()"></textarea>
+	        <button type="button" style="width:500px;" id="tweetButton" class="btn disabled" disabled onclick="postTweet()">Tweet</button>
+	</form>
+	<div id="newsFeed" class="feed" style="display:none;">
+	</div>
 </div>
-
-<form id="tweetForm" style="display:none;" onsubmit="postTweet()">
-        <textarea id="tweetBox" rows="3" style="width:500px;" onkeyup="changeTweetButtonState()"></textarea>
-        <button type="button" style="width:500px;" id="tweetButton" class="btn disabled" disabled onclick="postTweet()">Tweet</button>
-</form>
-
-<div id="newsFeed" class="feed" style="display:none;">
-</div>
-
 <script>
 
 var changeTweetButtonState = function () {
@@ -58,6 +55,7 @@ var fetchTweets = function(userid) {
         }
     }).done(function(data, textStatus, response) {
         localStorage.tweets = JSON.stringify(response.responseJSON);
+        if(userid==localStorage.userid) renderTweetSidebar();
     });
 }
 
@@ -70,6 +68,7 @@ var fetchFollows = function() {
         }
     }).done(function(data, textStatus, response) {
             localStorage.follows = JSON.stringify(response.responseJSON);
+            renderOwnFollows();
     });
 }
 
@@ -83,26 +82,78 @@ var fetchFollowers = function() {
     }).done(function(data, textStatus, response) {
             localStorage.followers = JSON.stringify(response.responseJSON);
     		console.log(localStorage.followers);
+    		renderOwnFollowers();
     });
 }
 
-var renderProfileSideBar = function() {
-    var sidebar = document.getElementById('profileSideBar');
-    document.getElementById('username').innerHTML = "<h4>"+localStorage.name+"</h4>";
+var fetchFeed = function() {
+    $.ajax({
+        url: "http://localhost:8080/feed?offset=0",
+        type: 'GET',
+        data: JSON.stringify({ userid: localStorage.userid }),
+        headers: { 
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'token':localStorage.sessionid,
+            'userid':localStorage.userid
+            },
+        error: function(jqXHR){
+            logout();
+    }
+        }).done(function(data, textStatus, response) {
+            localStorage.feed = JSON.stringify(response.responseJSON);
+            renderFeed(response.responseJSON)
+    });
+}
+
+var postTweet = function() {
+   $.ajax({
+        url: "http://localhost:8080/tweet",
+        type: 'POST',
+        data: JSON.stringify({ content: document.getElementById('tweetBox').value, userid: localStorage.userid }),
+        headers: { 
+            'Content-Type': 'application/json',
+            'token':localStorage.sessionid,
+            'userid':localStorage.userid
+        },
+        error: function(jqXHR){
+                logout();
+        }
+    }).done(function(data, textStatus, response) {    	
+    		console.log(JSON.stringify(response.responseJSON));
+            document.getElementById('tweetBox').value = "";
+    		var pushedTweet = response.responseJSON;
+            var tweets = JSON.parse(localStorage.tweets);
+            tweets.push(pushedTweet);
+            localStorage.tweets = JSON.stringify(tweets);
+            pushOwnTweets(pushedTweet);
+    });
+    return false;
+}
+
+var renderTweetSidebar = function() {
     var tweets = JSON.parse(localStorage.tweets);
     for(var i=0; i<tweets.length; i++) {
         pushOwnTweets(tweets[i]);
     }
+}
 
+var renderOwnFollows = function() {
     var follows = JSON.parse(localStorage.follows);
     for(var i=0; i<follows.length; i++) {
         pushOwnFollows(follows[i]);
     }
+}
 
+var renderOwnFollowers = function() {
     var followers = JSON.parse(localStorage.followers);
     for(var i=0; i<followers.length; i++) {
         pushOwnFollowers(followers[i]);
-    }
+    }	
+}
+
+var renderProfileSideBar = function() {
+    document.getElementById('username').innerHTML = "<h4>"+localStorage.name+"</h4>";
 }
 
 var pushOwnTweets = function(tweet) {    
@@ -133,49 +184,6 @@ var pushOwnFollowers = function(user) {
     var followerDiv = document.getElementById('ownFollowers');
     followerDiv.insertBefore(separator, followerDiv.firstChild);
     followerDiv.insertBefore(element, followerDiv.firstChild);
-}
-
-var postTweet = function() {
-   $.ajax({
-        url: "http://localhost:8080/tweet",
-        type: 'POST',
-        data: JSON.stringify({ content: document.getElementById('tweetBox').value, userid: localStorage.userid }),
-        headers: { 
-            'Content-Type': 'application/json',
-            'token':localStorage.sessionid
-        },
-        error: function(jqXHR){
-                logout();
-        }
-    }).done(function(data, textStatus, response) {    	
-    		console.log(JSON.stringify(response.responseJSON));
-            document.getElementById('tweetBox').value = "";
-    		var pushedTweet = response.responseJSON;
-            var tweets = JSON.parse(localStorage.tweets);
-            tweets.push(pushedTweet);
-            localStorage.tweets = JSON.stringify(tweets);
-            pushOwnTweets(pushedTweet);
-    });
-    return false;
-}
-
-var fetchFeed = function() {
-    $.ajax({
-        url: "http://localhost:8080/feed",
-        type: 'POST',
-        data: JSON.stringify({ userid: localStorage.userid }),
-        headers: { 
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'token':localStorage.sessionid
-            },
-        error: function(jqXHR){
-            logout();
-    }
-        }).done(function(data, textStatus, response) {
-            localStorage.feed = JSON.stringify(response.responseJSON);
-            renderFeed(response.responseJSON)
-    });
 }
 
 var findUsername = function(userid) {

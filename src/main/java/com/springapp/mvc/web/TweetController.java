@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
@@ -62,10 +63,11 @@ public class TweetController {
     @ResponseBody
     public void getOptionsForFetchFeed(){
     }
-    @RequestMapping(value = "/feed", method = RequestMethod.POST)
+    @RequestMapping(value = "/feed", method = RequestMethod.GET)
     @ResponseBody
-    public List<Tweet> fetchFeed(@RequestBody final User user){
-        int userid = user.getUserid();
-        return tweetRepository.fetchFeed(userid);
+    public List<Tweet> fetchFeed(HttpServletRequest request, @RequestParam("offset") int offset){
+        int userid = Integer.parseInt(request.getHeader("userid"));
+        System.out.println(userid+" : "+offset);
+        return tweetRepository.fetchFeed(userid, offset, 20);
     }
 }

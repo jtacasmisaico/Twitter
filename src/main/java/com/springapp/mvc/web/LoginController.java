@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -39,7 +40,7 @@ public class LoginController{
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ResponseBody
-    public Session login(HttpServletResponse response, @RequestBody Map<String,
+    public Map<String, Object> login(HttpServletResponse response, @RequestBody Map<String,
             Object> requestParameters){
         response.addHeader("Access-Control-Allow-Origin", "*");
         String email = (String) requestParameters.get("email");
@@ -51,11 +52,14 @@ public class LoginController{
         }
         if(password.equals(user.getPassword())) {
             String sessionid = new BigInteger(130, random).toString(32);
-            SessionRepository.addSession(sessionid);
-            response.setStatus(200);
+            Session session = new Session(sessionid, user.getUserid());
             User authenticatedUser = repository.findById(user.getUserid());
-            Session session = new Session(sessionid, authenticatedUser);
-            return session;
+            Map<String, Object> sessionMap = new HashMap<>();
+            sessionMap.put("sessionid", sessionid);
+            sessionMap.put("user", authenticatedUser);
+            SessionRepository.addSession(session);
+            response.setStatus(200);
+            return sessionMap;
         }
         else {
             response.setStatus(403);

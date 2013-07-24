@@ -11,26 +11,26 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class Session {
     private String sessionid;
-    private User user;
+    private int userid;
 
-    public Session(String sessionid, User user) {
+    public Session(String sessionid, int userid) {
         this.sessionid = sessionid;
-        this.user = user;
+        this.userid = userid;
     }
 
     public String getSessionid() {
         return sessionid;
     }
 
-    public User getUser() {
-        return user;
+    public int getUserid() {
+        return userid;
     }
 
     public void setSessionid(String sessionid) {
         this.sessionid = sessionid;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserid(int userid) {
+        this.userid = userid;
     }
 }

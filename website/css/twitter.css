@@ -73,7 +73,8 @@ body {
 
 .feed {
 	padding:20;
-	margin:10 auto;
+	margin-left: 250px;
+	margin-top: 0px;
 	width:500px;
 	border-style:dashed;
 	border-width:2px;
@@ -82,10 +83,15 @@ body {
 	background-color: rgba(255,255,255,0.2);
 }
 
+#loggedIn {
+	margin : 60 auto 20 auto;
+	width:700px;
+}
+
 #tweetForm {
 	padding:20;
-	margin : 60 auto 20 auto;
 	width:500px;
+	margin: 0 0 7 250;
 	border-style:dashed;
 	border-width:2px;
 	border-radius:5px;
@@ -95,7 +101,6 @@ body {
 #profileSideBar {
 	text-align: center;
 	padding:20;
-	left:300px;
 	float:left;
 	margin : 0 0 0 0;
 	width:200px;
@@ -106,6 +111,7 @@ body {
 	border-radius:5px;
 	border-color: #696969;
 	background-color: rgba(255,255,255,0.2);
+	display:inline-block;
 }
 #tweetsFromSelf, #ownFollowers, #ownFollowing {
 	text-align: left;

@@ -11,6 +11,7 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/formValidation.js"></script>    
 	<script src="js/jquery.cookie.js"></script>
+	<script src="js/async.js"></script>
 </head>
 <body>
 	<?include("loader.php");?>

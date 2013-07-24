@@ -1,5 +1,7 @@
 package com.springapp.mvc.data;
 
+import com.springapp.mvc.model.Session;
+import com.springapp.mvc.model.User;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -13,23 +15,23 @@ import java.util.List;
  */
 @Repository
 public class SessionRepository {
-    private static ArrayList<String> sessions = new ArrayList<> ();
+    private static ArrayList<Session> sessions = new ArrayList<> ();
 
-    public static void addSession(String sessionId) {
-        sessions.add(sessionId);
+    public static void addSession(Session session) {
+        sessions.add(session);
     }
 
-    public static void endSession(String sessionId) {
-        sessions.remove(sessionId);
+    public static void endSession(Session session) {
+        sessions.remove(session);
     }
 
     public static void printSessionIds() {
         for(int i=0; i<sessions.size(); i++)
-            System.out.println(sessions.get(i));
+            System.out.println(sessions.get(i).getSessionid());
     }
 
-    public static boolean isValidSession(String sessionId) {
-        if(sessions.contains(sessionId)) return true;
+    public static boolean isValidSession(Session session) {
+        if(sessions.contains(session)) return true;
         else return false;
     }
 }
