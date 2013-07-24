@@ -121,7 +121,8 @@ var postTweet = function() {
             'userid':localStorage.userid
         },
         error: function(jqXHR){
-                logout();
+                console.log(jqXHR);
+                //logout();
         }
     }).done(function(data, textStatus, response) {    	
     		console.log(JSON.stringify(response.responseJSON));
@@ -212,7 +213,7 @@ var renderFeed = function(tweets) {
 var pushTweet = function(tweet) {
     var element = document.createElement('div');
     element.setAttribute('class', 'media');
-    element.innerHTML = '<a class="pull-left" href="#users/'+findUsername(tweet.userid)+'"><img class="media-object" src="./img/avatar.png"></a><div class="media-body tweet"><h4 class="media-heading">'+findUsername(tweet.userid)+'</h4>'+tweet.content+'</div><div class="timestamp">'+ new Date(tweet.timestamp).toString().substring(0,21)+'</div></div>'
+    element.innerHTML = '<a class="pull-left" href="#users/'+findUsername(tweet.userid)+'"><img class="media-object" src="./img/avatar.png"></a><div class="media-body tweet"><h4 class="media-heading"><a href="#users/'+findUsername(tweet.userid)+'">'+findUsername(tweet.userid)+'</a></h4>'+tweet.content+'</div><div class="timestamp">'+ new Date(tweet.timestamp).toString().substring(0,21)+'</div></div>'
     var feedDiv = document.getElementById('newsFeed');
     feedDiv.insertBefore(element, feedDiv.firstChild);
 }

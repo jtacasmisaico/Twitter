@@ -31,7 +31,10 @@ public class SessionRepository {
     }
 
     public static boolean isValidSession(Session session) {
-        if(sessions.contains(session)) return true;
-        else return false;
+        for(Session s : sessions) {
+            if(s.getUserid()==session.getUserid() && s.getSessionid().equals(session.getSessionid()))
+                return true;
+        }
+        return false;
     }
 }

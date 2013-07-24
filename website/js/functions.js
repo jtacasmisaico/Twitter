@@ -53,7 +53,8 @@ var displayLoggedIn = function() {
         function(cb) {$('#profileSideBar').show(); cb(null); },
         function(cb) {fetchFollows(); cb(null); },
         function(cb) {fetchFollowers(); cb(null); },
-        function(cb) {fetchFeed(); cb(null); }
+        function(cb) {fetchFeed(); cb(null); },
+        function(cb) {renderProfileSideBar(); cb(null); }
     ];
     async.series(functionList, null);
 }

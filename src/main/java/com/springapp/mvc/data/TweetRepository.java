@@ -47,6 +47,7 @@ public class TweetRepository {
     }
 
     public int createTweet(String content, int userid) {
+        System.out.println(content);
         final SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate);
         insert.setTableName("tweets");
         insert.setColumnNames(Arrays.asList("content", "userid"));
