@@ -70,7 +70,6 @@ body {
     right: 11px;
     background-image: url("../img/glyphicons-halflings-white.png");
 }
-
 .feed {
 	padding:20;
 	margin-left: 250px;
@@ -81,6 +80,23 @@ body {
 	border-radius:5px;
 	border-color: #696969;
 	background-color: rgba(255,255,255,0.2);
+}
+
+.tweet {
+	display:inline-block;
+	float:left;
+}
+
+.timestamp {
+	float:right;
+	font-style: italic;
+	font-size: 0.75em;
+}
+
+.timestampSelf {
+	font-style: italic;
+	font-size: 0.6em;
+	margin-left:10;
 }
 
 #loggedIn {
@@ -111,7 +127,6 @@ body {
 	border-radius:5px;
 	border-color: #696969;
 	background-color: rgba(255,255,255,0.2);
-	display:inline-block;
 }
 #tweetsFromSelf, #ownFollowers, #ownFollowing {
 	text-align: left;

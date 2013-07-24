@@ -34,6 +34,10 @@
 	</div>
 </div>
 <script>
+$(function () {
+    $("[rel='tooltip']").tooltip();
+});
+
 
 var changeTweetButtonState = function () {
     if(document.getElementById("tweetBox").value.length>0) { 
@@ -157,13 +161,17 @@ var renderProfileSideBar = function() {
 }
 
 var pushOwnTweets = function(tweet) {    
-    var element = document.createElement('li');
+    var element = document.createElement('div');
+    element.setAttribute('href','#');
+    element.setAttribute('rel','tooltip');
+    element.setAttribute('data-toggle','tooltip');
+    element.setAttribute('title',new Date(tweet.timestamp).toString().substring(0,21));
     element.innerHTML = tweet.content;
-    var separator = document.createElement('li');
+    var separator = document.createElement('div');
     separator.setAttribute('class','divider');
     var feedDiv = document.getElementById('tweetsFromSelf');
+    feedDiv.insertBefore(element, feedDiv.firstChild);    
     feedDiv.insertBefore(separator, feedDiv.firstChild);
-    feedDiv.insertBefore(element, feedDiv.firstChild);
 }
 
 var pushOwnFollows = function(user) {    
@@ -204,7 +212,7 @@ var renderFeed = function(tweets) {
 var pushTweet = function(tweet) {
     var element = document.createElement('div');
     element.setAttribute('class', 'media');
-    element.innerHTML = '<a class="pull-left" href="#users/'+findUsername(tweet.userid)+'"><img class="media-object" src="./img/avatar.png"></a><div class="media-body"><h4 class="media-heading">'+findUsername(tweet.userid)+'</h4>'+tweet.content+'</div></div>'
+    element.innerHTML = '<a class="pull-left" href="#users/'+findUsername(tweet.userid)+'"><img class="media-object" src="./img/avatar.png"></a><div class="media-body tweet"><h4 class="media-heading">'+findUsername(tweet.userid)+'</h4>'+tweet.content+'</div><div class="timestamp">'+ new Date(tweet.timestamp).toString().substring(0,21)+'</div></div>'
     var feedDiv = document.getElementById('newsFeed');
     feedDiv.insertBefore(element, feedDiv.firstChild);
 }
