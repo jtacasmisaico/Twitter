@@ -51,13 +51,13 @@ var displayHomePage = function() {
     $('#ownTweetsButton').show();
     $('#followButton').hide();
 
-    /*
+    
     $(window).scroll(function() {   
         if(($(window).scrollTop() + $(window).height() - 179) == $(document).height()) {
             fetchFeed(localStorage.tweetsFetched);
         }
     });
-*/
+
 }
 
 var displayLoggedOut = function() {

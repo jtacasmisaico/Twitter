@@ -88,6 +88,17 @@ public class UserRepository {
             return "Error";
         }
     }
+    public String unfollow(int follower, int followed) {
+        try{
+            return jdbcTemplate.query("DELETE FROM followers WHERE follower=? AND followed=?",
+                    new Object[]{follower, followed}, new BeanPropertyRowMapper<>(User.class));
+            return "Success";
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return "Error";
+        }
+    }
 
     public List<User> fetchFollowers(int userid) {
         try {

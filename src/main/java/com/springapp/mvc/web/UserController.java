@@ -55,8 +55,16 @@ public class UserController {
 
     @RequestMapping(value = "/users/follow", method = RequestMethod.POST)
     @ResponseBody
-    public String follow(@RequestBody Map<String,Object> requestParameters) throws IOException {
+    public String follow(HttpServletResponse response,@RequestBody Map<String,Object> requestParameters) throws IOException {
+        response.addHeader("Access-Control-Allow-Origin", "*");
         return repository.follow((int)requestParameters.get("follower"), (int)requestParameters.get("followed"));
+    }
+
+    @RequestMapping(value = "/users/unfollow", method = RequestMethod.POST)
+    @ResponseBody
+    public String unfollow(HttpServletResponse response,@RequestBody Map<String,Object> requestParameters) throws IOException {
+        response.addHeader("Access-Control-Allow-Origin", "*");
+        return repository.unfollow((int)requestParameters.get("follower"), (int)requestParameters.get("followed"));
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)

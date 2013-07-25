@@ -44,7 +44,7 @@ var fetchFollowing = function(userid) {
     }).done(function(data, textStatus, response) {
         if(userid == localStorage.userid) {
             localStorage.follows = JSON.stringify(response.responseJSON);
-        }        
+        }                    
         renderFollowing(response.responseJSON);
     });
 }
@@ -60,8 +60,21 @@ var fetchFollowers = function(userid) {
         if(localStorage.userid == userid) {
             localStorage.followers = JSON.stringify(response.responseJSON);
         }
+        else {
+            if(follows(localStorage.userid, response.responseJSON)) {
+                showUnFollowButton(true);
+            }
+            else showUnFollowButton(false);
+        } 
         renderFollowers(response.responseJSON);
     });
+}
+
+var follows = function(userid, followers) {
+    for(var i=0; i<followers.length; i++) 
+        if(followers[i].userid == userid)
+            return true;
+    return false;
 }
 
 var fetchFeed = function(tweetsFetched) {

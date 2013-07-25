@@ -42,6 +42,8 @@
 <script>
 var displayProfile = function(username) {
     console.log("Displaying profile");
+    $('#ownTweetsButton').hide();
+    $('#ownTweets').hide();
     $('#newsFeed').hide();
     $('#tweetForm').slideUp('slow');
     $('#newsFeed').slideUp('slow');
@@ -51,10 +53,27 @@ var displayProfile = function(username) {
     });
 }
 
-var showFollowButton = function() {
-    $('#ownTweetsButton').hide();
-    $('#ownTweets').hide();
-    $('#followButton').show();
+showUnFollowButton = function(alreadyFollowing) {
+    if(alreadyFollowing) {
+        $('#followButton')[0].setAttribute('class','btn btn-warning');
+        $('#followButton')[0].innerHTML = "Unfollow";
+        $('#followButton').click(function() {
+            unfollow();
+        });
+    }
+    else {
+        $('#followButton')[0].setAttribute('class','btn btn-success');
+        $('#followButton')[0].innerHTML = "Follow";
+    }
+    $('#followButton').show(); 
+}
+
+var follow = function(userid) {
+    console.log("Follow : "+userid);
+}
+
+var unfollow = function(userid) {
+    console.log("Un Follow : "+userid);
 }
 
 var getUserDetails = function(username) {
@@ -66,16 +85,30 @@ var getUserDetails = function(username) {
         }
     }).done(function(data, textStatus, response) {
             $('#profileSideBar').slideDown('slow');
-            showFollowButton();
             renderProfileSideBar(response.responseJSON.name);
             fetchFollowers(response.responseJSON.userid);
             fetchFollowing(response.responseJSON.userid);
             fetchTweets(response.responseJSON.userid);
-            $(window).scroll(function() {   
-                if(($(window).scrollTop() + $(window).height() - 179) == $(document).height()) {
-                fetchTweets(response.responseJSON.userid);
+
+            showUnFollowButton = function(alreadyFollowing) {
+                if(alreadyFollowing) {
+                    $('#followButton')[0].setAttribute('class','btn btn-warning');
+                    $('#followButton')[0].innerHTML = "Unfollow";
+                    $('#followButton').click(function() {
+                        //alert('Hey');
+                        unfollow(response.responseJSON.userid);
+                    });
                 }
-            });
+                else {
+                    $('#followButton')[0].setAttribute('class','btn btn-success');
+                    $('#followButton')[0].innerHTML = "Follow";
+                    $('#followButton').click(function() {
+                        //alert('Hey');
+                        follow(response.responseJSON.userid);
+                    });                    
+                }
+                $('#followButton').show(); 
+            }
     });
 }
 
