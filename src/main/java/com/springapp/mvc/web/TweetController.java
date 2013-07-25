@@ -68,6 +68,6 @@ public class TweetController {
     public List<Tweet> fetchFeed(HttpServletRequest request, @RequestParam("offset") int offset){
         int userid = Integer.parseInt(request.getHeader("userid"));
         System.out.println(userid+" : "+offset);
-        return tweetRepository.fetchFeed(userid, offset, 20);
+        return tweetRepository.fetchFeed(userid, offset, 10);
     }
 }

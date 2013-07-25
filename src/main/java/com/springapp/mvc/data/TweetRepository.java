@@ -66,7 +66,7 @@ public class TweetRepository {
 
     public List<Tweet> fetchFeed(int userid, int offset, int limit) {
         try {
-            return jdbcTemplate.query("select tweets.tweetid, tweets.content, tweets.userid, tweets.timestamp from tweets inner join followers on followers.followed=tweets.userid where followers.follower  = ? ORDER BY tweets.timestamp ASC LIMIT ?  OFFSET ?",
+            return jdbcTemplate.query("select tweets.tweetid, tweets.content, tweets.userid, tweets.timestamp from tweets inner join followers on followers.followed=tweets.userid where followers.follower  = ? ORDER BY tweets.timestamp DESC LIMIT ?  OFFSET ?",
                     new Object[]{userid, limit, offset}, new BeanPropertyRowMapper<>(Tweet.class));
         }
         catch (Exception e) {
