@@ -51,7 +51,7 @@ var login = function() {
             localStorage.username = response.responseJSON.user.username;
             localStorage.name = response.responseJSON.user.name;
             localStorage.tweetsFetched = 0;
-            displayLoggedIn();
+            displayPage();
     });
     return false;
 }
@@ -59,6 +59,7 @@ var login = function() {
 var logout = function() {
     console.log("Logout");
     localStorage.clear();
+    document.location.href="./#";
     document.location.reload();
 }
 

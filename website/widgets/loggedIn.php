@@ -1,50 +1,5 @@
-<div id="loggedIn">
-	<div id="profileSideBar" style="display:none;">
-		<div id="username"></div>
-		<div class="accordion" id="sidebarAccordion">
-			<div class="accordion-group" style="border:0px;">
-				<button class="btn btn-inverse" style="width:198px;" data-toggle="collapse" data-parent="#sidebarAccordion" data-target="#ownTweets">
-				Tweets
-				</button>
-				<div id="ownTweets" class="collapse in">
-					<ul id="tweetsFromSelf" class="nav nav-list">
-                        <li class="divider"></li>
-                    </ul>
-				</div>
-
-				<button class="btn btn-inverse" style="width:198px;" data-toggle="collapse" data-parent="#sidebarAccordion" data-target="#followersOwn">
-				Followers
-				</button>
-				<div id="followersOwn" class="collapse">
-					<ul id="ownFollowers" class="nav nav-list">
-                        <li class="divider"></li>
-                    </ul>
-				</div>
-
-				<button class="btn btn-inverse" style="width:198px;" data-toggle="collapse" data-parent="#sidebarAccordion" data-target="#followingOwn">
-				Following
-				</button>
-				<div id="followingOwn" class="collapse">
-					<ul id="ownFollowing" class="nav nav-list"></ul>
-                        <li class="divider"></li>
-				</div>
-			</div>
-		</div>
-	</div>
-	<form id="tweetForm" style="display:none;" onsubmit="postTweet()">
-	        <textarea id="tweetBox" rows="3" style="width:500px;" onkeyup="changeTweetButtonState()"></textarea>
-	        <button type="button" style="width:500px;" id="tweetButton" class="btn disabled" disabled onclick="postTweet()">Tweet</button>
-	</form>
-	<div id="newsFeed" class="feed" style="display:none;">
-	</div>
-</div>
 <script>
 
- $(window).scroll(function() {   
-    if(($(window).scrollTop() + $(window).height() - 179) == $(document).height()) {
-        fetchFeed(localStorage.tweetsFetched);
-    }
-});
 
 var changeTweetButtonState = function () {
     if(document.getElementById("tweetBox").value.length>0) { 
@@ -57,48 +12,61 @@ var changeTweetButtonState = function () {
     }
 }
 
-var fetchTweets = function(userid) {
+var fetchTweets = function(userid, offset) {
+    if(offset == undefined) offset = 0;
+    console.log("Fetching tweet for : "+userid);
     $.ajax({
-        url: "http://localhost:8080/posts/"+localStorage.userid+"?offset=0",
+        url: "http://localhost:8080/posts/"+userid+"?offset="+offset,
         type: 'GET',
         error: function(jqXHR){
             logout();
         }
     }).done(function(data, textStatus, response) {
-        localStorage.tweets = JSON.stringify(response.responseJSON);
-        if(userid==localStorage.userid) renderTweetSidebar();
+        if(userid==localStorage.userid) {
+            localStorage.tweets = JSON.stringify(response.responseJSON);
+            renderTweetSidebar();
+        }
+        else {
+            if(offset == 0) document.getElementById('userPosts').innerHTML = "";
+            renderUserPosts(response.responseJSON);
+            $('#userPosts').show();
+        }
     });
 }
 
-var fetchFollows = function() {
-   $.ajax({
-        url: "http://localhost:8080/users/"+localStorage.userid+"/follows",
+var fetchFollowing = function(userid) {
+    $.ajax({
+        url: "http://localhost:8080/users/"+userid+"/follows",
         type: 'GET',
         error: function(jqXHR){
             logout();
         }
     }).done(function(data, textStatus, response) {
+        if(userid == localStorage.userid) {
             localStorage.follows = JSON.stringify(response.responseJSON);
-            renderOwnFollows();
+        }        
+        renderFollowing(response.responseJSON);
     });
 }
 
-var fetchFollowers = function() {
-   $.ajax({
-        url: "http://localhost:8080/users/"+localStorage.userid+"/followers",
+var fetchFollowers = function(userid) {
+    $.ajax({
+        url: "http://localhost:8080/users/"+userid+"/followers",
         type: 'GET',
         error: function(jqXHR){
             logout();
         }
     }).done(function(data, textStatus, response) {
+        if(localStorage.userid == userid) {
             localStorage.followers = JSON.stringify(response.responseJSON);
-    		renderOwnFollowers();
+        }
+        renderFollowers(response.responseJSON);
     });
 }
 
 var fetchFeed = function(tweetsFetched) {
     if(tweetsFetched == undefined) {
-        if(localStorage.feed!=undefined) { renderFeed(JSON.parse(localStorage.feed)); return; }
+        if(localStorage.feed!=undefined) { console.log("Already fetched"); renderFeed(JSON.parse(localStorage.feed)); return; }
         localStorage.feed = "[]";
         tweetsFetched = 0;
     }
@@ -156,22 +124,30 @@ var renderTweetSidebar = function() {
     }
 }
 
-var renderOwnFollows = function() {
-    var follows = JSON.parse(localStorage.follows);
-    for(var i=0; i<follows.length; i++) {
-        pushOwnFollows(follows[i]);
+var renderFollowing = function(following) {
+    var followingDiv = document.getElementById('following');
+    followingDiv.innerHTML = '<li class="divider"></li>';
+    for(var i=0; i<following.length; i++) {
+        pushFollowing(following[i]);
     }
 }
 
-var renderOwnFollowers = function() {
-    var followers = JSON.parse(localStorage.followers);
+var renderFollowers = function(followers) {
+    var followersDiv = document.getElementById('followers');
+    followersDiv.innerHTML = '<li class="divider"></li>';
     for(var i=0; i<followers.length; i++) {
-        pushOwnFollowers(followers[i]);
+        pushFollowers(followers[i]);
     }	
 }
 
-var renderProfileSideBar = function() {
-    document.getElementById('username').innerHTML = "<h4>"+localStorage.name+"</h4>";
+var renderProfileSideBar = function(username) {
+    document.getElementById('username').innerHTML = "<h4>"+username+"</h4>";
+}
+
+var renderUserPosts = function(tweets) {
+    for(var i=0;i<tweets.length;i++) {
+        pushTweet(tweets[i],'userPosts');
+    }
 }
 
 var pushOwnTweets = function(tweet) {    
@@ -188,22 +164,22 @@ var pushOwnTweets = function(tweet) {
     feedDiv.insertBefore(separator, feedDiv.firstChild);
 }
 
-var pushOwnFollows = function(user) {    
+var pushFollowing = function(user) {    
     var element = document.createElement('li');
-    element.innerHTML = user.username;
+    element.innerHTML = '<a href="#users/'+user.username+'">'+user.username+'</a>';
     var separator = document.createElement('li');
     separator.setAttribute('class','divider');
-    var followingDiv = document.getElementById('ownFollowing');
+    var followingDiv = document.getElementById('following');
     followingDiv.insertBefore(element, followingDiv.firstChild);
     followingDiv.insertBefore(separator, followingDiv.firstChild);
 }
 
-var pushOwnFollowers = function(user) {    
+var pushFollowers = function(user) {    
     var element = document.createElement('li');
-    element.innerHTML = user.username;
+    element.innerHTML = '<a href="#users/'+user.username+'">'+user.username+'</a>';
     var separator = document.createElement('li');
     separator.setAttribute('class','divider');
-    var followerDiv = document.getElementById('ownFollowers');
+    var followerDiv = document.getElementById('followers');
     followerDiv.insertBefore(element, followerDiv.firstChild);
     followerDiv.insertBefore(separator, followerDiv.firstChild);
 }
@@ -217,17 +193,16 @@ var findUsername = function(userid) {
 }
 
 var renderFeed = function(tweets) {
-    var feedDiv = document.getElementById('newsFeed');
     for(var i=0;i<tweets.length;i++) {
-        pushTweet(tweets[i]);
+        pushTweet(tweets[i],'newsFeed');
     }
 }
 
-var pushTweet = function(tweet) {
+var pushTweet = function(tweet, divId) {
     var element = document.createElement('div');
     element.setAttribute('class', 'media');
     element.innerHTML = '<a class="pull-left" href="#users/'+findUsername(tweet.userid)+'"><img class="media-object" src="./img/avatar.png"></a><div class="media-body tweet"><h4 class="media-heading"><a href="#users/'+findUsername(tweet.userid)+'">'+findUsername(tweet.userid)+'</a></h4>'+tweet.content+'</div><div class="timestamp">'+ new Date(tweet.timestamp).toString().substring(0,21)+'</div></div>'
-    var feedDiv = document.getElementById('newsFeed');
+    var feedDiv = document.getElementById(divId);
     feedDiv.appendChild(element);
 }
 </script>

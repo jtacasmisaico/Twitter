@@ -37,7 +37,7 @@ public class TweetRepository {
 
     public List<Tweet> findTweetsByUserId(int userid, int offset, int limit) {
         try {
-            return jdbcTemplate.query("select tweetid, content, timestamp from tweets where userid= ? ORDER BY tweets.timestamp DESC OFFSET ? LIMIT ?",
+            return jdbcTemplate.query("select tweetid, content, userid, timestamp from tweets where userid= ? ORDER BY tweets.timestamp DESC OFFSET ? LIMIT ?",
                     new Object[]{userid, offset, limit}, new BeanPropertyRowMapper<>(Tweet.class));
         }
         catch(Exception e) {

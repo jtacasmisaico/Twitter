@@ -25,10 +25,18 @@ public class UserController {
         this.repository = repository;
     }
 
-    @RequestMapping(value = "/users/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/users/", method = RequestMethod.GET)
     @ResponseBody
-    public User fetchUser(@PathVariable("id") int id) throws IOException {
+    public User fetchUser(@RequestParam("id") int id) throws IOException {
         return repository.findById(id);
+    }
+
+    @RequestMapping(value = "/users/{username}", method = RequestMethod.GET)
+    @ResponseBody
+    public User fetchUserByUsername(HttpServletResponse response, @PathVariable("username") String username) throws
+            IOException {
+        response.addHeader("Access-Control-Allow-Origin", "*");
+        return repository.findByUsername(username);
     }
 
     @RequestMapping(value = "/users/{id}/followers", method = RequestMethod.GET)

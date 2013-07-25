@@ -43,6 +43,16 @@ public class UserRepository {
         }
     }
 
+    public User findByUsername(String username) {
+        try {
+            return jdbcTemplate.queryForObject("select name, userid, username, email from users where username = ?",
+                    new Object[]{username}, new BeanPropertyRowMapper<>(User.class));
+        }
+        catch(Exception e) {
+            return null;
+        }
+    }
+
     public int createUser(String username, String name, String email, String password) {
         System.out.println(username+":"+password+":"+email+":"+name);
         final SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate);
@@ -100,4 +110,5 @@ public class UserRepository {
             return null;
         }
     }
+
 }
