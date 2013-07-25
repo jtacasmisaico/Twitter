@@ -50,6 +50,7 @@ var login = function() {
             localStorage.userid = response.responseJSON.user.userid;
             localStorage.username = response.responseJSON.user.username;
             localStorage.name = response.responseJSON.user.name;
+            localStorage.tweetsFetched = 0;
             displayLoggedIn();
     });
     return false;
