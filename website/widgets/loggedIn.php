@@ -40,6 +40,12 @@
 </div>
 <script>
 
+ $(window).scroll(function() {   
+    if(($(window).scrollTop() + $(window).height() - 179) == $(document).height()) {
+        fetchFeed(localStorage.tweetsFetched);
+    }
+});
+
 var changeTweetButtonState = function () {
     if(document.getElementById("tweetBox").value.length>0) { 
         document.getElementById("tweetButton").removeAttribute('disabled'); 
@@ -53,7 +59,7 @@ var changeTweetButtonState = function () {
 
 var fetchTweets = function(userid) {
     $.ajax({
-        url: "http://localhost:8080/posts/"+localStorage.userid,
+        url: "http://localhost:8080/posts/"+localStorage.userid+"?offset=0",
         type: 'GET',
         error: function(jqXHR){
             logout();
@@ -92,13 +98,13 @@ var fetchFollowers = function() {
 
 var fetchFeed = function(tweetsFetched) {
     if(tweetsFetched == undefined) {
+        if(localStorage.feed!=undefined) { renderFeed(JSON.parse(localStorage.feed)); return; }
         localStorage.feed = "[]";
         tweetsFetched = 0;
     }
     $.ajax({
         url: "http://localhost:8080/feed?offset="+tweetsFetched,
         type: 'GET',
-        data: JSON.stringify({ userid: localStorage.userid }),
         headers: { 
             'Accept': 'application/json',
             'Content-Type': 'application/json',
@@ -111,7 +117,7 @@ var fetchFeed = function(tweetsFetched) {
         }).done(function(data, textStatus, response) {
             localStorage.tweetsFetched = parseInt(localStorage.tweetsFetched) + response.responseJSON.length;
             var existingFeed = JSON.parse(localStorage.feed);
-            var newFeed = existingFeed.concat(response.responseJSON.reverse());
+            var newFeed = existingFeed.concat(response.responseJSON);
             localStorage.feed = JSON.stringify(newFeed);
             renderFeed(response.responseJSON)
     });
@@ -222,7 +228,6 @@ var pushTweet = function(tweet) {
     element.setAttribute('class', 'media');
     element.innerHTML = '<a class="pull-left" href="#users/'+findUsername(tweet.userid)+'"><img class="media-object" src="./img/avatar.png"></a><div class="media-body tweet"><h4 class="media-heading"><a href="#users/'+findUsername(tweet.userid)+'">'+findUsername(tweet.userid)+'</a></h4>'+tweet.content+'</div><div class="timestamp">'+ new Date(tweet.timestamp).toString().substring(0,21)+'</div></div>'
     var feedDiv = document.getElementById('newsFeed');
-    feedDiv.insertBefore(element, feedDiv.firstChild);
+    feedDiv.appendChild(element);
 }
-
 </script>
