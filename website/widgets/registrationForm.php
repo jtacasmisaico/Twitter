@@ -23,7 +23,7 @@
   </div>  
   <div class="control-group">
     <div class="controls">
-      <button id="registrationButton" type="submit" class="btn btn-success">Register</button>
+      <button id="registrationButton" type="submit" class="btn btn-info">Register</button>
     </div>
   </div>
 </form>
