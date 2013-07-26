@@ -31,14 +31,14 @@ public class LoginController{
         this.repository = repository;
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.OPTIONS)
+    @RequestMapping(value = "/users/login", method = RequestMethod.OPTIONS)
     public void getOptions(HttpServletResponse response) {
         response.addHeader("Access-Control-Allow-Origin", "*");
         response.addHeader("Access-Control-Allow-Headers", "Content-Type");
         response.addHeader("Access-Control-Allow-Methods", "OPTIONS, POST");
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @RequestMapping(value = "/users/login", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> login(HttpServletResponse response, @RequestBody Map<String,
             Object> requestParameters){

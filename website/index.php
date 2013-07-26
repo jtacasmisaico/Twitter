@@ -9,6 +9,7 @@
 	<script src="js/functions.js"></script>
 	<script src="js/jquery.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/bootbox.min.js"></script>
     <script src="js/formValidation.js"></script>    
 	<script src="js/jquery.cookie.js"></script>
 	<script src="js/async.js"></script>

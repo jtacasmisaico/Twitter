@@ -59,7 +59,7 @@ public class UserController {
     }
     @RequestMapping(value = "/users/follow", method = RequestMethod.POST)
     @ResponseBody
-    public String follow(HttpServletResponse response,@RequestBody Map<String,Object> requestParameters) throws IOException {
+    public String follow(@RequestBody Map<String,Object> requestParameters) throws IOException {
         return repository.follow((int)requestParameters.get("follower"), (int)requestParameters.get("followed"));
     }
 
@@ -69,14 +69,22 @@ public class UserController {
     }
     @RequestMapping(value = "/users/unfollow", method = RequestMethod.POST)
     @ResponseBody
-    public String unfollow(HttpServletResponse response,@RequestBody Map<String,Object> requestParameters) throws IOException {
+    public String unfollow(@RequestBody Map<String,Object> requestParameters) throws IOException {
         return repository.unfollow((int)requestParameters.get("follower"), (int)requestParameters.get("followed"));
+    }
+
+    @RequestMapping(value = "/users/register", method = RequestMethod.OPTIONS)
+    @ResponseBody
+    public void getOptionsCreateUser(HttpServletResponse response) {
+        response.addHeader("Access-Control-Allow-Origin", "*");
+        response.addHeader("Access-Control-Allow-Headers", "Content-Type");
+        response.addHeader("Access-Control-Allow-Methods", "OPTIONS, POST");
     }
 
     @RequestMapping(value = "/users/register", method = RequestMethod.POST)
     @ResponseBody
-    public String createUser(@RequestBody final User user){
-        System.out.println(user.getName());
+    public String createUser(HttpServletResponse response, @RequestBody final User user){
+        response.addHeader("Access-Control-Allow-Origin", "*");
         int id = repository.createUser(user.getUsername(), user.getName(), user.getEmail(), user.getPassword());
         if (id != -1){
             return "Success";

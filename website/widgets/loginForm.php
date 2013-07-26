@@ -36,7 +36,7 @@ var loggedIn = function() {
 
 var login = function() {
     $.ajax({
-        url: "http://localhost:8080/login",
+        url: "http://localhost:8080/users/login",
         type: 'POST',
         contentType : "application/json",
         data: JSON.stringify({ email: document.getElementById('inputEmail').value, password: document.getElementById('inputPassword').value }),

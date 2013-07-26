@@ -87,7 +87,6 @@ var getUserDetails = function(username) {
                     $('#followButton')[0].setAttribute('class','btn btn-warning');
                     $('#followButton')[0].innerHTML = "Unfollow";
                     $('#followButton').click(function() {
-                        //alert('Hey');
                         unfollow(parseInt(localStorage.userid), response.responseJSON.userid);
                     });
                 }
@@ -95,7 +94,6 @@ var getUserDetails = function(username) {
                     $('#followButton')[0].setAttribute('class','btn btn-success');
                     $('#followButton')[0].innerHTML = "Follow";
                     $('#followButton').click(function() {
-                        //alert('Hey');
                         follow(parseInt(localStorage.userid), response.responseJSON.userid);
                     });                    
                 }
