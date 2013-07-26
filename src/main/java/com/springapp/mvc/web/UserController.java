@@ -73,7 +73,7 @@ public class UserController {
         return repository.unfollow((int)requestParameters.get("follower"), (int)requestParameters.get("followed"));
     }
 
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    @RequestMapping(value = "/users/register", method = RequestMethod.POST)
     @ResponseBody
     public String createUser(@RequestBody final User user){
         System.out.println(user.getName());

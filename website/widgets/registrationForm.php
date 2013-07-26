@@ -45,7 +45,7 @@ var validateRegistrationForm = function(e) {
 var register = function() {
     alert("Register");
     $.ajax({
-        url: "http://localhost:8080/register",
+        url: "http://localhost:8080/users/register",
         contentType : "application/json",
         type: 'POST',
         data: JSON.stringify({

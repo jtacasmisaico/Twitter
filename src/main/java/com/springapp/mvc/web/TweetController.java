@@ -28,18 +28,18 @@ public class TweetController {
         this.tweetRepository = tweetRepository;
     }
 
-    @RequestMapping(value = "/tweet/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/fetch/tweet/{id}", method = RequestMethod.GET)
     @ResponseBody
     public Tweet fetchUser(@PathVariable("tweetid") int tweetid) throws IOException {
         return tweetRepository.findTweetByTweetId(tweetid);
     }
 
-    @RequestMapping(value = "/tweet", method = RequestMethod.OPTIONS)
+    @RequestMapping(value = "/post/tweet", method = RequestMethod.OPTIONS)
     @ResponseBody
     public void getOptions(){
     }
 
-    @RequestMapping(value = "/tweet", method = RequestMethod.POST)
+    @RequestMapping(value = "/post/tweet", method = RequestMethod.POST)
     @ResponseBody
     public Tweet createTweet(@RequestBody final Tweet tweet, HttpServletResponse response){
         System.out.println(tweet.getUsername());
@@ -52,18 +52,18 @@ public class TweetController {
         return null;
     }
 
-    @RequestMapping(value = "/posts/{userid}", method = RequestMethod.GET)
+    @RequestMapping(value = "/fetch/posts/{userid}", method = RequestMethod.GET)
     @ResponseBody
     public List<Tweet> fetchPosts(@PathVariable("userid") int userid, @RequestParam("offset") int offset, HttpServletResponse response){
         response.addHeader("Access-Control-Allow-Origin", "*");
         return tweetRepository.findTweetsByUserId(userid, offset, 5);
     }
 
-    @RequestMapping(value = "/feed", method = RequestMethod.OPTIONS)
+    @RequestMapping(value = "/fetch/feed", method = RequestMethod.OPTIONS)
     @ResponseBody
     public void getOptionsForFetchFeed(){
     }
-    @RequestMapping(value = "/feed", method = RequestMethod.GET)
+    @RequestMapping(value = "/fetch/feed", method = RequestMethod.GET)
     @ResponseBody
     public List<Tweet> fetchFeed(HttpServletRequest request, @RequestParam("offset") int offset){
         int userid = Integer.parseInt(request.getHeader("userid"));

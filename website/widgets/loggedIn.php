@@ -16,7 +16,7 @@ var fetchTweets = function(userid, offset) {
     if(offset == undefined) offset = 0;
     console.log("Fetching tweet for : "+userid);
     $.ajax({
-        url: "http://localhost:8080/posts/"+userid+"?offset="+offset,
+        url: "http://localhost:8080/fetch/posts/"+userid+"?offset="+offset,
         type: 'GET',
         error: function(jqXHR){
             logout();
@@ -77,7 +77,7 @@ var fetchFeed = function(tweetsFetched) {
         tweetsFetched = 0;
     }
     $.ajax({
-        url: "http://localhost:8080/feed?offset="+tweetsFetched,
+        url: "http://localhost:8080/fetch/feed?offset="+tweetsFetched,
         type: 'GET',
         headers: { 
             'Accept': 'application/json',
@@ -141,10 +141,10 @@ var unfollow = function(followerid, followedid) {
 
 var postTweet = function() {
    $.ajax({
-        url: "http://localhost:8080/tweet",
+        url: "http://localhost:8080/post/tweet",
         type: 'POST',
         data: JSON.stringify({ content: document.getElementById('tweetBox').value, userid: localStorage.userid, username: localStorage.username }),
-        headers: { 
+        headers: {  
             'Content-Type': 'application/json',
             'token':localStorage.sessionid,
             'userid':localStorage.userid
