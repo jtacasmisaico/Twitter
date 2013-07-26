@@ -8,10 +8,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.Timestamp;
+import java.util.*;
 
 @Repository
 public class UserRepository {
@@ -72,26 +70,46 @@ public class UserRepository {
         }
     }
 
+    public boolean alreadyFollowing(int follower, int followed) {
+        int count =  jdbcTemplate.queryForInt("SELECT count(*) FROM followers WHERE follower = ? and followed = " +
+                "?", new Object[]{follower, followed});
+        if(count>0) return true;
+        else return false;
+    }
+
     public String follow(int follower, int followed) {
-        final SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate);
-        insert.setTableName("followers");
-        insert.setColumnNames(Arrays.asList("follower", "followed"));
-        Map<String, Object> param = new HashMap<>();
-        param.put("follower", follower);
-        param.put("followed", followed);
-        try{
-            insert.execute(param);
-            return "Success";
+        if(alreadyFollowing(follower, followed)) {
+            try {
+                jdbcTemplate.update("update followers set unfollowedat='infinity' where follower=? and followed=?",
+                        new Object[]{follower, followed});
+                return "Success";
+            }
+            catch(Exception e) {
+                e.printStackTrace();
+                return "Error";
+            }
         }
-        catch(Exception e){
-            e.printStackTrace();
-            return "Error";
+        else {
+            final SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate);
+            insert.setTableName("followers");
+            insert.setColumnNames(Arrays.asList("follower", "followed"));
+            Map<String, Object> param = new HashMap<>();
+            param.put("follower", follower);
+            param.put("followed", followed);
+            try{
+                insert.execute(param);
+                return "Success";
+            }
+            catch(Exception e){
+                e.printStackTrace();
+                return "Error";
+            }
         }
     }
     public String unfollow(int follower, int followed) {
         try{
-            return jdbcTemplate.query("DELETE FROM followers WHERE follower=? AND followed=?",
-                    new Object[]{follower, followed}, new BeanPropertyRowMapper<>(User.class));
+            jdbcTemplate.update("update followers set unfollowedat=? where follower=? and followed=?",
+                    new Object[]{new Timestamp(new Date().getTime()), follower, followed});
             return "Success";
         }
         catch(Exception e){
@@ -102,8 +120,8 @@ public class UserRepository {
 
     public List<User> fetchFollowers(int userid) {
         try {
-                return jdbcTemplate.query("select name, users.userid, users.username, users.email, users.name from followers inner join users on followers.follower=users.userid where followers.followed  = ?",
-                    new Object[]{userid}, new BeanPropertyRowMapper<>(User.class));
+                return jdbcTemplate.query("select name, users.userid, users.username, users.email, users.name from followers inner join users on followers.follower=users.userid where followers.followed  = ? and followers.unfollowedat > ?",
+                    new Object[]{userid, new Timestamp(new Date().getTime())}, new BeanPropertyRowMapper<>(User.class));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -113,8 +131,8 @@ public class UserRepository {
 
     public List<User> fetchFollows(int userid) {
         try {
-            return jdbcTemplate.query("select name, users.userid, users.username, users.email, users.name from followers inner join users on followers.followed=users.userid where followers.follower  = ?",
-                    new Object[]{userid}, new BeanPropertyRowMapper<>(User.class));
+            return jdbcTemplate.query("select name, users.userid, users.username, users.email, users.name from followers inner join users on followers.followed=users.userid where followers.follower  = ? and followers.unfollowedat > ?",
+                    new Object[]{userid, new Timestamp(new Date().getTime())}, new BeanPropertyRowMapper<>(User.class));
         }
         catch (Exception e) {
             e.printStackTrace();

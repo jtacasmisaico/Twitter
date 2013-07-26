@@ -68,14 +68,6 @@ showUnFollowButton = function(alreadyFollowing) {
     $('#followButton').show(); 
 }
 
-var follow = function(userid) {
-    console.log("Follow : "+userid);
-}
-
-var unfollow = function(userid) {
-    console.log("Un Follow : "+userid);
-}
-
 var getUserDetails = function(username) {
     $.ajax({
         url: "http://localhost:8080/users/"+username,
@@ -96,7 +88,7 @@ var getUserDetails = function(username) {
                     $('#followButton')[0].innerHTML = "Unfollow";
                     $('#followButton').click(function() {
                         //alert('Hey');
-                        unfollow(response.responseJSON.userid);
+                        unfollow(parseInt(localStorage.userid), response.responseJSON.userid);
                     });
                 }
                 else {
@@ -104,7 +96,7 @@ var getUserDetails = function(username) {
                     $('#followButton')[0].innerHTML = "Follow";
                     $('#followButton').click(function() {
                         //alert('Hey');
-                        follow(response.responseJSON.userid);
+                        follow(parseInt(localStorage.userid), response.responseJSON.userid);
                     });                    
                 }
                 $('#followButton').show(); 

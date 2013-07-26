@@ -1,7 +1,6 @@
 package com.springapp.mvc.data;
 
 import com.springapp.mvc.model.Tweet;
-import com.springapp.mvc.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -26,7 +25,7 @@ public class TweetRepository {
     public Tweet findTweetByTweetId(int tweetid) {
         try {
             System.out.println("Tweet : "+tweetid);
-            return jdbcTemplate.queryForObject("select tweetid, content, userid, timestamp from tweets where tweetid = ?",
+            return jdbcTemplate.queryForObject("select tweetid, content, userid, username, timestamp from tweets where tweetid = ?",
                     new Object[]{tweetid}, new BeanPropertyRowMapper<>(Tweet.class));
         }
         catch (Exception e) {
@@ -37,7 +36,7 @@ public class TweetRepository {
 
     public List<Tweet> findTweetsByUserId(int userid, int offset, int limit) {
         try {
-            return jdbcTemplate.query("select tweetid, content, userid, timestamp from tweets where userid= ? ORDER BY tweets.timestamp DESC OFFSET ? LIMIT ?",
+            return jdbcTemplate.query("select tweetid, content, userid, username, timestamp from tweets where userid= ? ORDER BY tweets.timestamp DESC OFFSET ? LIMIT ?",
                     new Object[]{userid, offset, limit}, new BeanPropertyRowMapper<>(Tweet.class));
         }
         catch(Exception e) {
@@ -46,15 +45,16 @@ public class TweetRepository {
         }
     }
 
-    public int createTweet(String content, int userid) {
-        System.out.println(content);
+    public int createTweet(String content, int userid, String username) {
+        System.out.println(username);
         final SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate);
         insert.setTableName("tweets");
-        insert.setColumnNames(Arrays.asList("content", "userid"));
+        insert.setColumnNames(Arrays.asList("content", "userid", "username"));
         insert.setGeneratedKeyName("tweetid");
         Map<String, Object> param = new HashMap<>();
         param.put("content", content);
         param.put("userid", userid);
+        param.put("username", username);
         try{
             return  (int) insert.executeAndReturnKey(param);
         }
@@ -66,8 +66,9 @@ public class TweetRepository {
 
     public List<Tweet> fetchFeed(int userid, int offset, int limit) {
         try {
-            return jdbcTemplate.query("select tweets.tweetid, tweets.content, tweets.userid, tweets.timestamp from tweets inner join followers on followers.followed=tweets.userid where followers.follower  = ? ORDER BY tweets.timestamp DESC OFFSET ?  LIMIT ?",
-                    new Object[]{userid, offset, limit}, new BeanPropertyRowMapper<>(Tweet.class));
+            return jdbcTemplate.query("select tweets.tweetid, tweets.content, tweets.userid, tweets.username, tweets.timestamp from tweets inner join followers on followers.followed=tweets.userid where followers.follower  = ? and tweets.timestamp < followers.unfollowedat ORDER BY tweets.timestamp DESC OFFSET ?  LIMIT ?",
+                    new Object[]{userid, offset, limit},
+                    new BeanPropertyRowMapper<>(Tweet.class));
         }
         catch (Exception e) {
             e.printStackTrace();

@@ -70,3 +70,10 @@ var displayLoggedOut = function() {
     $('#profileSideBar').hide();
 }
 
+
+var follows = function(userid, followers) {
+    for(var i=0; i<followers.length; i++) 
+        if(followers[i].userid == userid)
+            return true;
+    return false;
+}

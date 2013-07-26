@@ -14,6 +14,7 @@ public class Tweet {
     public int tweetid;
     public String content;
     public int userid;
+    public String username;
     public Timestamp timestamp;
 
     public int getTweetid() {
@@ -32,6 +33,10 @@ public class Tweet {
         return timestamp;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
     public void setTweetid(int tweetid) {
         this.tweetid = tweetid;
     }
@@ -46,5 +51,9 @@ public class Tweet {
 
     public void setTimestamp(Timestamp timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

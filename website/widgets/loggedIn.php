@@ -70,13 +70,6 @@ var fetchFollowers = function(userid) {
     });
 }
 
-var follows = function(userid, followers) {
-    for(var i=0; i<followers.length; i++) 
-        if(followers[i].userid == userid)
-            return true;
-    return false;
-}
-
 var fetchFeed = function(tweetsFetched) {
     if(tweetsFetched == undefined) {
         if(localStorage.feed!=undefined) { console.log("Already fetched"); renderFeed(JSON.parse(localStorage.feed)); return; }
@@ -104,11 +97,53 @@ var fetchFeed = function(tweetsFetched) {
     });
 }
 
+var follow = function(followerid, followedid) {
+    console.log(followerid, followedid);
+    $.ajax({
+        url: "http://localhost:8080/users/follow",
+        type: 'POST',
+        data: JSON.stringify({ follower : followerid, followed : followedid }),
+        headers: { 
+            'Content-Type': 'application/json',
+            'token':localStorage.sessionid,
+            'userid':localStorage.userid
+        },
+        error: function(jqXHR){
+            console.log(jqXHR);
+            logout();
+        }
+    }).done(function(data, textStatus, response) {      
+            document.location.reload();
+    });
+    return false;
+}
+
+var unfollow = function(followerid, followedid) {
+    console.log(followerid, followedid);
+    $.ajax({
+        url: "http://localhost:8080/users/unfollow",
+        type: 'POST',
+        data: JSON.stringify({ follower : followerid, followed : followedid }),
+        headers: { 
+            'Content-Type': 'application/json',
+            'token':localStorage.sessionid,
+            'userid':localStorage.userid
+        },
+        error: function(jqXHR){
+            console.log(jqXHR);
+            logout();
+        }
+    }).done(function(data, textStatus, response) {      
+            document.location.reload();
+    });
+    return false;
+}
+
 var postTweet = function() {
    $.ajax({
         url: "http://localhost:8080/tweet",
         type: 'POST',
-        data: JSON.stringify({ content: document.getElementById('tweetBox').value, userid: localStorage.userid }),
+        data: JSON.stringify({ content: document.getElementById('tweetBox').value, userid: localStorage.userid, username: localStorage.username }),
         headers: { 
             'Content-Type': 'application/json',
             'token':localStorage.sessionid,
@@ -206,6 +241,7 @@ var findUsername = function(userid) {
 }
 
 var renderFeed = function(tweets) {
+    $('#newsFeed')[0].innerHTML = "";
     for(var i=0;i<tweets.length;i++) {
         pushTweet(tweets[i],'newsFeed');
     }
@@ -214,7 +250,7 @@ var renderFeed = function(tweets) {
 var pushTweet = function(tweet, divId) {
     var element = document.createElement('div');
     element.setAttribute('class', 'media');
-    element.innerHTML = '<a class="pull-left" href="#users/'+findUsername(tweet.userid)+'"><img class="media-object" src="./img/avatar.png"></a><div class="media-body tweet"><h4 class="media-heading"><a href="#users/'+findUsername(tweet.userid)+'">'+findUsername(tweet.userid)+'</a></h4>'+tweet.content+'</div><div class="timestamp">'+ new Date(tweet.timestamp).toString().substring(0,21)+'</div></div>'
+    element.innerHTML = '<a class="pull-left" href="#users/'+tweet.username+'"><img class="media-object" src="./img/avatar.png"></a><div class="media-body tweet"><h4 class="media-heading"><a href="#users/'+tweet.username+'">'+tweet.username+'</a></h4>'+tweet.content+'</div><div class="timestamp">'+ new Date(tweet.timestamp).toString().substring(0,21)+'</div></div>'
     var feedDiv = document.getElementById(divId);
     feedDiv.appendChild(element);
 }

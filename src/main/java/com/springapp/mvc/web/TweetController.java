@@ -37,13 +37,13 @@ public class TweetController {
     @RequestMapping(value = "/tweet", method = RequestMethod.OPTIONS)
     @ResponseBody
     public void getOptions(){
-        System.out.println("Options for Tweet");
     }
 
     @RequestMapping(value = "/tweet", method = RequestMethod.POST)
     @ResponseBody
     public Tweet createTweet(@RequestBody final Tweet tweet, HttpServletResponse response){
-        int id = tweetRepository.createTweet(tweet.getContent(), tweet.getUserid());
+        System.out.println(tweet.getUsername());
+        int id = tweetRepository.createTweet(tweet.getContent(), tweet.getUserid(), tweet.getUsername());
         if (id != -1){
             response.setStatus(200);
             return tweetRepository.findTweetByTweetId(id);
