@@ -53,10 +53,7 @@ var register = function() {
             password: document.getElementById('inputPasswordRegistration').value, 
             name: document.getElementById('inputNameRegistration').value 
         }),
-        beforeSend: function() {console.log("Before send");},
-        error: function(jqXHR){console.log("Error"); console.log(jqXHR.responseText);},
-        dataFilter: function(){console.log("DataFilter")},
-        success: function(success){console.log(success)}
+        error: function(jqXHR){console.log(jqXHR.responseText);}
         }).done(function(data, textStatus, jqXHR) {
             document.getElementById('registrationForm').reset();
             bootbox.alert("Registeration complete. You can now sign in :)");

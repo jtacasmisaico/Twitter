@@ -8,8 +8,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
+import javax.servlet.http.HttpServletResponse;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Repository
 public class UserRepository {
@@ -51,22 +54,39 @@ public class UserRepository {
         }
     }
 
-    public int createUser(String username, String name, String email, String password) {
-        System.out.println(username+":"+password+":"+email+":"+name);
-        final SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate);
-        insert.setTableName("users");
-        insert.setColumnNames(Arrays.asList("username", "password", "email", "name"));
-        insert.setGeneratedKeyName("userid");
-        Map<String, Object> param = new HashMap<>();
-        param.put("username", username);
-        param.put("password", password);
-        param.put("name", name);
-        param.put("email", email);
-        try{
-            return (int) insert.executeAndReturnKey(param);
-        }
-        catch( DuplicateKeyException e){
-            return -1;
+    public static boolean isValidEmailAddress(String email) {
+        Pattern pattern = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*" +
+                    "(\\.[A-Za-z]{2,})$");
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
+
+    public String createUser(HttpServletResponse response, String username, String name, String email,
+                             String password) {
+        if(!isValidEmailAddress(email)) { response.setStatus(403); return "Invalid Email Address"; }
+        else if(name.length()<=0) { response.setStatus(403); return "Please specify your full name"; }
+        else if(username.length()<3) { response.setStatus(403); return "Username should be minimum 3 characters " +
+                "long"; }
+        else if(password.length()<6) {response.setStatus(403);  return "Password should be minimum 6 characters " +
+                "long"; }
+        else {
+            final SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate);
+            insert.setTableName("users");
+            insert.setColumnNames(Arrays.asList("username", "password", "email", "name"));
+            insert.setGeneratedKeyName("userid");
+            Map<String, Object> param = new HashMap<>();
+            param.put("username", username);
+            param.put("password", password);
+            param.put("name", name);
+            param.put("email", email);
+            try{
+                response.setStatus(200);
+                return String.valueOf(insert.executeAndReturnKey(param));
+            }
+            catch( DuplicateKeyException e){
+                response.setStatus(403);
+                return "Email Address/Username already taken";
+            }
         }
     }
 

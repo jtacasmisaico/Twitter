@@ -1,6 +1,7 @@
 package com.springapp.mvc.web;
 
 import com.springapp.mvc.data.TweetRepository;
+import com.springapp.mvc.data.UserRepository;
 import com.springapp.mvc.model.Tweet;
 import com.springapp.mvc.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +23,12 @@ import java.util.Map;
 @Controller
 public class TweetController {
     private final TweetRepository tweetRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public TweetController(TweetRepository tweetRepository) {
+    public TweetController(TweetRepository tweetRepository, UserRepository userRepository) {
         this.tweetRepository = tweetRepository;
+        this.userRepository = userRepository;
     }
 
     @RequestMapping(value = "/fetch/tweet/{id}", method = RequestMethod.GET)
@@ -41,9 +44,9 @@ public class TweetController {
 
     @RequestMapping(value = "/post/tweet", method = RequestMethod.POST)
     @ResponseBody
-    public Tweet createTweet(@RequestBody final Tweet tweet, HttpServletResponse response){
-        System.out.println(tweet.getUsername());
-        int id = tweetRepository.createTweet(tweet.getContent(), tweet.getUserid(), tweet.getUsername());
+    public Tweet createTweet(@RequestBody final Tweet tweet, HttpServletResponse response, HttpServletRequest request){
+        int id = tweetRepository.createTweet(tweet.getContent(), Integer.parseInt(request.getHeader("userid")),
+                userRepository.findById(Integer.parseInt(request.getHeader("userid"))).getUsername());
         if (id != -1){
             response.setStatus(200);
             return tweetRepository.findTweetByTweetId(id);

@@ -85,10 +85,8 @@ public class UserController {
     @ResponseBody
     public String createUser(HttpServletResponse response, @RequestBody final User user){
         response.addHeader("Access-Control-Allow-Origin", "*");
-        int id = repository.createUser(user.getUsername(), user.getName(), user.getEmail(), user.getPassword());
-        if (id != -1){
-            return "Success";
-        }
-        return "Fail";
+        return repository.createUser(response, user.getUsername(), user.getName(), user.getEmail(),
+                user.getPassword());
+
     }
 }
