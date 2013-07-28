@@ -33,8 +33,6 @@
 <script>
 var displayProfile = function(username) {
     console.log("Displaying profile");
-    $('#ownTweetsButton').hide();
-    $('#ownTweets').hide();
     $('#newsFeed').hide();
     $('#tweetForm').slideUp('slow');
     $('#newsFeed').slideUp('slow');
@@ -61,8 +59,11 @@ showUnFollowButton = function(alreadyFollowing) {
 
 var getUserDetails = function(username) {
     $.ajax({
-        url: "http://localhost:8080/users/"+username,
+        url: serverAddress+"users/"+username,
         type: 'GET',
+        xhrFields: {
+            withCredentials: true
+        },
         error: function(jqXHR){
             logout();
         }

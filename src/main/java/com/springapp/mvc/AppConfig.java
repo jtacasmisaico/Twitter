@@ -1,6 +1,7 @@
 package com.springapp.mvc;
 
 import com.springapp.mvc.web.AuthenticationInterceptor;
+import com.springapp.mvc.web.CORSInterceptor;
 import org.postgresql.ds.PGPoolingDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -56,5 +57,10 @@ public class AppConfig extends WebMvcConfigurerAdapter {
         registry.addInterceptor(new AuthenticationInterceptor()).addPathPatterns("/users/unfollow");
         registry.addInterceptor(new AuthenticationInterceptor()).addPathPatterns("/post/tweet");
         registry.addInterceptor(new AuthenticationInterceptor()).addPathPatterns("/fetch/feed");
+
+        registry.addInterceptor(new CORSInterceptor()).addPathPatterns("/users/followers/*");
+        registry.addInterceptor(new CORSInterceptor()).addPathPatterns("/users/follows/*");
+        registry.addInterceptor(new CORSInterceptor()).addPathPatterns("/fetch/tweets/*");
+        registry.addInterceptor(new CORSInterceptor()).addPathPatterns("/fetch/posts/*");
     }
 }

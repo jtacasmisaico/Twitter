@@ -1,9 +1,11 @@
+var serverAddress;
 window.onload = function() {
     init();
     displayPage();
     //var intervalID = setInterval(function(){displayPage();}, 1000);
 };
 var init = function() {
+    serverAddress = "https://localhost:8443/"
 }
 
 window.onhashchange = function() { detectURL(); }

@@ -35,21 +35,20 @@ public class UserController {
     @ResponseBody
     public User fetchUserByUsername(HttpServletResponse response, @PathVariable("username") String username) throws
             IOException {
-        response.addHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Origin", "https://localhost");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
         return repository.findByUsername(username);
     }
 
-    @RequestMapping(value = "/users/{id}/followers", method = RequestMethod.GET)
+    @RequestMapping(value = "/users/followers/{id}", method = RequestMethod.GET)
     @ResponseBody
     public List<User> fetchFollowers(HttpServletResponse response, @PathVariable("id") int userid) throws IOException {
-        response.addHeader("Access-Control-Allow-Origin", "*");
         return repository.fetchFollowers(userid);
     }
 
-    @RequestMapping(value = "/users/{id}/follows", method = RequestMethod.GET)
+    @RequestMapping(value = "/users/follows/{id}", method = RequestMethod.GET)
     @ResponseBody
     public List<User> fetchFollows(HttpServletResponse response, @PathVariable("id") int userid) throws IOException {
-        response.addHeader("Access-Control-Allow-Origin", "*");
         return repository.fetchFollows(userid);
     }
 

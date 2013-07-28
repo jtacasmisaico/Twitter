@@ -58,7 +58,6 @@ public class TweetController {
     @RequestMapping(value = "/fetch/posts/{userid}", method = RequestMethod.GET)
     @ResponseBody
     public List<Tweet> fetchPosts(@PathVariable("userid") int userid, @RequestParam("offset") int offset, HttpServletResponse response){
-        response.addHeader("Access-Control-Allow-Origin", "*");
         return tweetRepository.findTweetsByUserId(userid, offset, 5);
     }
 

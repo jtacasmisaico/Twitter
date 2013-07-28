@@ -44,9 +44,12 @@ var validateRegistrationForm = function(e) {
 
 var register = function() {
     $.ajax({
-        url: "http://localhost:8080/users/register",
+        url: serverAddress+"users/register",
         contentType : "application/json",
         type: 'POST',
+        xhrFields: {
+            withCredentials: true
+        },
         data: JSON.stringify({
             username: document.getElementById('inputUsernameRegistration').value, 
             email: document.getElementById('inputEmailRegistration').value, 

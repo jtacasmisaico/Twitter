@@ -16,8 +16,11 @@ var fetchTweets = function(userid, offset) {
     if(offset == undefined) offset = 0;
     console.log("Fetching tweet for : "+userid);
     $.ajax({
-        url: "http://localhost:8080/fetch/posts/"+userid+"?offset="+offset,
+        url: serverAddress+"fetch/posts/"+userid+"?offset="+offset,
         type: 'GET',
+        xhrFields: {
+            withCredentials: true
+        },
         error: function(jqXHR){
             logout();
         }
@@ -30,8 +33,11 @@ var fetchTweets = function(userid, offset) {
 
 var fetchFollowing = function(userid) {
     $.ajax({
-        url: "http://localhost:8080/users/"+userid+"/follows",
+        url: serverAddress+"users/follows/"+userid,
         type: 'GET',
+        xhrFields: {
+            withCredentials: true
+        },
         error: function(jqXHR){
             logout();
         }
@@ -45,8 +51,11 @@ var fetchFollowing = function(userid) {
 
 var fetchFollowers = function(userid) {
     $.ajax({
-        url: "http://localhost:8080/users/"+userid+"/followers",
+        url: serverAddress+"users/followers/"+userid,
         type: 'GET',
+        xhrFields: {
+            withCredentials: true
+        },
         error: function(jqXHR){
             logout();
         }
@@ -71,8 +80,11 @@ var fetchFeed = function(tweetsFetched) {
         tweetsFetched = 0;
     }
     $.ajax({
-        url: "http://localhost:8080/fetch/feed?offset="+tweetsFetched,
+        url: serverAddress+"fetch/feed?offset="+tweetsFetched,
         type: 'GET',
+        xhrFields: {
+            withCredentials: true
+        },
         headers: { 
             'Accept': 'application/json',
             'Content-Type': 'application/json',
@@ -95,8 +107,11 @@ var fetchFeed = function(tweetsFetched) {
 var follow = function(followerid, followedid) {
     console.log(followerid, followedid);
     $.ajax({
-        url: "http://localhost:8080/users/follow",
+        url: serverAddress+"users/follow",
         type: 'POST',
+        xhrFields: {
+            withCredentials: true
+        },
         data: JSON.stringify({ follower : followerid, followed : followedid }),
         headers: { 
             'Content-Type': 'application/json',
@@ -116,8 +131,11 @@ var follow = function(followerid, followedid) {
 var unfollow = function(followerid, followedid) {
     console.log(followerid, followedid);
     $.ajax({
-        url: "http://localhost:8080/users/unfollow",
+        url: serverAddress+"users/unfollow",
         type: 'POST',
+        xhrFields: {
+            withCredentials: true
+        },
         data: JSON.stringify({ follower : followerid, followed : followedid }),
         headers: { 
             'Content-Type': 'application/json',
@@ -136,8 +154,11 @@ var unfollow = function(followerid, followedid) {
 
 var postTweet = function() {
    $.ajax({
-        url: "http://localhost:8080/post/tweet",
+        url: serverAddress+"post/tweet",
         type: 'POST',
+        xhrFields: {
+            withCredentials: true
+        },
         data: JSON.stringify({ content: document.getElementById('tweetBox').value, userid: localStorage.userid, username: localStorage.username }),
         headers: {  
             'Content-Type': 'application/json',

@@ -33,7 +33,8 @@ public class LoginController{
 
     @RequestMapping(value = "/users/login", method = RequestMethod.OPTIONS)
     public void getOptions(HttpServletResponse response) {
-        response.addHeader("Access-Control-Allow-Origin", "*");
+        response.addHeader("Access-Control-Allow-Origin", "https://localhost");
+        response.addHeader("Access-Control-Allow-Credentials", "true");
         response.addHeader("Access-Control-Allow-Headers", "Content-Type");
         response.addHeader("Access-Control-Allow-Methods", "OPTIONS, POST");
     }
@@ -42,7 +43,8 @@ public class LoginController{
     @ResponseBody
     public Map<String, Object> login(HttpServletResponse response, @RequestBody Map<String,
             Object> requestParameters){
-        response.addHeader("Access-Control-Allow-Origin", "*");
+        response.addHeader("Access-Control-Allow-Origin", "https://localhost");
+        response.addHeader("Access-Control-Allow-Credentials", "true");
         String email = (String) requestParameters.get("email");
         String password = (String) requestParameters.get("password");
         User user = repository.findByEmail(email);
@@ -79,6 +81,6 @@ public class LoginController{
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public void printWelcome(HttpServletResponse response) throws IOException {
-        response.sendRedirect("http://localhost/twitter");
+        response.sendRedirect("https://localhost/twitter");
     }
 }

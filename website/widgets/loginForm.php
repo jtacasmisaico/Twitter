@@ -36,11 +36,16 @@ var loggedIn = function() {
 
 var login = function() {
     $.ajax({
-        url: "http://localhost:8080/users/login",
+        url: serverAddress+"users/login",
         type: 'POST',
         contentType : "application/json",
+        crossDomain : true,
+        xhrFields: {
+            withCredentials: true
+        },
         data: JSON.stringify({ email: document.getElementById('inputEmail').value, password: document.getElementById('inputPassword').value }),
         error: function(jqXHR){
+            console.log(jqXHR);
             $('#loginDiv').popover('show');
             $('#inputEmail').focus();
             setTimeout(function() {$('#loginDiv').popover('hide');}, 3000);
