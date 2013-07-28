@@ -53,7 +53,8 @@ var displayHomePage = function() {
 
     
     $(window).scroll(function() {   
-        if(($(window).scrollTop() + $(window).height() - 179) == $(document).height()) {
+        console.log(($(window).scrollTop() + $(window).height() - 179) + " - " + $(document).height())
+        if(($(window).scrollTop() + $(window).height() - 479) == $(document).height()) {
             fetchFeed(localStorage.tweetsFetched);
         }
     });

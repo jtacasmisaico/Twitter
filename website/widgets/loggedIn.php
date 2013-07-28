@@ -89,6 +89,7 @@ var fetchFeed = function(tweetsFetched) {
             logout();
     }
         }).done(function(data, textStatus, response) {
+            console.log(response.responseText);
             localStorage.tweetsFetched = parseInt(localStorage.tweetsFetched) + response.responseJSON.length;
             var existingFeed = JSON.parse(localStorage.feed);
             var newFeed = existingFeed.concat(response.responseJSON);
@@ -160,7 +161,7 @@ var postTweet = function() {
             var tweets = JSON.parse(localStorage.tweets);
             tweets.push(pushedTweet);
             localStorage.tweets = JSON.stringify(tweets);
-            pushOwnTweets(pushedTweet);
+            pushNewTweet(pushedTweet, 'newsFeed');
     });
     return false;
 }
@@ -241,7 +242,6 @@ var findUsername = function(userid) {
 }
 
 var renderFeed = function(tweets) {
-    $('#newsFeed')[0].innerHTML = "";
     for(var i=0;i<tweets.length;i++) {
         pushTweet(tweets[i],'newsFeed');
     }
@@ -253,5 +253,13 @@ var pushTweet = function(tweet, divId) {
     element.innerHTML = '<a class="pull-left" href="#users/'+tweet.username+'"><img class="media-object" src="./img/avatar.png"></a><div class="media-body tweet"><h4 class="media-heading"><a href="#users/'+tweet.username+'">'+tweet.username+'</a></h4>'+tweet.content+'</div><div class="timestamp">'+ new Date(tweet.timestamp).toString().substring(0,21)+'</div></div>'
     var feedDiv = document.getElementById(divId);
     feedDiv.appendChild(element);
+}
+
+var pushNewTweet = function(tweet, divId) {
+    var element = document.createElement('div');
+    element.setAttribute('class', 'media');
+    element.innerHTML = '<a class="pull-left" href="#users/'+tweet.username+'"><img class="media-object" src="./img/avatar.png"></a><div class="media-body tweet"><h4 class="media-heading"><a href="#users/'+tweet.username+'">'+tweet.username+'</a></h4>'+tweet.content+'</div><div class="timestamp">'+ new Date(tweet.timestamp).toString().substring(0,21)+'</div></div>'
+    var feedDiv = document.getElementById(divId);
+    feedDiv.insertBefore(element, feedDiv.firstChild);
 }
 </script>
