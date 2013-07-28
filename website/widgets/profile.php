@@ -73,7 +73,8 @@ var getUserDetails = function(username) {
             fetchFollowers(response.responseJSON.userid);
             fetchFollowing(response.responseJSON.userid);
             fetchTweets(response.responseJSON.userid);
-
+            if(response.responseJSON.userid == localStorage.userid)
+                $('#followButton').hide();
             showUnFollowButton = function(alreadyFollowing) {
                 if(alreadyFollowing) {
                     $('#followButton')[0].setAttribute('class','btn btn-warning');
