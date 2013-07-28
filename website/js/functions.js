@@ -48,7 +48,6 @@ var displayHomePage = function() {
     $('#tweetForm').slideDown('slow');
     $('#newsFeed').show(); 
     $('#tweetForm').show(); 
-    $('#ownTweetsButton').show();
     $('#followButton').hide();
 
     

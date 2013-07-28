@@ -4,15 +4,6 @@
         <button id="followButton" class="btn btn-warning" style="display:none;width:198px;">Unfollow</button>
         <div class="accordion" id="sidebarAccordion">
             <div class="accordion-group" style="border:0px;">
-                <button id="ownTweetsButton" class="btn btn-inverse" style="width:198px;" data-toggle="collapse" data-parent="#sidebarAccordion" data-target="#ownTweets">
-                Tweets
-                </button>
-                <div id="ownTweets" class="collapse in">
-                    <ul id="tweetsFromSelf" class="nav nav-list">
-                        <li class="divider"></li>
-                    </ul>
-                </div>
-
                 <button class="btn btn-inverse" style="width:198px;" data-toggle="collapse" data-parent="#sidebarAccordion" data-target="#followersDiv">
                 Followers
                 </button>

@@ -22,15 +22,9 @@ var fetchTweets = function(userid, offset) {
             logout();
         }
     }).done(function(data, textStatus, response) {
-        if(userid==localStorage.userid) {
-            localStorage.tweets = JSON.stringify(response.responseJSON);
-            renderTweetSidebar();
-        }
-        else {
-            if(offset == 0) document.getElementById('userPosts').innerHTML = "";
-            renderUserPosts(response.responseJSON);
-            $('#userPosts').show();
-        }
+        if(offset == 0) document.getElementById('userPosts').innerHTML = "";
+        renderUserPosts(response.responseJSON);
+        $('#userPosts').show();
     });
 }
 
@@ -166,13 +160,6 @@ var postTweet = function() {
     return false;
 }
 
-var renderTweetSidebar = function() {
-    var tweets = JSON.parse(localStorage.tweets);
-    for(var i=0; i<tweets.length; i++) {
-        pushOwnTweets(tweets[i]);
-    }
-}
-
 var renderFollowing = function(following) {
     var followingDiv = document.getElementById('following');
     followingDiv.innerHTML = '<li class="divider"></li>';
@@ -197,20 +184,6 @@ var renderUserPosts = function(tweets) {
     for(var i=0;i<tweets.length;i++) {
         pushTweet(tweets[i],'userPosts');
     }
-}
-
-var pushOwnTweets = function(tweet) {    
-    var element = document.createElement('div');
-    element.setAttribute('href','#');
-    element.setAttribute('rel','tooltip');
-    element.setAttribute('data-toggle','tooltip');
-    element.setAttribute('title',new Date(tweet.timestamp).toString().substring(0,21));
-    element.innerHTML = tweet.content;
-    var separator = document.createElement('div');
-    separator.setAttribute('class','divider');
-    var feedDiv = document.getElementById('tweetsFromSelf');
-    feedDiv.insertBefore(element, feedDiv.firstChild);    
-    feedDiv.insertBefore(separator, feedDiv.firstChild);
 }
 
 var pushFollowing = function(user) {    
