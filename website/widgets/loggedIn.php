@@ -152,9 +152,6 @@ var postTweet = function() {
             document.getElementById('tweetBox').value = "";
             changeTweetButtonState();
     		var pushedTweet = response.responseJSON;
-            var tweets = JSON.parse(localStorage.tweets);
-            tweets.push(pushedTweet);
-            localStorage.tweets = JSON.stringify(tweets);
             pushNewTweet(pushedTweet, 'newsFeed');
     });
     return false;
