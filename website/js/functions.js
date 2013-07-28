@@ -37,7 +37,6 @@ var displayLoggedIn = function() {
 
 var displayHomePage = function() {    
     $('#profileSideBar').slideUp('fast', function() {        
-        fetchTweets(localStorage.userid); 
         fetchFollowing(localStorage.userid); 
         fetchFollowers(localStorage.userid); 
         fetchFeed(); 
