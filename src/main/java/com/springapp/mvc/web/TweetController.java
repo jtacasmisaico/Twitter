@@ -63,13 +63,25 @@ public class TweetController {
 
     @RequestMapping(value = "/fetch/feed", method = RequestMethod.OPTIONS)
     @ResponseBody
-    public void getOptionsForFetchFeed(){
+    public void getFeedOptions() {
     }
+
     @RequestMapping(value = "/fetch/feed", method = RequestMethod.GET)
     @ResponseBody
     public List<Tweet> fetchFeed(HttpServletRequest request, @RequestParam("offset") int offset){
         int userid = Integer.parseInt(request.getHeader("userid"));
-        System.out.println(userid+" : "+offset);
         return tweetRepository.fetchFeed(userid, offset, 10);
+    }
+
+    @RequestMapping(value = "/fetch/feed/latest", method = RequestMethod.OPTIONS)
+    @ResponseBody
+    public void getNewFeedOptions() {
+    }
+
+    @RequestMapping(value = "/fetch/feed/latest", method = RequestMethod.GET)
+    @ResponseBody
+    public List<Tweet> fetchNewFeed(HttpServletRequest request, @RequestParam("tweetid") int tweetid){
+        int userid = Integer.parseInt(request.getHeader("userid"));
+        return tweetRepository.fetchNewFeed(userid, tweetid);
     }
 }

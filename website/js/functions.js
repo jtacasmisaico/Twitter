@@ -3,7 +3,7 @@ var viewingUser;
 window.onload = function() {
     init();
     displayPage();
-    //var intervalID = setInterval(function(){displayPage();}, 1000);
+    var intervalID = setInterval(function(){fetchNewFeed();}, 3000);
 };
 var init = function() {
     serverAddress = "http://localhost:8080/";

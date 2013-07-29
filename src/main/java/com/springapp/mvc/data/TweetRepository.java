@@ -75,6 +75,18 @@ public class TweetRepository {
             return null;
         }
     }
+
+    public List<Tweet> fetchNewFeed(int userid, int tweetid) {
+        try {
+            return jdbcTemplate.query("select tweets.tweetid, tweets.content, tweets.userid, tweets.username, tweets.timestamp from tweets inner join followers on followers.followed=tweets.userid where followers.follower  = ? and tweets.timestamp < followers.unfollowedat and tweets.tweetid > ?",
+                    new Object[]{userid, tweetid},
+                    new BeanPropertyRowMapper<>(Tweet.class));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
 
 

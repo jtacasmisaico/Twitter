@@ -83,7 +83,7 @@ var fetchFeed = function(tweetsFetched) {
             'Content-Type': 'application/json',
             'token':localStorage.sessionid,
             'userid':localStorage.userid
-            },
+        },
         error: function(jqXHR){
             logout();
     }
@@ -95,6 +95,32 @@ var fetchFeed = function(tweetsFetched) {
             localStorage.feed = JSON.stringify(newFeed);
             renderFeed(response.responseJSON)
     });
+}
+
+
+var fetchNewFeed = function() {
+    var finalTweet = JSON.parse(localStorage.feed)[0].tweetid;
+    $.ajax({
+        url: serverAddress+"fetch/feed/latest?tweetid="+finalTweet,
+        type: 'GET',
+        xhrFields: {
+            withCredentials: true
+        },
+        headers: { 
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'token':localStorage.sessionid,
+            'userid':localStorage.userid
+        },
+        error: function(jqXHR){
+            logout();
+        }
+    }).done(function(data, textStatus, response) {
+        var existingFeed = JSON.parse(localStorage.feed);
+        var newFeed = response.responseJSON.concat(existingFeed);
+        localStorage.feed = JSON.stringify(newFeed);
+        pushLatestFeed(response.responseJSON);
+    });    
 }
 
 var follow = function(followerid, followedid) {
@@ -235,6 +261,11 @@ var pushTweet = function(tweet, divId) {
     element.innerHTML = '<a class="pull-left" href="#users/'+tweet.username+'"><img class="media-object" src="./img/avatar.png"></a><div class="media-body tweet"><h4 class="media-heading"><a href="#users/'+tweet.username+'">'+tweet.username+'</a></h4>'+tweet.content+'</div><div class="timestamp">'+ new Date(tweet.timestamp).toString().substring(0,21)+'</div></div>'
     var feedDiv = document.getElementById(divId);
     feedDiv.appendChild(element);
+}
+
+var pushLatestFeed = function(tweets) {
+    for(var i=0;i<tweets.length;i++)
+        pushNewTweet(tweets[i], 'newsFeed');
 }
 
 var pushNewTweet = function(tweet, divId) {
