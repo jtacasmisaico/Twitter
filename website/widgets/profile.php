@@ -8,14 +8,14 @@
                 Followers
                 </button>
                 <div id="followersDiv" class="collapse">
-                    <ul id="followers" class="nav nav-list"></ul>
+                    <ul id="followers" class="nav nav-list"><li class="divider"></li></ul>
                 </div>
 
                 <button class="btn btn-inverse" style="width:198px;" data-toggle="collapse" data-parent="#sidebarAccordion" data-target="#followingDiv">
                 Following
                 </button>
-                <div id="followingDiv" class="collapse">
-                    <ul id="following" class="nav nav-list"></ul>
+                <div id="followingDiv" style="max-height:150px;overflow:scroll;overflow-x:hidden;" class="collapse">
+                    <ul id="following" class="nav nav-list"><li class="divider"></li></ul>
                 </div>
             </div>
         </div>
@@ -31,6 +31,25 @@
 </div>
 
 <script>
+$('#followingDiv').scroll(function () {
+    var myDiv = $('#followingDiv')[0];
+    if (myDiv.offsetHeight + myDiv.scrollTop >= myDiv.scrollHeight) {
+        fetchFollowing(parseInt(viewingUser.userid));
+    }
+});
+$('#followersDiv').scroll(function () {
+    var myDiv = $('#followersDiv')[0];
+    if (myDiv.offsetHeight + myDiv.scrollTop >= myDiv.scrollHeight) {
+        console.log(viewingUser);
+        fetchFollowers(parseInt(viewingUser.userid));
+    }
+});
+
+var clearSidebar = function() {
+    $('#followers')[0].innerHTML = '<li class="divider"></li>';
+    $('#following')[0].innerHTML = '<li class="divider"></li>';
+}
+
 var displayProfile = function(username) {
     console.log("Displaying profile");
     removeAndAddFollowButton();
@@ -48,21 +67,6 @@ var removeAndAddFollowButton = function() {
     document.getElementById('followButtonDiv').innerHTML = '<button id="followButton" class="btn btn-warning" style="display:none;width:198px;">Unfollow</button>';
 }
 
-showUnFollowButton = function(alreadyFollowing) {
-    if(alreadyFollowing) {
-        $('#followButton')[0].setAttribute('class','btn btn-warning');
-        $('#followButton')[0].innerHTML = "Unfollow";
-        $('#followButton').click(function() {
-            unfollow();
-        });
-    }
-    else {
-        $('#followButton')[0].setAttribute('class','btn btn-success');
-        $('#followButton')[0].innerHTML = "Follow";
-    }
-    $('#followButton').show(); 
-}
-
 var getUserDetails = function(username) {
     $.ajax({
         url: serverAddress+"users/"+username,
@@ -75,13 +79,15 @@ var getUserDetails = function(username) {
         }
     }).done(function(data, textStatus, response) {
             $('#profileSideBar').slideDown('slow');
+            clearSidebar();
             renderProfileSideBar(response.responseJSON.name);
             fetchFollowers(response.responseJSON.userid);
             fetchFollowing(response.responseJSON.userid);
             fetchTweets(response.responseJSON.userid);
+            viewingUser = response.responseJSON;
             if(response.responseJSON.userid == localStorage.userid)
                 $('#followButton').hide();
-                showUnFollowButton = function(alreadyFollowing) {
+            showUnFollowButton = function(alreadyFollowing) {
                 if(alreadyFollowing) {
                     $('#followButton')[0].setAttribute('class','btn btn-warning');
                     $('#followButton')[0].innerHTML = "Unfollow";

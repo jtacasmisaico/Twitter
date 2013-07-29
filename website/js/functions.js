@@ -1,11 +1,25 @@
 var serverAddress;
+var viewingUser;
 window.onload = function() {
     init();
     displayPage();
     //var intervalID = setInterval(function(){displayPage();}, 1000);
 };
 var init = function() {
-    serverAddress = "http://localhost:8080/"
+    serverAddress = "http://localhost:8080/";
+}
+
+var scrollalert = function(){  
+    var scrolltop=$('#followingDiv').attr('scrollTop');  
+    var scrollheight=$('#followingDiv').attr('scrollHeight');  
+    var windowheight=$('#followingDiv').attr('clientHeight');  
+    var scrolloffset=20;  
+    console.log(scrolltop, scrollheight, windowheight);
+    if(scrolltop>=(scrollheight-(windowheight+scrolloffset)))  
+    {  
+        alert("Bottom");
+    }  
+    //setTimeout('scrollalert();', 1500);  
 }
 
 window.onhashchange = function() { detectURL(); }
@@ -38,6 +52,8 @@ var displayLoggedIn = function() {
 }
 
 var displayHomePage = function() {    
+    clearSidebar();
+    viewingUser = JSON.parse(localStorage.user);
     $('#profileSideBar').slideUp('fast', function() {        
         fetchFollowing(localStorage.userid); 
         fetchFollowers(localStorage.userid); 
@@ -50,15 +66,14 @@ var displayHomePage = function() {
     $('#newsFeed').show(); 
     $('#tweetForm').show(); 
     $('#followButton').hide();
+}
 
-    
 window.onscroll = function(ev) {
     if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
         fetchFeed(localStorage.tweetsFetched);
     }
 };
 
-}
 
 var displayLoggedOut = function() {
     $('#newsFeed').hide(); 

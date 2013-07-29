@@ -51,6 +51,8 @@ var login = function() {
             setTimeout(function() {$('#loginDiv').popover('hide');}, 3000);
         }
     }).done(function(data, textStatus, response) {
+            viewingUser = response.responseJSON.user;
+            localStorage.user = JSON.stringify(viewingUser);
             localStorage.sessionid = response.responseJSON.sessionid;
             localStorage.userid = response.responseJSON.user.userid;
             localStorage.username = response.responseJSON.user.username;

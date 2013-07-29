@@ -128,7 +128,7 @@ body {
 	border-color: #696969;
 	background-color: rgba(255,255,255,0.2);
 }
-#tweetsFromSelf, #followers, #following {
+#followers {
 	text-align: left;
 	width:160px;
 	max-height:300px;

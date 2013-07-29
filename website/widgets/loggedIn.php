@@ -32,8 +32,9 @@ var fetchTweets = function(userid, offset) {
 }
 
 var fetchFollowing = function(userid, offset, limit) {
-    if(offset == undefined) offset = 0;
+    if(offset == undefined) offset = $('#following > li').children().length;
     if(limit == undefined) limit = 5;
+    console.log("Offset : "+offset);
     $.ajax({
         url: serverAddress+"users/follows/"+userid+"?offset="+offset+"&limit="+limit,
         type: 'GET',
@@ -44,6 +45,7 @@ var fetchFollowing = function(userid, offset, limit) {
             logout();
         }
     }).done(function(data, textStatus, response) {
+        console.log(response.responseText);
         if(userid == localStorage.userid) {
             localStorage.follows = JSON.stringify(response.responseJSON);
         }                    
@@ -52,7 +54,7 @@ var fetchFollowing = function(userid, offset, limit) {
 }
 
 var fetchFollowers = function(userid, offset, limit) {
-    if(offset == undefined) offset = 0;
+    if(offset == undefined) offset = $('#followers > li').children().length;
     if(limit == undefined) limit = 5;
     $.ajax({
         url: serverAddress+"users/followers/"+userid+"?offset="+offset+"&limit="+limit,
@@ -184,7 +186,6 @@ var postTweet = function() {
 
 var renderFollowing = function(following) {
     var followingDiv = document.getElementById('following');
-    followingDiv.innerHTML = '<li class="divider"></li>';
     for(var i=0; i<following.length; i++) {
         pushFollowing(following[i]);
     }
@@ -192,7 +193,6 @@ var renderFollowing = function(following) {
 
 var renderFollowers = function(followers) {
     var followersDiv = document.getElementById('followers');
-    followersDiv.innerHTML = '<li class="divider"></li>';
     for(var i=0; i<followers.length; i++) {
         pushFollowers(followers[i]);
     }	
@@ -214,8 +214,8 @@ var pushFollowing = function(user) {
     var separator = document.createElement('li');
     separator.setAttribute('class','divider');
     var followingDiv = document.getElementById('following');
-    followingDiv.insertBefore(element, followingDiv.firstChild);
-    followingDiv.insertBefore(separator, followingDiv.firstChild);
+    followingDiv.appendChild(element);
+    followingDiv.appendChild(separator);
 }
 
 var pushFollowers = function(user) {    
@@ -224,8 +224,8 @@ var pushFollowers = function(user) {
     var separator = document.createElement('li');
     separator.setAttribute('class','divider');
     var followerDiv = document.getElementById('followers');
-    followerDiv.insertBefore(element, followerDiv.firstChild);
-    followerDiv.insertBefore(separator, followerDiv.firstChild);
+    followerDiv.appendChild(element);
+    followerDiv.appendChild(separator);
 }
 
 var findUsername = function(userid) {
