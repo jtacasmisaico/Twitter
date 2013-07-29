@@ -9,19 +9,6 @@ var init = function() {
     serverAddress = "http://localhost:8080/";
 }
 
-var scrollalert = function(){  
-    var scrolltop=$('#followingDiv').attr('scrollTop');  
-    var scrollheight=$('#followingDiv').attr('scrollHeight');  
-    var windowheight=$('#followingDiv').attr('clientHeight');  
-    var scrolloffset=20;  
-    console.log(scrolltop, scrollheight, windowheight);
-    if(scrolltop>=(scrollheight-(windowheight+scrolloffset)))  
-    {  
-        alert("Bottom");
-    }  
-    //setTimeout('scrollalert();', 1500);  
-}
-
 window.onhashchange = function() { detectURL(); }
 
 var displayPage = function () {  
