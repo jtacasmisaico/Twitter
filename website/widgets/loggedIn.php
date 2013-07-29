@@ -31,9 +31,11 @@ var fetchTweets = function(userid, offset) {
     });
 }
 
-var fetchFollowing = function(userid) {
+var fetchFollowing = function(userid, offset, limit) {
+    if(offset == undefined) offset = 0;
+    if(limit == undefined) limit = 5;
     $.ajax({
-        url: serverAddress+"users/follows/"+userid,
+        url: serverAddress+"users/follows/"+userid+"?offset="+offset+"&limit="+limit,
         type: 'GET',
         xhrFields: {
             withCredentials: true
@@ -49,9 +51,11 @@ var fetchFollowing = function(userid) {
     });
 }
 
-var fetchFollowers = function(userid) {
+var fetchFollowers = function(userid, offset, limit) {
+    if(offset == undefined) offset = 0;
+    if(limit == undefined) limit = 5;
     $.ajax({
-        url: serverAddress+"users/followers/"+userid,
+        url: serverAddress+"users/followers/"+userid+"?offset="+offset+"&limit="+limit,
         type: 'GET',
         xhrFields: {
             withCredentials: true

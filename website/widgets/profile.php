@@ -1,7 +1,7 @@
 <div id="loggedIn">
     <div id="profileSideBar" style="display:none;">
         <div id="username"></div>
-        <button id="followButton" class="btn btn-warning" style="display:none;width:198px;">Unfollow</button>
+        <div id="followButtonDiv"></div>
         <div class="accordion" id="sidebarAccordion">
             <div class="accordion-group" style="border:0px;">
                 <button class="btn btn-inverse" style="width:198px;" data-toggle="collapse" data-parent="#sidebarAccordion" data-target="#followersDiv">
@@ -33,6 +33,7 @@
 <script>
 var displayProfile = function(username) {
     console.log("Displaying profile");
+    removeAndAddFollowButton();
     $('#newsFeed').hide();
     $('#tweetForm').slideUp('slow');
     $('#newsFeed').slideUp('slow');
@@ -40,6 +41,11 @@ var displayProfile = function(username) {
     $('#profileSideBar').slideUp('fast', function() {
         getUserDetails(username);
     });
+}
+
+var removeAndAddFollowButton = function() {
+    $('#followButtonDiv').empty();
+    document.getElementById('followButtonDiv').innerHTML = '<button id="followButton" class="btn btn-warning" style="display:none;width:198px;">Unfollow</button>';
 }
 
 showUnFollowButton = function(alreadyFollowing) {
@@ -75,7 +81,7 @@ var getUserDetails = function(username) {
             fetchTweets(response.responseJSON.userid);
             if(response.responseJSON.userid == localStorage.userid)
                 $('#followButton').hide();
-            showUnFollowButton = function(alreadyFollowing) {
+                showUnFollowButton = function(alreadyFollowing) {
                 if(alreadyFollowing) {
                     $('#followButton')[0].setAttribute('class','btn btn-warning');
                     $('#followButton')[0].innerHTML = "Unfollow";
