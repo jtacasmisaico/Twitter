@@ -67,6 +67,25 @@ var removeAndAddFollowButton = function() {
     document.getElementById('followButtonDiv').innerHTML = '<button id="followButton" class="btn btn-warning" style="display:none;width:198px;">Unfollow</button>';
 }
 
+var showUnFollowButton = function(alreadyFollowing) {
+    console.log("Already Following : " + alreadyFollowing);
+    if(alreadyFollowing) {
+        $('#followButton')[0].setAttribute('class','btn btn-warning');
+        $('#followButton')[0].innerHTML = "Unfollow";
+        $('#followButton').click(function() {
+            unfollow(parseInt(localStorage.userid), viewingUser.userid);
+        });
+    }
+    else {
+        $('#followButton')[0].setAttribute('class','btn btn-success');
+        $('#followButton')[0].innerHTML = "Follow";
+        $('#followButton').click(function() {
+            follow(parseInt(localStorage.userid), viewingUser.userid);
+        });                    
+    }
+    $('#followButton').show(); 
+}
+
 var getUserDetails = function(username) {
     $.ajax({
         url: serverAddress+"users/"+username,
@@ -87,23 +106,8 @@ var getUserDetails = function(username) {
             viewingUser = response.responseJSON;
             if(response.responseJSON.userid == localStorage.userid)
                 $('#followButton').hide();
-            showUnFollowButton = function(alreadyFollowing) {
-                if(alreadyFollowing) {
-                    $('#followButton')[0].setAttribute('class','btn btn-warning');
-                    $('#followButton')[0].innerHTML = "Unfollow";
-                    $('#followButton').click(function() {
-                        unfollow(parseInt(localStorage.userid), response.responseJSON.userid);
-                    });
-                }
-                else {
-                    $('#followButton')[0].setAttribute('class','btn btn-success');
-                    $('#followButton')[0].innerHTML = "Follow";
-                    $('#followButton').click(function() {
-                        follow(parseInt(localStorage.userid), response.responseJSON.userid);
-                    });                    
-                }
-                $('#followButton').show(); 
-            }
+            else 
+                follows(localStorage.userid, viewingUser.userid);
     });
 }
 

@@ -20,7 +20,7 @@ public class CORSInterceptor extends HandlerInterceptorAdapter{
         response.setHeader("Access-Control-Allow-Origin", "https://localhost");
         response.setHeader("Access-Control-Allow-Credentials", "true");
         response.setHeader("Access-Control-Allow-Headers", "Content-Type, token, userid");
-        response.setHeader("Access-Control-Allow-Methods", "OPTIONS, POST");
+        response.setHeader("Access-Control-Allow-Methods", "OPTIONS, POST, GET");
         return true;
     }
 }

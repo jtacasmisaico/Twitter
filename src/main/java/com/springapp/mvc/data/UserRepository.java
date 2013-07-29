@@ -138,6 +138,21 @@ public class UserRepository {
         }
     }
 
+    public boolean checkFollows(int follower, int followed) {
+        try{
+            System.out.println("Checking follows");
+            int count =  jdbcTemplate.queryForInt("SELECT count(*) FROM followers WHERE follower = ? and followed = " +
+                    "? and unfollowedat = 'infinity'", new Object[]{follower, followed});
+            System.out.println(count);
+            if(count>0) return true;
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return false;
+    }
+
     public List<User> fetchFollowers(int userid, int offset, int limit) {
         try {
                 return jdbcTemplate.query("select name, users.userid, users.username, users.email, users.name from followers inner join users on followers.follower=users.userid where followers.followed  = ? and followers.unfollowedat > ? OFFSET ?  LIMIT ?",

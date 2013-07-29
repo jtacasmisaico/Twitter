@@ -55,6 +55,13 @@ public class UserController {
         return repository.fetchFollows(userid, offset, limit);
     }
 
+    @RequestMapping(value = "/users/check/follows/", method = RequestMethod.GET)
+    @ResponseBody
+    public boolean checkFollows(@RequestParam("follower") int follower, @RequestParam("followed") int followed) throws
+            IOException {
+        return repository.checkFollows(follower, followed);
+    }
+
     @RequestMapping(value = "/users/follow", method = RequestMethod.OPTIONS)
     @ResponseBody
     public void getOptionsFollow(){

@@ -69,12 +69,6 @@ var fetchFollowers = function(userid, offset, limit) {
         if(localStorage.userid == userid) {
             localStorage.followers = JSON.stringify(response.responseJSON);
         }
-        else {
-            if(follows(localStorage.userid, response.responseJSON)) {
-                showUnFollowButton(true);
-            }
-            else showUnFollowButton(false);
-        } 
         renderFollowers(response.responseJSON);
     });
 }

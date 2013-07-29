@@ -86,9 +86,21 @@ var displayLoggedOut = function() {
 }
 
 
-var follows = function(userid, followers) {
-    for(var i=0; i<followers.length; i++) 
-        if(followers[i].userid == userid)
-            return true;
-    return false;
+var follows = function(follower, followed) {
+    $.ajax({
+        url: serverAddress+"users/check/follows/?follower="+follower+"&followed="+followed,
+        type: 'GET',
+        xhrFields: {
+            withCredentials: true
+        },
+        error: function(jqXHR){
+            console.log(jqXHR);
+            logout();
+        }
+    }).done(function(data, textStatus, response) {
+        if(response.responseText == "true")
+            showUnFollowButton(true);
+        else showUnFollowButton(false);
+    });
+
 }
