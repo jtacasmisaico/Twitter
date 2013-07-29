@@ -138,10 +138,11 @@ public class UserRepository {
         }
     }
 
-    public List<User> fetchFollowers(int userid) {
+    public List<User> fetchFollowers(int userid, int offset, int limit) {
         try {
-                return jdbcTemplate.query("select name, users.userid, users.username, users.email, users.name from followers inner join users on followers.follower=users.userid where followers.followed  = ? and followers.unfollowedat > ?",
-                    new Object[]{userid, new Timestamp(new Date().getTime())}, new BeanPropertyRowMapper<>(User.class));
+                return jdbcTemplate.query("select name, users.userid, users.username, users.email, users.name from followers inner join users on followers.follower=users.userid where followers.followed  = ? and followers.unfollowedat > ? OFFSET ?  LIMIT ?",
+                    new Object[]{userid, new Timestamp(new Date().getTime()), offset, limit},
+                        new BeanPropertyRowMapper<>(User.class));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -149,10 +150,11 @@ public class UserRepository {
         }
     }
 
-    public List<User> fetchFollows(int userid) {
+    public List<User> fetchFollows(int userid, int offset, int limit) {
         try {
-            return jdbcTemplate.query("select name, users.userid, users.username, users.email, users.name from followers inner join users on followers.followed=users.userid where followers.follower  = ? and followers.unfollowedat > ?",
-                    new Object[]{userid, new Timestamp(new Date().getTime())}, new BeanPropertyRowMapper<>(User.class));
+            return jdbcTemplate.query("select name, users.userid, users.username, users.email, users.name from followers inner join users on followers.followed=users.userid where followers.follower  = ? and followers.unfollowedat > ? OFFSET ?  LIMIT ?",
+                    new Object[]{userid, new Timestamp(new Date().getTime()), offset, limit},
+                    new BeanPropertyRowMapper<>(User.class));
         }
         catch (Exception e) {
             e.printStackTrace();

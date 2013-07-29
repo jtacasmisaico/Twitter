@@ -40,16 +40,19 @@ public class UserController {
         return repository.findByUsername(username);
     }
 
+
     @RequestMapping(value = "/users/followers/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public List<User> fetchFollowers(HttpServletResponse response, @PathVariable("id") int userid) throws IOException {
-        return repository.fetchFollowers(userid);
+    public List<User> fetchFollowers(@PathVariable("id") int userid, @RequestParam("offset") int offset,
+        @RequestParam("limit") int limit) throws IOException {
+        return repository.fetchFollowers(userid, offset, limit);
     }
 
     @RequestMapping(value = "/users/follows/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public List<User> fetchFollows(HttpServletResponse response, @PathVariable("id") int userid) throws IOException {
-        return repository.fetchFollows(userid);
+    public List<User> fetchFollows(@PathVariable("id") int userid, @RequestParam("offset") int offset,
+    @RequestParam("limit") int limit) throws IOException {
+        return repository.fetchFollows(userid, offset, limit);
     }
 
     @RequestMapping(value = "/users/follow", method = RequestMethod.OPTIONS)
