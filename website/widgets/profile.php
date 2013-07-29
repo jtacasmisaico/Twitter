@@ -7,14 +7,14 @@
                 <button class="btn btn-inverse" style="width:198px;" data-toggle="collapse" data-parent="#sidebarAccordion" data-target="#followersDiv">
                 Followers
                 </button>
-                <div id="followersDiv" class="collapse">
+                <div id="followersDiv"  class="collapse">
                     <ul id="followers" class="nav nav-list"><li class="divider"></li></ul>
                 </div>
 
                 <button class="btn btn-inverse" style="width:198px;" data-toggle="collapse" data-parent="#sidebarAccordion" data-target="#followingDiv">
                 Following
                 </button>
-                <div id="followingDiv" style="max-height:150px;overflow:scroll;overflow-x:hidden;" class="collapse">
+                <div id="followingDiv" class="collapse">
                     <ul id="following" class="nav nav-list"><li class="divider"></li></ul>
                 </div>
             </div>

@@ -45,10 +45,6 @@ var fetchFollowing = function(userid, offset, limit) {
             logout();
         }
     }).done(function(data, textStatus, response) {
-        console.log(response.responseText);
-        if(userid == localStorage.userid) {
-            localStorage.follows = JSON.stringify(response.responseJSON);
-        }                    
         renderFollowing(response.responseJSON);
     });
 }
@@ -66,9 +62,6 @@ var fetchFollowers = function(userid, offset, limit) {
             logout();
         }
     }).done(function(data, textStatus, response) {
-        if(localStorage.userid == userid) {
-            localStorage.followers = JSON.stringify(response.responseJSON);
-        }
         renderFollowers(response.responseJSON);
     });
 }
