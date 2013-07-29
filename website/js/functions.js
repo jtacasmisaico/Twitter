@@ -5,7 +5,7 @@ window.onload = function() {
     //var intervalID = setInterval(function(){displayPage();}, 1000);
 };
 var init = function() {
-    serverAddress = "https://localhost:8443/"
+    serverAddress = "http://localhost:8080/"
 }
 
 window.onhashchange = function() { detectURL(); }
@@ -52,12 +52,11 @@ var displayHomePage = function() {
     $('#followButton').hide();
 
     
-    $(window).scroll(function() {   
-        console.log(($(window).scrollTop() + $(window).height() - 179) + " - " + $(document).height())
-        if(($(window).scrollTop() + $(window).height() - 479) == $(document).height()) {
-            fetchFeed(localStorage.tweetsFetched);
-        }
-    });
+window.onscroll = function(ev) {
+    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+        fetchFeed(localStorage.tweetsFetched);
+    }
+};
 
 }
 

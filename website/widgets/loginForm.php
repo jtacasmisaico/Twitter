@@ -63,9 +63,15 @@ var login = function() {
 
 var logout = function() {
     console.log("Logout");
+    // localStorage.clear();
+    // document.location.href="./#";
+    // document.location.reload();
+}
+
+var l = function() {
+    console.log("Logout");
     localStorage.clear();
     document.location.href="./#";
     document.location.reload();
 }
-
 </script>
