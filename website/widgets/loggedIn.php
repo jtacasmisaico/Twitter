@@ -65,9 +65,12 @@ var fetchFollowers = function(userid, offset, limit) {
 }
 
 var fetchFeed = function(tweetsFetched) {
-    console.log("Fetching with Offset : "+tweetsFetched);
     if(tweetsFetched == undefined) {
-        if(localStorage.feed!=undefined) { console.log("Already fetched"); renderFeed(JSON.parse(localStorage.feed)); return; }
+        if(localStorage.feed!=undefined) { 
+            if(document.getElementById('newsFeed').children.length == JSON.parse(localStorage.feed).length)
+                return;
+            renderFeed(JSON.parse(localStorage.feed)); return; 
+        }
         localStorage.feed = "[]";
         tweetsFetched = 0;
     }
