@@ -14,7 +14,6 @@ var changeTweetButtonState = function () {
 
 var fetchTweets = function(userid, offset) {
     if(offset == undefined) offset = 0;
-    console.log("Fetching tweet for : "+userid);
     $.ajax({
         url: serverAddress+"fetch/posts/"+userid+"?offset="+offset,
         type: 'GET',
@@ -34,7 +33,6 @@ var fetchTweets = function(userid, offset) {
 var fetchFollowing = function(userid, offset, limit) {
     if(offset == undefined) offset = $('#following > li').children().length;
     if(limit == undefined) limit = 5;
-    console.log("Offset : "+offset);
     $.ajax({
         url: serverAddress+"users/follows/"+userid+"?offset="+offset+"&limit="+limit,
         type: 'GET',
@@ -67,6 +65,7 @@ var fetchFollowers = function(userid, offset, limit) {
 }
 
 var fetchFeed = function(tweetsFetched) {
+    console.log("Fetching with Offset : "+tweetsFetched);
     if(tweetsFetched == undefined) {
         if(localStorage.feed!=undefined) { console.log("Already fetched"); renderFeed(JSON.parse(localStorage.feed)); return; }
         localStorage.feed = "[]";
@@ -88,7 +87,6 @@ var fetchFeed = function(tweetsFetched) {
             logout();
     }
         }).done(function(data, textStatus, response) {
-            console.log(response.responseText);
             localStorage.tweetsFetched = parseInt(localStorage.tweetsFetched) + response.responseJSON.length;
             var existingFeed = JSON.parse(localStorage.feed);
             var newFeed = existingFeed.concat(response.responseJSON);
@@ -99,28 +97,30 @@ var fetchFeed = function(tweetsFetched) {
 
 
 var fetchNewFeed = function() {
-    var finalTweet = JSON.parse(localStorage.feed)[0].tweetid;
-    $.ajax({
-        url: serverAddress+"fetch/feed/latest?tweetid="+finalTweet,
-        type: 'GET',
-        xhrFields: {
-            withCredentials: true
-        },
-        headers: { 
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'token':localStorage.sessionid,
-            'userid':localStorage.userid
-        },
-        error: function(jqXHR){
-            logout();
-        }
-    }).done(function(data, textStatus, response) {
-        var existingFeed = JSON.parse(localStorage.feed);
-        var newFeed = response.responseJSON.concat(existingFeed);
-        localStorage.feed = JSON.stringify(newFeed);
-        pushLatestFeed(response.responseJSON);
-    });    
+    if(localStorage.feed != undefined) {
+        var finalTweet = JSON.parse(localStorage.feed)[0].tweetid;
+        $.ajax({
+            url: serverAddress+"fetch/feed/latest?tweetid="+finalTweet,
+            type: 'GET',
+            xhrFields: {
+                withCredentials: true
+            },
+            headers: { 
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'token':localStorage.sessionid,
+                'userid':localStorage.userid
+            },
+            error: function(jqXHR){
+                logout();
+            }
+        }).done(function(data, textStatus, response) {
+            var existingFeed = JSON.parse(localStorage.feed);
+            var newFeed = response.responseJSON.concat(existingFeed);
+            localStorage.feed = JSON.stringify(newFeed);
+            pushLatestFeed(response.responseJSON);
+        });    
+    }
 }
 
 var fetchImage = function(tweet) {
@@ -129,7 +129,6 @@ var fetchImage = function(tweet) {
 }
 
 var follow = function(followerid, followedid) {
-    console.log(followerid, followedid);
     $.ajax({
         url: serverAddress+"users/follow",
         type: 'POST',
@@ -153,7 +152,6 @@ var follow = function(followerid, followedid) {
 }
 
 var unfollow = function(followerid, followedid) {
-    console.log(followerid, followedid);
     $.ajax({
         url: serverAddress+"users/unfollow",
         type: 'POST',
@@ -217,6 +215,7 @@ var renderFollowers = function(followers) {
 }
 
 var renderProfileSideBar = function(user) {
+    if(user.userid == localStorage.userid) $('#editProfileImage').show();
     document.getElementById('username').innerHTML = "<h4>"+user.username+"</h4>";
     document.getElementById('profileImageDiv').innerHTML = '<img id="profileImage" src = "'+fetchImage(user)+'">';
 }
@@ -256,6 +255,7 @@ var findUsername = function(userid) {
 }
 
 var renderFeed = function(tweets) {
+    console.log("Rendering...")
     for(var i=0;i<tweets.length;i++) {
         pushTweet(tweets[i],'newsFeed');
     }

@@ -8,7 +8,7 @@
     <div class="control-group">
       <div class="controls">
         <input class="span2" type="password" id="inputPassword" placeholder="Password" style="height:25px;" requiredField>
-        <button type="submit" id="signInButton" class="btn btn-primary" onclick="return validateLogin()">Sign In</button>
+        <button type="submit" id="signInButton" class="btn btn-primary" onclick="return validateLogin()" style="margin-left:5px;" >Sign In</button>
       </div>
     </div>
   </form>

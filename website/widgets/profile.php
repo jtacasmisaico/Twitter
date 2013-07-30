@@ -1,6 +1,25 @@
 <div id="loggedIn">
     <div id="profileSideBar" style="display:none;">
         <div id="profileImageDiv"></div>
+        <div id="editProfileImage">
+            <i class="icon-edit" onclick="$('#profileImageForm').toggle('slow')"></i>
+            <form id="profileImageForm" action="uploadimage.php" style="display:none;" method="post" enctype="multipart/form-data">
+               
+                <div class="fileupload fileupload-new" data-provides="fileupload">
+                    <div class="fileupload-new thumbnail" style="width: 200px; height: 150px;"><img src="./img/noimage.gif" /></div>
+                    <div class="fileupload-preview fileupload-exists thumbnail" style="max-width: 200px; max-height: 150px; line-height: 20px;"></div>
+                    <div>
+                        <span class="btn btn-file btn-inverse">
+                            <span class="fileupload-new">Select image</span>
+                            <span class="fileupload-exists btn-inverse"><i class="icon-edit"></i></span>
+                            <input type="file" />
+                        </span>
+                        <a href="#" class="btn fileupload-exists btn-inverse" data-dismiss="fileupload"><i class="icon-remove"></i></a>
+                        <button type="submit" class="fileupload-exists btn btn-inverse" id="uploadImage"><i class="icon-upload"></i></button>
+                    </div>
+                </div>               
+            </form>
+        </div>
         <div id="username"></div>
         <div id="followButtonDiv"></div>
         <div class="accordion" id="sidebarAccordion">
@@ -59,6 +78,7 @@ var displayProfile = function(username) {
     $('#newsFeed').slideUp('slow');
     $('#userPosts').slideDown('slow');
     $('#profileSideBar').slideUp('fast', function() {
+        $('#editProfileImage').hide();
         getUserDetails(username);
     });
 }
