@@ -26,7 +26,7 @@ public class UserRepository {
 
     public User findById(int id) {
         try {
-            return jdbcTemplate.queryForObject("select name, userid, username, email from users where userid = ?",
+            return jdbcTemplate.queryForObject("select name, userid, username, email, image from users where userid = ?",
                 new Object[]{id}, new BeanPropertyRowMapper<>(User.class));
         }
         catch (Exception e) {
@@ -36,7 +36,7 @@ public class UserRepository {
 
     public User findByEmail(String email) {
         try {
-            return jdbcTemplate.queryForObject("select userid, name, username, password from users where email = ?",
+            return jdbcTemplate.queryForObject("select userid, name, username, password, image from users where email = ?",
                 new Object[]{email}, new BeanPropertyRowMapper<>(User.class));
         }
         catch(Exception e) {
@@ -46,7 +46,7 @@ public class UserRepository {
 
     public User findByUsername(String username) {
         try {
-            return jdbcTemplate.queryForObject("select name, userid, username, email from users where username = ?",
+            return jdbcTemplate.queryForObject("select name, userid, username, email, image from users where username = ?",
                     new Object[]{username}, new BeanPropertyRowMapper<>(User.class));
         }
         catch(Exception e) {
@@ -155,7 +155,7 @@ public class UserRepository {
 
     public List<User> fetchFollowers(int userid, int offset, int limit) {
         try {
-                return jdbcTemplate.query("select name, users.userid, users.username, users.email, users.name from followers inner join users on followers.follower=users.userid where followers.followed  = ? and followers.unfollowedat > ? OFFSET ?  LIMIT ?",
+                return jdbcTemplate.query("select name, users.userid, users.username, users.email, users.name, users.image from followers inner join users on followers.follower=users.userid where followers.followed  = ? and followers.unfollowedat > ? OFFSET ?  LIMIT ?",
                     new Object[]{userid, new Timestamp(new Date().getTime()), offset, limit},
                         new BeanPropertyRowMapper<>(User.class));
         }
@@ -167,13 +167,24 @@ public class UserRepository {
 
     public List<User> fetchFollows(int userid, int offset, int limit) {
         try {
-            return jdbcTemplate.query("select name, users.userid, users.username, users.email, users.name from followers inner join users on followers.followed=users.userid where followers.follower  = ? and followers.unfollowedat > ? OFFSET ?  LIMIT ?",
+            return jdbcTemplate.query("select name, users.userid, users.username, users.email, users.name, users.image from followers inner join users on followers.followed=users.userid where followers.follower  = ? and followers.unfollowedat > ? OFFSET ?  LIMIT ?",
                     new Object[]{userid, new Timestamp(new Date().getTime()), offset, limit},
                     new BeanPropertyRowMapper<>(User.class));
         }
         catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+    public String createImage(String image, int userid) {
+        try{
+            jdbcTemplate.update("update users set image=? where userid=?",
+                    new Object[]{image, userid});
+            return "Success";
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return "Error";
         }
     }
 

@@ -45,8 +45,7 @@ public class TweetController {
     @RequestMapping(value = "/post/tweet", method = RequestMethod.POST)
     @ResponseBody
     public Tweet createTweet(@RequestBody final Tweet tweet, HttpServletResponse response, HttpServletRequest request){
-        int id = tweetRepository.createTweet(tweet.getContent(), Integer.parseInt(request.getHeader("userid")),
-                userRepository.findById(Integer.parseInt(request.getHeader("userid"))).getUsername());
+        int id = tweetRepository.createTweet(tweet.getContent(), Integer.parseInt(request.getHeader("userid")));
         if (id != -1){
             response.setStatus(200);
             return tweetRepository.findTweetByTweetId(id);

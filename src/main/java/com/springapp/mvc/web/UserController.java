@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
@@ -80,6 +81,17 @@ public class UserController {
     @ResponseBody
     public String unfollow(@RequestBody Map<String,Object> requestParameters) throws IOException {
         return repository.unfollow((int)requestParameters.get("follower"), (int)requestParameters.get("followed"));
+    }
+
+    @RequestMapping(value = "/users/image/create", method = RequestMethod.OPTIONS)
+    @ResponseBody
+    public void getImageCreateOptions(){
+    }
+    @RequestMapping(value = "/users/image/create", method = RequestMethod.POST)
+    @ResponseBody
+    public String createImage(@RequestBody Map<String,Object> requestParameters,
+                              HttpServletRequest request) throws IOException {
+        return repository.createImage((String) requestParameters.get("image"), Integer.parseInt(request.getHeader("userid")));
     }
 
     @RequestMapping(value = "/users/register", method = RequestMethod.OPTIONS)

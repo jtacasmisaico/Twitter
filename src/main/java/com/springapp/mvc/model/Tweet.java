@@ -15,6 +15,7 @@ public class Tweet {
     public String content;
     public int userid;
     public String username;
+    public String image;
     public Timestamp timestamp;
 
     public int getTweetid() {
@@ -37,6 +38,10 @@ public class Tweet {
         return username;
     }
 
+    public String getImage() {
+        return image;
+    }
+
     public void setTweetid(int tweetid) {
         this.tweetid = tweetid;
     }
@@ -56,4 +61,9 @@ public class Tweet {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
 }
