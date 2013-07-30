@@ -123,6 +123,11 @@ var fetchNewFeed = function() {
     });    
 }
 
+var fetchImage = function(tweet) {
+    if(tweet.image == null) return "./img/profile/avatar.png";
+    return "./img/profile/"+tweet.image;
+}
+
 var follow = function(followerid, followedid) {
     console.log(followerid, followedid);
     $.ajax({
@@ -178,7 +183,7 @@ var postTweet = function() {
         xhrFields: {
             withCredentials: true
         },
-        data: JSON.stringify({ content: document.getElementById('tweetBox').value, userid: localStorage.userid, username: localStorage.username }),
+        data: JSON.stringify({ content: document.getElementById('tweetBox').value }),
         headers: {  
             'Content-Type': 'application/json',
             'token':localStorage.sessionid,
@@ -211,8 +216,9 @@ var renderFollowers = function(followers) {
     }	
 }
 
-var renderProfileSideBar = function(username) {
-    document.getElementById('username').innerHTML = "<h4>"+username+"</h4>";
+var renderProfileSideBar = function(user) {
+    document.getElementById('username').innerHTML = "<h4>"+user.username+"</h4>";
+    document.getElementById('profileImageDiv').innerHTML = '<img id="profileImage" src = "'+fetchImage(user)+'">';
 }
 
 var renderUserPosts = function(tweets) {
@@ -258,7 +264,7 @@ var renderFeed = function(tweets) {
 var pushTweet = function(tweet, divId) {
     var element = document.createElement('div');
     element.setAttribute('class', 'media');
-    element.innerHTML = '<a class="pull-left" href="#users/'+tweet.username+'"><img class="media-object" src="./img/avatar.png"></a><div class="media-body tweet"><h4 class="media-heading"><a href="#users/'+tweet.username+'">'+tweet.username+'</a></h4>'+tweet.content+'</div><div class="timestamp">'+ new Date(tweet.timestamp).toString().substring(0,21)+'</div></div>'
+    element.innerHTML = '<a class="pull-left" href="#users/'+tweet.username+'"><img class="media-object pthumbnail" src="'+fetchImage(tweet)+'"></a><div class="media-body tweet"><h4 class="media-heading"><a href="#users/'+tweet.username+'">'+tweet.username+'</a></h4>'+tweet.content+'</div><div class="timestamp">'+ new Date(tweet.timestamp).toString().substring(0,21)+'</div></div>'
     var feedDiv = document.getElementById(divId);
     feedDiv.appendChild(element);
 }
@@ -271,7 +277,7 @@ var pushLatestFeed = function(tweets) {
 var pushNewTweet = function(tweet, divId) {
     var element = document.createElement('div');
     element.setAttribute('class', 'media');
-    element.innerHTML = '<a class="pull-left" href="#users/'+tweet.username+'"><img class="media-object" src="./img/avatar.png"></a><div class="media-body tweet"><h4 class="media-heading"><a href="#users/'+tweet.username+'">'+tweet.username+'</a></h4>'+tweet.content+'</div><div class="timestamp">'+ new Date(tweet.timestamp).toString().substring(0,21)+'</div></div>'
+    element.innerHTML = '<a class="pull-left" href="#users/'+tweet.username+'"><img class="media-object pthumbnail" src="'+fetchImage(tweet)+'"></a><div class="media-body tweet"><h4 class="media-heading"><a href="#users/'+tweet.username+'">'+tweet.username+'</a></h4>'+tweet.content+'</div><div class="timestamp">'+ new Date(tweet.timestamp).toString().substring(0,21)+'</div></div>'
     var feedDiv = document.getElementById(divId);
     feedDiv.insertBefore(element, feedDiv.firstChild);
 }

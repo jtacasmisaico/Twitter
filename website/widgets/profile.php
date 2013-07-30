@@ -1,5 +1,6 @@
 <div id="loggedIn">
     <div id="profileSideBar" style="display:none;">
+        <div id="profileImageDiv"></div>
         <div id="username"></div>
         <div id="followButtonDiv"></div>
         <div class="accordion" id="sidebarAccordion">
@@ -99,7 +100,7 @@ var getUserDetails = function(username) {
     }).done(function(data, textStatus, response) {
             $('#profileSideBar').slideDown('slow');
             clearSidebar();
-            renderProfileSideBar(response.responseJSON.name);
+            renderProfileSideBar(response.responseJSON);
             fetchFollowers(response.responseJSON.userid);
             fetchFollowing(response.responseJSON.userid);
             fetchTweets(response.responseJSON.userid);

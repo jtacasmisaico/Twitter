@@ -45,7 +45,7 @@ var displayHomePage = function() {
         fetchFollowing(localStorage.userid); 
         fetchFollowers(localStorage.userid); 
         fetchFeed(); 
-        renderProfileSideBar(localStorage.name);
+        renderProfileSideBar(viewingUser);
     });    
     $('#userPosts').slideUp('fast');
     $('#profileSideBar').slideDown('slow');

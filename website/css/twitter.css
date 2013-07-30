@@ -81,7 +81,12 @@ body {
 	border-color: #696969;
 	background-color: rgba(255,255,255,0.2);
 }
-
+.pthumbnail {
+  width:40px;
+  height:40px;
+}
+#profileImage {
+}
 .tweet {
 	display:inline-block;
 	float:left;
