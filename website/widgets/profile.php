@@ -3,21 +3,22 @@
         <div id="profileImageDiv"></div>
         <div id="editProfileImage">
             <i class="icon-edit" onclick="$('#profileImageForm').toggle('slow')"></i>
-            <form id="profileImageForm" action="uploadimage.php" style="display:none;" method="post" enctype="multipart/form-data">
-               
+            <form id="profileImageForm" action="./widgets/_uploadimage.php" style="display:none;" method="post" enctype="multipart/form-data">
                 <div class="fileupload fileupload-new" data-provides="fileupload">
                     <div class="fileupload-new thumbnail" style="width: 200px; height: 150px;"><img src="./img/noimage.gif" /></div>
                     <div class="fileupload-preview fileupload-exists thumbnail" style="max-width: 200px; max-height: 150px; line-height: 20px;"></div>
                     <div>
                         <span class="btn btn-file btn-inverse">
-                            <span class="fileupload-new">Select image</span>
+                            <span class="fileupload-new">Select Image</span>
                             <span class="fileupload-exists btn-inverse"><i class="icon-edit"></i></span>
-                            <input type="file" />
+                            <input type="file" name="image"/>
+                            <input id="imageName" type="hidden" name="imageName"/>
                         </span>
                         <a href="#" class="btn fileupload-exists btn-inverse" data-dismiss="fileupload"><i class="icon-remove"></i></a>
                         <button type="submit" class="fileupload-exists btn btn-inverse" id="uploadImage"><i class="icon-upload"></i></button>
                     </div>
-                </div>               
+                </div>
+                <iframe id="target_iframe" name="target_iframe" src="" style="width:0;height:0;border:0px"></iframe>
             </form>
         </div>
         <div id="username"></div>
@@ -65,6 +66,31 @@ $('#followersDiv').scroll(function () {
     }
 });
 
+var initUpload = function() {
+    document.getElementById('imageName').value = localStorage.username;
+    document.getElementById('profileImageForm').onsubmit = function() {
+    document.getElementById('profileImageForm').target = 'target_iframe';
+    }
+}
+
+var uploadComplete = function(fileName) {
+    viewingUser.image = fileName;
+    localStorage.user = JSON.stringify(viewingUser);
+    setProfileImage(fetchImage(viewingUser));
+    changeProfileImage(fileName);
+    reRenderFeed(fileName);
+}
+
+var reRenderFeed = function(newImage) {
+    var tweets = JSON.parse(localStorage.feed);
+    for(var i=0;i<tweets.length;i++)
+        if(tweets[i].userid == localStorage.userid)
+            tweets[i].image = newImage;
+    localStorage.feed = JSON.stringify(tweets);
+    document.getElementById('newsFeed').innerHTML = "";
+    renderFeed(tweets);
+}
+
 var clearSidebar = function() {
     $('#followers')[0].innerHTML = '<li class="divider"></li>';
     $('#following')[0].innerHTML = '<li class="divider"></li>';
@@ -81,6 +107,7 @@ var displayProfile = function(username) {
         $('#editProfileImage').hide();
         getUserDetails(username);
     });
+    initUpload();
 }
 
 var removeAndAddFollowButton = function() {

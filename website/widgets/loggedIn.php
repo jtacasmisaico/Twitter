@@ -174,6 +174,30 @@ var unfollow = function(followerid, followedid) {
     return false;
 }
 
+var changeProfileImage = function(image) {
+   $.ajax({
+        url: serverAddress+"users/image/create",
+        type: 'POST',
+        xhrFields: {
+            withCredentials: true
+        },
+        data: JSON.stringify({ "image":image }),
+        headers: {  
+            'Content-Type': 'application/json',
+            'token':localStorage.sessionid,
+            'userid':localStorage.userid
+        },
+        error: function(jqXHR){
+                console.log(jqXHR);
+                //logout();
+        }
+    }).done(function(data, textStatus, response) {      
+            $('#profileImageForm').hide('slow', function() {
+                //document.location.reload();
+            });
+    });    
+}
+
 var postTweet = function() {
    $.ajax({
         url: serverAddress+"post/tweet",
@@ -214,10 +238,17 @@ var renderFollowers = function(followers) {
     }	
 }
 
-var renderProfileSideBar = function(user) {
-    if(user.userid == localStorage.userid) $('#editProfileImage').show();
-    document.getElementById('username').innerHTML = "<h4>"+user.username+"</h4>";
-    document.getElementById('profileImageDiv').innerHTML = '<img id="profileImage" src = "'+fetchImage(user)+'">';
+var setProfileImage = function(image) {
+    document.getElementById('profileImageDiv').innerHTML = '<img id="profileImage" src = "'+image+'?lastModified='+new Date().getTime()+'">';
+}
+
+var renderProfileSideBar = function(user, timestamp) {
+    if(user.userid == localStorage.userid) {
+        $('#editProfileImage').show();
+        initUpload();
+    }
+    document.getElementById('username').innerHTML = "<h4>"+user.name+"</h4>";
+    setProfileImage(fetchImage(user));
 }
 
 var renderUserPosts = function(tweets) {
