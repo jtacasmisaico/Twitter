@@ -65,5 +65,6 @@ public class AppConfig extends WebMvcConfigurerAdapter {
         registry.addInterceptor(new CORSInterceptor()).addPathPatterns("/users/check/follows/*");
         registry.addInterceptor(new CORSInterceptor()).addPathPatterns("/fetch/tweets/*");
         registry.addInterceptor(new CORSInterceptor()).addPathPatterns("/fetch/posts/*");
+        registry.addInterceptor(new CORSInterceptor()).addPathPatterns("/search/tweet");
     }
 }

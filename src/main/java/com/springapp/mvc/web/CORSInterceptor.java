@@ -21,6 +21,7 @@ public class CORSInterceptor extends HandlerInterceptorAdapter{
         response.setHeader("Access-Control-Allow-Credentials", "true");
         response.setHeader("Access-Control-Allow-Headers", "Content-Type, token, userid");
         response.setHeader("Access-Control-Allow-Methods", "OPTIONS, POST, GET");
+        System.out.println("CORSd");
         return true;
     }
 }

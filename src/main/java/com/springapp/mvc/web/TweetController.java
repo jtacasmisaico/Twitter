@@ -33,8 +33,17 @@ public class TweetController {
 
     @RequestMapping(value = "/fetch/tweet/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public Tweet fetchUser(@PathVariable("tweetid") int tweetid) throws IOException {
+    public Tweet fetchTweetById(@PathVariable("tweetid") int tweetid) throws IOException {
         return tweetRepository.findTweetByTweetId(tweetid);
+    }
+
+    @RequestMapping(value = "/search/tweet", method = RequestMethod.GET)
+    @ResponseBody
+    public List<Tweet> searchTweet(@RequestParam("keyword") String keyword, @RequestParam("offset") int offset,
+                                   @RequestParam("limit") int limit) throws
+            IOException {
+        System.out.println("Searching...");
+        return tweetRepository.searchTweet(keyword, offset, limit);
     }
 
     @RequestMapping(value = "/post/tweet", method = RequestMethod.OPTIONS)

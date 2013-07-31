@@ -45,6 +45,19 @@ public class TweetRepository {
         }
     }
 
+    public List<Tweet> searchTweet(String keyword, int offset, int limit) {
+        try {
+            return jdbcTemplate.query("select tweets.tweetid, tweets.content, tweets.userid, tweets.timestamp, " +
+                    "users.username, users.image from tweets inner join users on users.userid = tweets.userid where " +
+                    "lower(content) like \'%"+keyword.toLowerCase()+"%\' OFFSET ? LIMIT ?",
+                    new Object[]{offset, limit}, new BeanPropertyRowMapper<>(Tweet.class));
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public int createTweet(String content, int userid) {
         if(content.length()<1 || content.length()>160) return -1;
         final SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate);
