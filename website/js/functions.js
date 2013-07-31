@@ -1,5 +1,6 @@
 var serverAddress;
 var viewingUser;
+var query;
 window.onload = function() {
     init();
     displayPage();
@@ -25,9 +26,17 @@ var detectURL = function() {
         displayHomePage();
         return;
     }
-    path = path.split('/')
+    path = path.split(/\?|\//);
     if(path[0] == "users") displayProfile(path[1]);
+    else if(path[0] == "search") { displayHomePage(); displaySearch(); }
     else displayHomePage();
+}
+
+var displaySearch = function() {
+    $('#userPosts').hide();
+    $('#newsFeed').hide();
+    query = decodeURI(window.location.hash.split('#')[1].split(/\?|\//)[1].substring(2));
+    searchFunction(query);
 }
 
 var displayLoggedIn = function() {
@@ -47,6 +56,7 @@ var displayHomePage = function() {
         fetchFeed(); 
         renderProfileSideBar(viewingUser);
     });    
+    $('#searchResults').hide();
     $('#userPosts').slideUp('fast');
     $('#profileSideBar').slideDown('slow');
     $('#tweetForm').slideDown('slow');
@@ -63,6 +73,7 @@ window.onscroll = function(ev) {
 
 
 var displayLoggedOut = function() {
+    $('#searchResults').hide();
     $('#newsFeed').hide(); 
     $('#navBarLoggedIn').hide();
     $('#navBarLoggedOut').show();    
@@ -90,4 +101,28 @@ var follows = function(follower, followed) {
         else showUnFollowButton(false);
     });
 
+}
+
+var doSearch = function() {    
+    var query = document.getElementById('search').value;
+    if(query.length==0) return false;
+    document.location.href = document.location.href.split('#')[0]+'#search?q='+encodeURIComponent(query);
+    return false;
+}
+
+var searchFunction = function(query) {
+    $.ajax({
+        url: serverAddress+"search/tweet?keyword="+query+"&offset="+0+"&limit="+10,
+        type: 'GET',
+        xhrFields: {
+            withCredentials: true
+        },
+        error: function(jqXHR){
+            console.log(jqXHR)
+            logout();
+        }
+    }).done(function(data, textStatus, response) {
+            renderResults(response.responseJSON);
+            $('#searchResults').slideDown();
+    });
 }

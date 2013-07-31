@@ -20,8 +20,8 @@
     </ul>
     <ul class="nav pull-right">
     	<li class="divider-vertical"></li>
-    	<form class="navbar-search">
-				<input type="text" class="search-query span3" placeholder="Search" style="height:25px;margin-top:3px;">
+    	<form id="searchBox" onsubmit="return doSearch()" class="navbar-search">
+				<input id="search" type="text" class="search-query span3" placeholder="Search" style="height:25px;margin-top:3px;">
 					<div class="icon-search icon-white"></div>
 		</form>
 		<li class="divider-vertical"></li>

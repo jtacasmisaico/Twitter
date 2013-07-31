@@ -49,6 +49,8 @@
     </div>
     <div id="userPosts" class="feed" style="display:none;">
     </div>
+    <div id="searchResults" class="feed" style="display:none;">
+    </div>
 </div>
 
 <script>
@@ -99,6 +101,7 @@ var clearSidebar = function() {
 var displayProfile = function(username) {
     console.log("Displaying profile");
     removeAndAddFollowButton();
+    $('#searchResults').hide();
     $('#newsFeed').hide();
     $('#tweetForm').slideUp('slow');
     $('#newsFeed').slideUp('slow');

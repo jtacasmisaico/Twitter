@@ -241,10 +241,6 @@ var renderFollowers = function(followers) {
     }	
 }
 
-var setProfileImage = function(image) {
-    document.getElementById('profileImageDiv').innerHTML = '<img id="profileImage" src = "'+image+'?lastModified='+new Date().getTime()+'">';
-}
-
 var renderProfileSideBar = function(user, timestamp) {
     if(user.userid == localStorage.userid) {
         $('#editProfileImage').show();
@@ -252,12 +248,6 @@ var renderProfileSideBar = function(user, timestamp) {
     }
     document.getElementById('username').innerHTML = "<h4>"+user.name+"</h4>";
     setProfileImage(fetchImage(user));
-}
-
-var renderUserPosts = function(tweets) {
-    for(var i=0;i<tweets.length;i++) {
-        pushTweet(tweets[i],'userPosts');
-    }
 }
 
 var pushFollowing = function(user) {    
@@ -289,9 +279,23 @@ var findUsername = function(userid) {
 }
 
 var renderFeed = function(tweets) {
-    console.log("Rendering...")
     for(var i=0;i<tweets.length;i++) {
         pushTweet(tweets[i],'newsFeed');
+    }
+}
+
+var renderUserPosts = function(tweets) {
+    if(tweets.length == 0) document.getElementById('userPosts').innerHTML = '<h4><em>The newb is yet to tweet :/</em></h3>';
+    for(var i=0;i<tweets.length;i++) {
+        pushTweet(tweets[i],'userPosts');
+    }
+}
+
+var renderResults = function(tweets) {
+    document.getElementById('searchResults').innerHTML = '<h4><em>Showing results for "'+query+'" : </em></h3>';
+    if(tweets.length == 0) document.getElementById('searchResults').innerHTML = '<h4><em>You can\'t haz resultz :3</em></h3>';
+    for(var i=0;i<tweets.length;i++) {
+        pushTweet(tweets[i],'searchResults');
     }
 }
 
@@ -315,4 +319,9 @@ var pushNewTweet = function(tweet, divId) {
     var feedDiv = document.getElementById(divId);
     feedDiv.insertBefore(element, feedDiv.firstChild);
 }
+
+var setProfileImage = function(image) {
+    document.getElementById('profileImageDiv').innerHTML = '<img id="profileImage" src = "'+image+'?lastModified='+new Date().getTime()+'">';
+}
+
 </script>
