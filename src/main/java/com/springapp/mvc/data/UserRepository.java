@@ -1,5 +1,6 @@
 package com.springapp.mvc.data;
 
+import com.springapp.mvc.model.Tweet;
 import com.springapp.mvc.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -185,6 +186,17 @@ public class UserRepository {
         catch(Exception e){
             e.printStackTrace();
             return "Error";
+        }
+    }
+
+    public List<String> searchUsers(String username) {
+        try {
+            return jdbcTemplate.queryForList("select username from users where lower(username) like \'"+username
+                    .toLowerCase()+"%\' LIMIT '5'", String.class);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 

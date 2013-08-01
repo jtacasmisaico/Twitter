@@ -37,12 +37,11 @@ public class TweetController {
         return tweetRepository.findTweetByTweetId(tweetid);
     }
 
-    @RequestMapping(value = "/search/tweet", method = RequestMethod.GET)
+    @RequestMapping(value = "/search/tweets", method = RequestMethod.GET)
     @ResponseBody
     public List<Tweet> searchTweet(@RequestParam("keyword") String keyword, @RequestParam("offset") int offset,
                                    @RequestParam("limit") int limit) throws
             IOException {
-        System.out.println("Searching...");
         return tweetRepository.searchTweet(keyword, offset, limit);
     }
 

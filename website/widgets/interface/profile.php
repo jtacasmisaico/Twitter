@@ -3,7 +3,7 @@
         <div id="profileImageDiv"></div>
         <div id="editProfileImage">
             <i class="icon-edit" onclick="$('#profileImageForm').toggle('slow')"></i>
-            <form id="profileImageForm" action="./widgets/_uploadimage.php" style="display:none;" method="post" enctype="multipart/form-data">
+            <form id="profileImageForm" action="./widgets/interface/_uploadimage.php" style="display:none;" method="post" enctype="multipart/form-data">
                 <div class="fileupload fileupload-new" data-provides="fileupload">
                     <div class="fileupload-new thumbnail" style="width: 200px; height: 150px;"><img src="./img/noimage.gif" /></div>
                     <div class="fileupload-preview fileupload-exists thumbnail" style="max-width: 200px; max-height: 150px; line-height: 20px;"></div>

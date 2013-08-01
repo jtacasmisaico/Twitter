@@ -1,4 +1,3 @@
-
 var fetchTweets = function(userid, offset) {
     if (offset == undefined) offset = 0;
     $.ajax({
@@ -121,44 +120,44 @@ var fetchImage = function(tweet) {
 
 var fetchUserDetails = function(username) {
     $.ajax({
-        url: serverAddress+"users/"+username,
+        url: serverAddress + "users/" + username,
         type: 'GET',
         xhrFields: {
             withCredentials: true
         },
-        error: function(jqXHR){
+        error: function(jqXHR) {
             logout();
         }
     }).done(function(data, textStatus, response) {
-            $('#profileSideBar').slideDown('slow');
-            clearSidebar();
-            renderProfileSideBar(response.responseJSON);
-            fetchFollowers(response.responseJSON.userid);
-            fetchFollowing(response.responseJSON.userid);
-            fetchTweets(response.responseJSON.userid);
-            viewingUser = response.responseJSON;
-            if(response.responseJSON.userid == localStorage.userid)
-                $('#followButton').hide();
-            else 
-                follows(localStorage.userid, viewingUser.userid);
+        $('#profileSideBar').slideDown('slow');
+        clearSidebar();
+        renderProfileSideBar(response.responseJSON);
+        fetchFollowers(response.responseJSON.userid);
+        fetchFollowing(response.responseJSON.userid);
+        fetchTweets(response.responseJSON.userid);
+        viewingUser = response.responseJSON;
+        if (response.responseJSON.userid == localStorage.userid)
+            $('#followButton').hide();
+        else
+            follows(localStorage.userid, viewingUser.userid);
     });
 }
 
 var follows = function(follower, followed) {
-  $.ajax({
-    url: serverAddress + "users/check/follows/?follower=" + follower + "&followed=" + followed,
-    type: 'GET',
-    xhrFields: {
-      withCredentials: true
-    },
-    error: function(jqXHR) {
-      console.log(jqXHR);
-      logout();
-    }
-  }).done(function(data, textStatus, response) {
-    if (response.responseText == "true")
-      showUnFollowButton(true);
-    else showUnFollowButton(false);
-  });
+    $.ajax({
+        url: serverAddress + "users/check/follows/?follower=" + follower + "&followed=" + followed,
+        type: 'GET',
+        xhrFields: {
+            withCredentials: true
+        },
+        error: function(jqXHR) {
+            console.log(jqXHR);
+            logout();
+        }
+    }).done(function(data, textStatus, response) {
+        if (response.responseText == "true")
+            showUnFollowButton(true);
+        else showUnFollowButton(false);
+    });
 
 }

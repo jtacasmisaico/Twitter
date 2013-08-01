@@ -26,12 +26,9 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
         response.addHeader("Access-Control-Allow-Credentials", "true");
         response.addHeader("Access-Control-Allow-Headers", "Content-Type, token, userid");
         response.addHeader("Access-Control-Allow-Methods", "OPTIONS, POST");
-        System.out.println("Interceptor Request Received : "+request.getMethod());
         if(!"OPTIONS".equals(request.getMethod())) {
-            System.out.println("Received Token : "+request.getHeader("token"));
             Session session = new Session(request.getHeader("token"), Integer.parseInt(request.getHeader("userid")));
             if(SessionRepository.isValidSession(session)){
-                System.out.println("Authenticated : "+request.getHeader("token"));
                 return true;
             }
             else {

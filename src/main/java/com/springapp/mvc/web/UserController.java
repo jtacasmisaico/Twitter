@@ -96,18 +96,21 @@ public class UserController {
 
     @RequestMapping(value = "/users/register", method = RequestMethod.OPTIONS)
     @ResponseBody
-    public void getOptionsCreateUser(HttpServletResponse response) {
-        response.addHeader("Access-Control-Allow-Origin", "*");
-        response.addHeader("Access-Control-Allow-Headers", "Content-Type");
-        response.addHeader("Access-Control-Allow-Methods", "OPTIONS, POST");
+    public void getOptionsCreateUser() {
     }
 
     @RequestMapping(value = "/users/register", method = RequestMethod.POST)
     @ResponseBody
     public String createUser(HttpServletResponse response, @RequestBody final User user){
-        response.addHeader("Access-Control-Allow-Origin", "*");
         return repository.createUser(response, user.getUsername(), user.getName(), user.getEmail(),
                 user.getPassword());
 
+    }
+
+    @RequestMapping(value = "/search/users", method = RequestMethod.GET)
+    @ResponseBody
+    public List<String> searchTweet(@RequestParam("term") String username) throws
+            IOException {
+        return repository.searchUsers(username.substring(1));
     }
 }
