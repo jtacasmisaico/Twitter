@@ -15,10 +15,11 @@ var doSearch = function() {
     document.getElementById('search').value = '';
     document.getElementById('search').blur();
     if (query.length == 0) return false;
-    if (query[0] == '@')
-        document.location.href = document.location.href.split('#')[0] + '#users/' + encodeURIComponent(query);
-    else
+    if (query[0] == '#')
         document.location.href = document.location.href.split('#')[0] + '#search?q=' + encodeURIComponent(query.substring(1));
+    else
+        document.location.href = document.location.href.split('#')[0] + '#users/' + encodeURIComponent(query);
+        
 
 
     return false;
