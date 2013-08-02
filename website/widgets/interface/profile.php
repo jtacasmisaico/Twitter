@@ -25,14 +25,14 @@
         <div id="followButtonDiv"></div>
         <div class="accordion" id="sidebarAccordion">
             <div class="accordion-group" style="border:0px;">
-                <button class="btn btn-inverse" style="width:198px;" data-toggle="collapse" data-parent="#sidebarAccordion" data-target="#followersDiv">
+                <button id="followersButton" class="btn btn-inverse" style="width:198px;" data-toggle="collapse" data-parent="#sidebarAccordion" data-target="#followersDiv">
                 Followers
                 </button>
                 <div id="followersDiv"  class="collapse">
                     <ul id="followers" class="nav nav-list"><li class="divider"></li></ul>
                 </div>
 
-                <button class="btn btn-inverse" style="width:198px;" data-toggle="collapse" data-parent="#sidebarAccordion" data-target="#followingDiv">
+                <button id="followingButton" class="btn btn-inverse" style="width:198px;" data-toggle="collapse" data-parent="#sidebarAccordion" data-target="#followingDiv">
                 Following
                 </button>
                 <div id="followingDiv" class="collapse">

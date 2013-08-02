@@ -62,7 +62,6 @@ public class LoginController{
             sessionMap.put("sessionid", sessionid);
             sessionMap.put("user", authenticatedUser);
             sessionRepository.addSession(session);
-            sessionRepository.printSessionIds();
             response.setStatus(200);
             return sessionMap;
         }

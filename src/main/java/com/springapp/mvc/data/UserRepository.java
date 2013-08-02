@@ -45,6 +45,26 @@ public class UserRepository {
         }
     }
 
+    public int findFollowersCount(int userid) {
+        try{
+            return jdbcTemplate.queryForInt("SELECT count(*) FROM followers WHERE followed = ?", new Object[]{userid});
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    public int findFollowingCount(int userid) {
+        try{
+            return jdbcTemplate.queryForInt("SELECT count(*) FROM followers WHERE follower = ?", new Object[]{userid});
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
     public User findByUsername(String username) {
         try {
             return jdbcTemplate.queryForObject("select name, userid, username, email, image from users where username = ?",

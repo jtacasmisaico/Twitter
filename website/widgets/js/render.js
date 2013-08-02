@@ -54,6 +54,14 @@ var reRenderFeed = function(newImage) {
     renderFeed(tweets);
 }
 
+var renderFollowersCount = function(count) {
+    document.getElementById('followersButton').innerHTML = "Followers ("+count+")";
+}
+
+var renderFollowingCount = function(count) {
+    document.getElementById('followingButton').innerHTML = "Following ("+count+")";
+}
+
 var pushFollowing = function(user) {
     var element = document.createElement('li');
     element.innerHTML = '<a href="#users/' + user.username + '">' + user.username + '</a>';

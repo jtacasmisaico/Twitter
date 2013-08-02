@@ -56,6 +56,18 @@ public class UserController {
         return repository.fetchFollows(userid, offset, limit);
     }
 
+    @RequestMapping(value = "/users/follows/count/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public int countFollows(@PathVariable("id") int userid) throws IOException {
+        return repository.findFollowingCount(userid);
+    }
+
+    @RequestMapping(value = "/users/followers/count/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public int countFollowers(@PathVariable("id") int userid) throws IOException {
+        return repository.findFollowersCount(userid);
+    }
+
     @RequestMapping(value = "/users/check/follows/", method = RequestMethod.GET)
     @ResponseBody
     public boolean checkFollows(@RequestParam("follower") int follower, @RequestParam("followed") int followed) throws

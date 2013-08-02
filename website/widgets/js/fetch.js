@@ -74,7 +74,6 @@ var fetchFeed = function(tweetsFetched) {
             'userid': localStorage.userid
         },
         error: function(jqXHR) {
-            console.log(jqXHR)
             logout();
         }
     }).done(function(data, textStatus, response) {
@@ -137,10 +136,42 @@ var fetchUserDetails = function(username) {
         fetchFollowing(response.responseJSON.userid);
         fetchTweets(response.responseJSON.userid);
         viewingUser = response.responseJSON;
+        fetchFollowingCount(response.responseJSON.userid)
+        fetchFollowersCount(response.responseJSON.userid)
         if (response.responseJSON.userid == localStorage.userid)
             $('#followButton').hide();
         else
             follows(localStorage.userid, viewingUser.userid);
+    });
+}
+
+var fetchFollowersCount = function(userid) {
+    $.ajax({
+        url: serverAddress + "users/followers/count/" + userid,
+        type: 'GET',
+        xhrFields: {
+            withCredentials: true
+        },
+        error: function(jqXHR) {
+            logout();
+        }
+    }).done(function(data, textStatus, response) {
+        renderFollowersCount(parseInt(response.responseText));
+    });
+}
+
+var fetchFollowingCount = function(userid) {
+    $.ajax({
+        url: serverAddress + "users/follows/count/" + userid,
+        type: 'GET',
+        xhrFields: {
+            withCredentials: true
+        },
+        error: function(jqXHR) {
+            logout();
+        }
+    }).done(function(data, textStatus, response) {
+        renderFollowingCount(parseInt(response.responseText));
     });
 }
 

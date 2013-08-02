@@ -4,12 +4,15 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class User {
+
     private int userid;
     private String username;
     private String password;
     private String name;
     private String email;
     private String image;
+    private int followerCount;
+    private int followingCount;
 
     public int getUserid() {
         return userid;
@@ -35,6 +38,14 @@ public class User {
         return image;
     }
 
+    public int getFollowerCount() {
+        return followerCount;
+    }
+
+    public int getFollowingCount() {
+        return followingCount;
+    }
+
     public void setUserid(int userid) {
         this.userid = userid;
     }
@@ -57,5 +68,13 @@ public class User {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public void setFollowerCount(int followerCount) {
+        this.followerCount = followerCount;
+    }
+
+    public void setFollowingCount(int followingCount) {
+        this.followingCount = followingCount;
     }
 }

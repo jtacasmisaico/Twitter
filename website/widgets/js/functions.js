@@ -1,3 +1,4 @@
+
 var serverAddress;
 var viewingUser;
 var query;
@@ -14,7 +15,6 @@ window.onload = function() {
 			source: serverAddress + "search/users"
 		});
 	});
-
 
 	$('#followingDiv').scroll(function() {
 		console.log("Initiated infinite scroll in following div");
@@ -43,6 +43,7 @@ window.onhashchange = function() {
 }
 
 var displayPage = function() {
+	console.log("Displaying")
 	if (loggedIn()) {
 		displayLoggedIn();
 		detectURL();
@@ -60,7 +61,8 @@ var detectURL = function() {
 	else if (path[0] == "search") {
 		displayHomePage();
 		displaySearch();
-	} else displayHomePage();
+	}
+	else displayHomePage();
 }
 
 var displaySearch = function() {
@@ -93,7 +95,9 @@ var displayHomePage = function() {
 	$('#tweetForm').slideDown('slow');
 	$('#newsFeed').show();
 	$('#tweetForm').show();
-	$('#followButton').hide();
+	$('#followButton').hide();	
+	fetchFollowingCount(parseInt(localStorage.userid))
+	fetchFollowersCount(parseInt(localStorage.userid))
 }
 
 window.onscroll = function(ev) {

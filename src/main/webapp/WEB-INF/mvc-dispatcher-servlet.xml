@@ -38,6 +38,8 @@
                 <mvc:mapping path="/users/register" />
                 <mvc:mapping path="/users/followers/*" />
                 <mvc:mapping path="/users/follows/*" />
+                <mvc:mapping path="/users/followers/count/*" />
+                <mvc:mapping path="/users/follows/count/*" />
                 <mvc:mapping path="/users/check/follows/*" />
                 <mvc:mapping path="/fetch/tweets/*" />
                 <mvc:mapping path="/fetch/posts/*" />
