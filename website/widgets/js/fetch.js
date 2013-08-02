@@ -74,6 +74,7 @@ var fetchFeed = function(tweetsFetched) {
             'userid': localStorage.userid
         },
         error: function(jqXHR) {
+            console.log(jqXHR)
             logout();
         }
     }).done(function(data, textStatus, response) {

@@ -90,6 +90,7 @@ body {
 .tweet {
 	display:inline-block;
 	float:left;
+  width:320px;
 }
 
 .timestamp {
