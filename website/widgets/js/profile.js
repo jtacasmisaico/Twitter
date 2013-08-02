@@ -13,10 +13,12 @@ var displayProfile = function(username) {
     initUpload();
 }
 var changeTweetButtonState = function() {
+    document.getElementById("characterCount").innerHTML = (140-document.getElementById("tweetBox").value.length) + " characters left";
     if (document.getElementById("tweetBox").value.length > 0) {
         document.getElementById("tweetButton").removeAttribute('disabled');
         document.getElementById("tweetButton").setAttribute('class', 'btn btn-info');
     } else {
+        document.getElementById("characterCount").innerHTML = '&nbsp;';
         document.getElementById("tweetButton").setAttribute('disabled');
         document.getElementById("tweetButton").setAttribute('class', 'btn disabled');
     }

@@ -47,7 +47,6 @@ public class SessionRepository {
     public boolean isValidSession(Session session) {
         int count =  jdbcTemplate.queryForInt("SELECT count(*) FROM sessions WHERE sessionid = ? and userid= ?",
                 new Object[]{session.getSessionid(), session.getUserid()});
-        System.out.println("Count : "+count);
         if(count>0) return true;
         else return false;
     }
