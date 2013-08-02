@@ -11,12 +11,12 @@ import java.sql.Timestamp;
  * Time: 8:26 PM
  */
 public class Tweet {
-    public int tweetid;
-    public String content;
-    public int userid;
-    public String username;
-    public String image;
-    public Timestamp timestamp;
+    private int tweetid;
+    private String content;
+    private int userid;
+    private String username;
+    private String image;
+    private Timestamp timestamp;
 
     public int getTweetid() {
         return tweetid;

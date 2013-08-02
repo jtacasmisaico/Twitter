@@ -1,9 +1,10 @@
-    <beans xmlns="http://www.springframework.org/schema/beans"
+<beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
     <context:component-scan base-package="com.springapp.mvc"/>
 
@@ -22,4 +23,28 @@
         <property name="suffix" value=".jsp"/>
     </bean>
 
+        <mvc:interceptors>
+            <mvc:interceptor>
+                <mvc:mapping path="/users/follow" />
+                <mvc:mapping path="/users/unfollow" />
+                <mvc:mapping path="/users/image/create" />
+                <mvc:mapping path="/post/tweet" />
+                <mvc:mapping path="/fetch/feed" />
+                <mvc:mapping path="/fetch/feed/latest" />
+                <bean id= "authorizationInterceptor"
+                      class="com.springapp.mvc.web.AuthenticationInterceptor" />
+            </mvc:interceptor>
+            <mvc:interceptor>
+                <mvc:mapping path="/users/register" />
+                <mvc:mapping path="/users/followers/*" />
+                <mvc:mapping path="/users/follows/*" />
+                <mvc:mapping path="/users/check/follows/*" />
+                <mvc:mapping path="/fetch/tweets/*" />
+                <mvc:mapping path="/fetch/posts/*" />
+                <mvc:mapping path="/search/tweets" />
+                <mvc:mapping path="/search/users" />
+                <bean id= "corsInterceptor"
+                      class="com.springapp.mvc.web.CORSInterceptor" />
+            </mvc:interceptor>
+        </mvc:interceptors>
 </beans>

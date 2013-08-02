@@ -4,12 +4,12 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class User {
-    public int userid;
-    public String username;
-    public String password;
-    public String name;
-    public String email;
-    public String image;
+    private int userid;
+    private String username;
+    private String password;
+    private String name;
+    private String email;
+    private String image;
 
     public int getUserid() {
         return userid;

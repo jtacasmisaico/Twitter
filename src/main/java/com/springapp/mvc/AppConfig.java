@@ -1,5 +1,6 @@
 package com.springapp.mvc;
 
+import com.springapp.mvc.data.SessionRepository;
 import com.springapp.mvc.web.AuthenticationInterceptor;
 import com.springapp.mvc.web.CORSInterceptor;
 import org.postgresql.ds.PGPoolingDataSource;
@@ -47,26 +48,8 @@ public class AppConfig extends WebMvcConfigurerAdapter {
     }
 
     @Bean
-    public static PropertySourcesPlaceholderConfigurer propertiesConfigurer() {
+    public PropertySourcesPlaceholderConfigurer propertiesConfigurer() {
         return new PropertySourcesPlaceholderConfigurer();
     }
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry){
-        registry.addInterceptor(new AuthenticationInterceptor()).addPathPatterns("/users/follow");
-        registry.addInterceptor(new AuthenticationInterceptor()).addPathPatterns("/users/unfollow");
-        registry.addInterceptor(new AuthenticationInterceptor()).addPathPatterns("/users/image/create");
-        registry.addInterceptor(new AuthenticationInterceptor()).addPathPatterns("/post/tweet");
-        registry.addInterceptor(new AuthenticationInterceptor()).addPathPatterns("/fetch/feed");
-        registry.addInterceptor(new AuthenticationInterceptor()).addPathPatterns("/fetch/feed/latest");
-
-        registry.addInterceptor(new CORSInterceptor()).addPathPatterns("/users/register");
-        registry.addInterceptor(new CORSInterceptor()).addPathPatterns("/users/followers/*");
-        registry.addInterceptor(new CORSInterceptor()).addPathPatterns("/users/follows/*");
-        registry.addInterceptor(new CORSInterceptor()).addPathPatterns("/users/check/follows/*");
-        registry.addInterceptor(new CORSInterceptor()).addPathPatterns("/fetch/tweets/*");
-        registry.addInterceptor(new CORSInterceptor()).addPathPatterns("/fetch/posts/*");
-        registry.addInterceptor(new CORSInterceptor()).addPathPatterns("/search/tweets");
-        registry.addInterceptor(new CORSInterceptor()).addPathPatterns("/search/users");
-    }
 }

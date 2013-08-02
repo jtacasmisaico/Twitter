@@ -25,10 +25,12 @@ import java.util.Map;
 @Controller
 public class LoginController{
     private final UserRepository repository;
+    private final SessionRepository sessionRepository;
     private SecureRandom random = new SecureRandom();
     @Autowired
-    public LoginController(UserRepository repository) {
+    public LoginController(UserRepository repository, SessionRepository sessionRepository) {
         this.repository = repository;
+        this.sessionRepository = sessionRepository;
     }
 
     @RequestMapping(value = "/users/login", method = RequestMethod.OPTIONS)
@@ -59,8 +61,8 @@ public class LoginController{
             Map<String, Object> sessionMap = new HashMap<>();
             sessionMap.put("sessionid", sessionid);
             sessionMap.put("user", authenticatedUser);
-            SessionRepository.addSession(session);
-            SessionRepository.printSessionIds();
+            sessionRepository.addSession(session);
+            sessionRepository.printSessionIds();
             response.setStatus(200);
             return sessionMap;
         }

@@ -2,6 +2,7 @@ package com.springapp.mvc.web;
 
 import com.springapp.mvc.data.SessionRepository;
 import com.springapp.mvc.model.Session;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -19,6 +20,9 @@ import java.util.Map;
  */
 @Component
 public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
+    @Autowired private SessionRepository sessionRepository;
+
+
     @Override
     public boolean preHandle( HttpServletRequest request, HttpServletResponse response,
                               Object handler) {
@@ -28,7 +32,7 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
         response.addHeader("Access-Control-Allow-Methods", "OPTIONS, POST");
         if(!"OPTIONS".equals(request.getMethod())) {
             Session session = new Session(request.getHeader("token"), Integer.parseInt(request.getHeader("userid")));
-            if(SessionRepository.isValidSession(session)){
+            if(sessionRepository.isValidSession(session)){
                 return true;
             }
             else {
