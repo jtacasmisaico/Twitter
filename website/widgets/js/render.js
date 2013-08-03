@@ -85,7 +85,7 @@ var pushFollowers = function(user) {
 var pushTweet = function(tweet, divId) {
     var element = document.createElement('div');
     element.setAttribute('class', 'media');
-    element.innerHTML = '<a class="pull-left" href="#users/' + tweet.username + '"><img class="media-object pthumbnail" src="' + fetchImage(tweet) + '"></a><div class="media-body tweet"><h4 class="media-heading"><a href="#users/' + tweet.username + '">' + tweet.username + '</a></h4>' + tweet.content + '</div><div class="timestamp">' + new Date(tweet.timestamp).toString().substring(0, 21) + '</div></div>'
+    element.innerHTML = '<a class="pull-left" href="#users/' + tweet.username + '"><img class="media-object pthumbnail" src="' + fetchImage(tweet) + '"></a><div class="media-body tweet"><h4 class="media-heading"><a href="#users/' + tweet.username + '">' + tweet.username + '</a></h4>' + imageParser(tweet.content) + '</div><div class="timestamp">' + new Date(tweet.timestamp).toString().substring(0, 21) + '</div></div>'
     var feedDiv = document.getElementById(divId);
     feedDiv.appendChild(element);
 }
@@ -98,7 +98,12 @@ var pushLatestFeed = function(tweets) {
 var pushNewTweet = function(tweet, divId) {
     var element = document.createElement('div');
     element.setAttribute('class', 'media');
-    element.innerHTML = '<a class="pull-left" href="#users/' + tweet.username + '"><img class="media-object pthumbnail" src="' + fetchImage(tweet) + '"></a><div class="media-body tweet"><h4 class="media-heading"><a href="#users/' + tweet.username + '">' + tweet.username + '</a></h4>' + tweet.content + '</div><div class="timestamp">' + new Date(tweet.timestamp).toString().substring(0, 21) + '</div></div>'
+    element.innerHTML = '<a class="pull-left" href="#users/' + tweet.username + '"><img class="media-object pthumbnail" src="' + fetchImage(tweet) + '"></a><div class="media-body tweet"><h4 class="media-heading"><a href="#users/' + tweet.username + '">' + tweet.username + '</a></h4>' + imageParser(tweet.content) + '</div><div class="timestamp">' + new Date(tweet.timestamp).toString().substring(0, 21) + '</div></div>'
     var feedDiv = document.getElementById(divId);
     feedDiv.insertBefore(element, feedDiv.firstChild);
+}
+
+var imageParser = function(content) {
+    var expression = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])\.(jpeg|jpg|png|gif)/ig;
+    return content.replace(expression, '<br><a href="$1.$3" target="_blank"><img src="$1.$3" style="width:100px;height:100px;"></a><br>')
 }
