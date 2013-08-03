@@ -9,11 +9,11 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  * Time: 1:06 PM
  */
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
-public class Session {
+public class AuthenticatedUser {
     private String sessionid;
     private int userid;
 
-    public Session(String sessionid, int userid) {
+    public AuthenticatedUser(String sessionid, int userid) {
         this.sessionid = sessionid;
         this.userid = userid;
     }

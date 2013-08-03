@@ -1,8 +1,8 @@
 package com.springapp.mvc.web;
 
-import com.springapp.mvc.data.SessionRepository;
+import com.springapp.mvc.data.AuthenticationRepository;
 import com.springapp.mvc.data.UserRepository;
-import com.springapp.mvc.model.Session;
+import com.springapp.mvc.model.AuthenticatedUser;
 import com.springapp.mvc.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,7 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,12 +27,12 @@ import java.util.Map;
 @Controller
 public class LoginController{
     private final UserRepository repository;
-    private final SessionRepository sessionRepository;
+    private final AuthenticationRepository authenticationRepository;
     private SecureRandom random = new SecureRandom();
     @Autowired
-    public LoginController(UserRepository repository, SessionRepository sessionRepository) {
+    public LoginController(UserRepository repository, AuthenticationRepository authenticationRepository) {
         this.repository = repository;
-        this.sessionRepository = sessionRepository;
+        this.authenticationRepository = authenticationRepository;
     }
 
     @RequestMapping(value = "/users/login", method = RequestMethod.OPTIONS)
@@ -44,7 +46,7 @@ public class LoginController{
     @RequestMapping(value = "/users/login", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> login(HttpServletResponse response, @RequestBody Map<String,
-            Object> requestParameters){
+            Object> requestParameters) throws InvalidKeySpecException, NoSuchAlgorithmException {
         response.addHeader("Access-Control-Allow-Origin", "https://localhost");
         response.addHeader("Access-Control-Allow-Credentials", "true");
         String email = (String) requestParameters.get("email");
@@ -54,14 +56,14 @@ public class LoginController{
             response.setStatus(403);
             return null;
         }
-        if(password.equals(user.getPassword())) {
+        if(authenticationRepository.validatePassword(password, user.getPassword())) {
             String sessionid = new BigInteger(130, random).toString(32);
-            Session session = new Session(sessionid, user.getUserid());
+            AuthenticatedUser session = new AuthenticatedUser(sessionid, user.getUserid());
             User authenticatedUser = repository.findById(user.getUserid());
             Map<String, Object> sessionMap = new HashMap<>();
             sessionMap.put("sessionid", sessionid);
             sessionMap.put("user", authenticatedUser);
-            sessionRepository.addSession(session);
+            authenticationRepository.addSession(session);
             response.setStatus(200);
             return sessionMap;
         }

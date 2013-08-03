@@ -40,6 +40,7 @@
                 </div>
             </div>
         </div>
+        <div id="loading">Loading...</div>
     </div>
     <form id="tweetForm" style="display:none;" onsubmit="postTweet()">
             <textarea id="tweetBox" rows="3" style="width:500px;" onkeyup="changeTweetButtonState()" maxlength="140"></textarea>

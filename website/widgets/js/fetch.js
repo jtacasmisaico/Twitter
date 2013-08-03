@@ -51,6 +51,9 @@ var fetchFollowers = function(userid, offset, limit) {
 }
 
 var fetchFeed = function(tweetsFetched) {
+    if(alreadyFetchingFeed == true) return;
+    $('#loading').show();
+    alreadyFetchingFeed = true;
     if (tweetsFetched == undefined) {
         if (localStorage.feed != undefined) {
             if (document.getElementById('newsFeed').children.length == JSON.parse(localStorage.feed).length)
@@ -62,7 +65,7 @@ var fetchFeed = function(tweetsFetched) {
         tweetsFetched = 0;
     }
     $.ajax({
-        url: serverAddress + "fetch/feed?offset=" + tweetsFetched,
+        url: serverAddress + "fetch/feed?offset=" + tweetsFetched + "&limit=40",
         type: 'GET',
         xhrFields: {
             withCredentials: true
@@ -77,6 +80,8 @@ var fetchFeed = function(tweetsFetched) {
             logout();
         }
     }).done(function(data, textStatus, response) {
+        alreadyFetchingFeed = false;
+        $('#loading').hide();
         localStorage.tweetsFetched = parseInt(localStorage.tweetsFetched) + response.responseJSON.length;
         var existingFeed = JSON.parse(localStorage.feed);
         var newFeed = existingFeed.concat(response.responseJSON);

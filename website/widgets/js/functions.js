@@ -2,6 +2,7 @@
 var serverAddress;
 var viewingUser;
 var query;
+var alreadyFetchingFeed = false;
 window.onload = function() {
 	init();
 	displayPage();
@@ -101,7 +102,8 @@ var displayHomePage = function() {
 }
 
 window.onscroll = function(ev) {
-	if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+	if ((window.innerHeight + window.scrollY + (document.body.offsetHeight*4)) >= document.body.offsetHeight) {
+		console.log("Fetching feed");
 		fetchFeed(localStorage.tweetsFetched);
 	}
 };

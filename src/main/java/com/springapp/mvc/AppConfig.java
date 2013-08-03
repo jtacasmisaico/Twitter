@@ -1,8 +1,5 @@
 package com.springapp.mvc;
 
-import com.springapp.mvc.data.SessionRepository;
-import com.springapp.mvc.web.AuthenticationInterceptor;
-import com.springapp.mvc.web.CORSInterceptor;
 import org.postgresql.ds.PGPoolingDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +10,6 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.beans.PropertyVetoException;

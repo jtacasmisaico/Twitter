@@ -10,6 +10,8 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.servlet.http.HttpServletResponse;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -19,10 +21,12 @@ import java.util.regex.Pattern;
 public class UserRepository {
 
     private final JdbcTemplate jdbcTemplate;
+    private final AuthenticationRepository authenticationRepository;
 
     @Autowired
-    public UserRepository(JdbcTemplate jdbcTemplate) {
+    public UserRepository(JdbcTemplate jdbcTemplate, AuthenticationRepository authenticationRepository) {
         this.jdbcTemplate = jdbcTemplate;
+        this.authenticationRepository = authenticationRepository;
     }
 
     public User findById(int id) {
@@ -84,6 +88,7 @@ public class UserRepository {
 
     public String createUser(HttpServletResponse response, String username, String name, String email,
                              String password) {
+        System.out.println("Creating user...");
         if(!isValidEmailAddress(email)) { response.setStatus(403); return "Invalid Email Address"; }
         else if(name.length()<=0) { response.setStatus(403); return "Please specify your full name"; }
         else if(username.length()<3) { response.setStatus(403); return "Username should be minimum 3 characters " +
@@ -97,14 +102,23 @@ public class UserRepository {
             insert.setGeneratedKeyName("userid");
             Map<String, Object> param = new HashMap<>();
             param.put("username", username);
-            param.put("password", password);
+            try {
+                String generatedPassword = authenticationRepository.createHash(password);
+                System.out.println("Generated Password : "+generatedPassword);
+                param.put("password", generatedPassword);
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            } catch (InvalidKeySpecException e) {
+                e.printStackTrace();
+            }
             param.put("name", name);
             param.put("email", email);
             try{
                 response.setStatus(200);
                 return String.valueOf(insert.executeAndReturnKey(param));
             }
-            catch( DuplicateKeyException e){
+            catch(Exception e){
+                e.printStackTrace();
                 response.setStatus(403);
                 return "Email Address/Username already taken";
             }

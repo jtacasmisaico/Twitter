@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 import java.util.Map;
 
@@ -113,7 +115,7 @@ public class UserController {
 
     @RequestMapping(value = "/users/register", method = RequestMethod.POST)
     @ResponseBody
-    public String createUser(HttpServletResponse response, @RequestBody final User user){
+    public String createUser(HttpServletResponse response, @RequestBody final User user) throws InvalidKeySpecException, NoSuchAlgorithmException {
         return repository.createUser(response, user.getUsername(), user.getName(), user.getEmail(),
                 user.getPassword());
 

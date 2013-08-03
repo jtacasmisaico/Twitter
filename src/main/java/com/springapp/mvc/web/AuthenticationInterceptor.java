@@ -1,16 +1,13 @@
 package com.springapp.mvc.web;
 
-import com.springapp.mvc.data.SessionRepository;
-import com.springapp.mvc.model.Session;
+import com.springapp.mvc.data.AuthenticationRepository;
+import com.springapp.mvc.model.AuthenticatedUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,7 +17,7 @@ import java.util.Map;
  */
 @Component
 public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
-    @Autowired private SessionRepository sessionRepository;
+    @Autowired private AuthenticationRepository authenticationRepository;
 
 
     @Override
@@ -31,8 +28,8 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
         response.addHeader("Access-Control-Allow-Headers", "Content-Type, token, userid");
         response.addHeader("Access-Control-Allow-Methods", "OPTIONS, POST");
         if(!"OPTIONS".equals(request.getMethod())) {
-            Session session = new Session(request.getHeader("token"), Integer.parseInt(request.getHeader("userid")));
-            if(sessionRepository.isValidSession(session)){
+            AuthenticatedUser authenticatedUser = new AuthenticatedUser(request.getHeader("token"), Integer.parseInt(request.getHeader("userid")));
+            if(authenticationRepository.isValidSession(authenticatedUser)){
                 return true;
             }
             else {
