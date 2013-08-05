@@ -7,6 +7,7 @@ import com.springapp.mvc.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.HtmlUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -53,7 +54,8 @@ public class TweetController {
     @RequestMapping(value = "/post/tweet", method = RequestMethod.POST)
     @ResponseBody
     public Tweet createTweet(@RequestBody final Tweet tweet, HttpServletResponse response, HttpServletRequest request){
-        int id = tweetRepository.createTweet(tweet.getContent(), Integer.parseInt(request.getHeader("userid")));
+        int id = tweetRepository.createTweet(HtmlUtils.htmlEscape(tweet.getContent()),
+                Integer.parseInt(request.getHeader("userid")));
         if (id != -1){
             response.setStatus(200);
             return tweetRepository.findTweetByTweetId(id);

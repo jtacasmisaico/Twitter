@@ -5,6 +5,7 @@ import com.springapp.mvc.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.HtmlUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -116,8 +117,9 @@ public class UserController {
     @RequestMapping(value = "/users/register", method = RequestMethod.POST)
     @ResponseBody
     public String createUser(HttpServletResponse response, @RequestBody final User user) throws InvalidKeySpecException, NoSuchAlgorithmException {
-        return repository.createUser(response, user.getUsername(), user.getName(), user.getEmail(),
-                user.getPassword());
+        return repository.createUser(response, HtmlUtils.htmlEscape(user.getUsername()),
+                HtmlUtils.htmlEscape(user.getName()), HtmlUtils.htmlEscape(user.getEmail()),
+                HtmlUtils.htmlEscape(user.getPassword()));
 
     }
 
