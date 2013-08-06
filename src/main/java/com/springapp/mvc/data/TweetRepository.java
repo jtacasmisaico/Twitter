@@ -76,14 +76,10 @@ public class TweetRepository {
         }
     }
 
-    public List<Tweet> fetchFeed(int userid, int offset, int limit) {
+    public List<Tweet> fetchFeed(int userid, int lastTweet, int limit) {
         try {
-            return jdbcTemplate.query("select tweets.tweetid, tweets.content, tweets.userid, tweets.timestamp, users.username, users.image from tweets, users, followers where followers.followed=tweets.userid and followers.follower =  ? and tweets.timestamp < followers.unfollowedat and users.userid = tweets.userid\n" +
-                    "union\n" +
-                    "select tweets.tweetid, tweets.content, tweets.userid, tweets.timestamp, users.username, users.image from tweets, users where tweets.userid = users.userid and tweets.userid = ?\n" +
-                    "order by timestamp DESC\n" +
-                    "OFFSET ?  LIMIT ?",
-                    new Object[]{userid, userid, offset, limit},
+            return jdbcTemplate.query("select tweets.tweetid, tweets.content, tweets.userid, tweets.timestamp, users.username, users.image from tweets, users, followers where followers.followed=tweets.userid and followers.follower =  ? and tweets.timestamp < followers.unfollowedat and users.userid = tweets.userid and tweets.tweetid < "+lastTweet+"  union select tweets.tweetid, tweets.content, tweets.userid, tweets.timestamp, users.username, users.image from tweets, users where tweets.userid = users.userid and tweets.userid = ? and tweets.tweetid < "+lastTweet+" order by timestamp DESC LIMIT ?",
+                    new Object[]{userid, userid, limit},
                     new BeanPropertyRowMapper<>(Tweet.class));
         }
         catch (Exception e) {

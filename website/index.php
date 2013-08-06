@@ -7,6 +7,7 @@
     <script src="js/formValidation.js"></script>    
 	<script src="js/jquery.cookie.js"></script>
     <script src="js/jquery-ui.js"></script>
+    <script src="js/typo/typo.js"></script>
     <script>
         <?include("jsLoader.php");?>
     </script>

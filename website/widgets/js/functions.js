@@ -36,7 +36,7 @@ window.onload = function() {
 };
 
 var init = function() {
-	serverAddress = "http://localhost:8080/";
+	serverAddress = "https://localhost:8443/";
 }
 
 window.onhashchange = function() {
@@ -102,9 +102,9 @@ var displayHomePage = function() {
 }
 
 window.onscroll = function(ev) {
-	if ((window.innerHeight + window.scrollY + (document.body.offsetHeight*4)) >= document.body.offsetHeight) {
+	if ((window.innerHeight + window.scrollY + 200) >= document.body.offsetHeight) {
 		console.log("Fetching feed");
-		fetchFeed(localStorage.tweetsFetched);
+		fetchFeed(localStorage.lastTweet);
 	}
 };
 
