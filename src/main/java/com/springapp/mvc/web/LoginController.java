@@ -4,6 +4,7 @@ import com.springapp.mvc.data.AuthenticationRepository;
 import com.springapp.mvc.data.UserRepository;
 import com.springapp.mvc.model.AuthenticatedUser;
 import com.springapp.mvc.model.User;
+import com.springapp.mvc.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -26,17 +27,14 @@ import java.util.Map;
  */
 @Controller
 public class LoginController{
-    private final UserRepository repository;
-    private final AuthenticationRepository authenticationRepository;
-    private SecureRandom random = new SecureRandom();
+    private final LoginService loginService;
     @Autowired
-    public LoginController(UserRepository repository, AuthenticationRepository authenticationRepository) {
-        this.repository = repository;
-        this.authenticationRepository = authenticationRepository;
+    public LoginController(LoginService loginService) {
+        this.loginService = loginService;
     }
 
     @RequestMapping(value = "/users/login", method = RequestMethod.OPTIONS)
-    public void getOptions(HttpServletResponse response) {
+    public void getLoginOptions(HttpServletResponse response) {
         response.addHeader("Access-Control-Allow-Origin", "https://localhost");
         response.addHeader("Access-Control-Allow-Credentials", "true");
         response.addHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -49,37 +47,13 @@ public class LoginController{
             Object> requestParameters) throws InvalidKeySpecException, NoSuchAlgorithmException {
         response.addHeader("Access-Control-Allow-Origin", "https://localhost");
         response.addHeader("Access-Control-Allow-Credentials", "true");
-        String email = (String) requestParameters.get("email");
-        String password = (String) requestParameters.get("password");
-        User user = repository.findByEmail(email);
-        if(user == null) {
-            response.setStatus(403);
-            return null;
-        }
-        if(authenticationRepository.validatePassword(password, user.getPassword())) {
-            String sessionid = new BigInteger(130, random).toString(32);
-            AuthenticatedUser session = new AuthenticatedUser(sessionid, user.getUserid());
-            User authenticatedUser = repository.findById(user.getUserid());
-            Map<String, Object> sessionMap = new HashMap<>();
-            sessionMap.put("sessionid", sessionid);
-            sessionMap.put("user", authenticatedUser);
-            authenticationRepository.addSession(session);
-            response.setStatus(200);
-            return sessionMap;
-        }
-        else {
-            response.setStatus(403);
-            return null;
-        }
+        return loginService.login((String) requestParameters.get("email"), (String) requestParameters.get("password"),
+                response);
     }
 
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
     public String logout(HttpServletRequest request) {
-        HttpSession httpSession;
-        httpSession = request.getSession(false);
-        httpSession.invalidate();
         return "Success";
-
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
