@@ -2,6 +2,7 @@ package com.springapp.mvc.web;
 
 import com.springapp.mvc.data.UserRepository;
 import com.springapp.mvc.model.User;
+import com.springapp.mvc.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -23,25 +24,23 @@ import java.util.Map;
  */
 @Controller
 public class UserController {
-    private final UserRepository repository;
+    private final UserService userService;
     @Autowired
-    public UserController(UserRepository repository) {
-        this.repository = repository;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @RequestMapping(value = "/users/", method = RequestMethod.GET)
     @ResponseBody
-    public User fetchUser(@RequestParam("id") int id) throws IOException {
-        return repository.findById(id);
+    public User fetchUser(@RequestParam("id") int userid) throws IOException {
+        return userService.findById(userid);
     }
 
     @RequestMapping(value = "/users/{username}", method = RequestMethod.GET)
     @ResponseBody
-    public User fetchUserByUsername(HttpServletResponse response, @PathVariable("username") String username) throws
+    public User fetchUserByUsername(@PathVariable("username") String username, HttpServletResponse response) throws
             IOException {
-        response.setHeader("Access-Control-Allow-Origin", "https://localhost");
-        response.setHeader("Access-Control-Allow-Credentials", "true");
-        return repository.findByUsername(username);
+        return userService.findByUsername(username, response);
     }
 
 
@@ -49,33 +48,33 @@ public class UserController {
     @ResponseBody
     public List<User> fetchFollowers(@PathVariable("id") int userid, @RequestParam("offset") int offset,
         @RequestParam("limit") int limit) throws IOException {
-        return repository.fetchFollowers(userid, offset, limit);
+        return userService.fetchFollowers(userid, offset, limit);
     }
 
     @RequestMapping(value = "/users/follows/{id}", method = RequestMethod.GET)
     @ResponseBody
     public List<User> fetchFollows(@PathVariable("id") int userid, @RequestParam("offset") int offset,
     @RequestParam("limit") int limit) throws IOException {
-        return repository.fetchFollows(userid, offset, limit);
+        return userService.fetchFollows(userid, offset, limit);
     }
 
     @RequestMapping(value = "/users/follows/count/{id}", method = RequestMethod.GET)
     @ResponseBody
     public int countFollows(@PathVariable("id") int userid) throws IOException {
-        return repository.findFollowingCount(userid);
+        return userService.findFollowingCount(userid);
     }
 
     @RequestMapping(value = "/users/followers/count/{id}", method = RequestMethod.GET)
     @ResponseBody
     public int countFollowers(@PathVariable("id") int userid) throws IOException {
-        return repository.findFollowersCount(userid);
+        return userService.findFollowersCount(userid);
     }
 
     @RequestMapping(value = "/users/check/follows/", method = RequestMethod.GET)
     @ResponseBody
     public boolean checkFollows(@RequestParam("follower") int follower, @RequestParam("followed") int followed) throws
             IOException {
-        return repository.checkFollows(follower, followed);
+        return userService.checkFollows(follower, followed);
     }
 
     @RequestMapping(value = "/users/follow", method = RequestMethod.OPTIONS)
@@ -84,8 +83,9 @@ public class UserController {
     }
     @RequestMapping(value = "/users/follow", method = RequestMethod.POST)
     @ResponseBody
-    public String follow(@RequestBody Map<String,Object> requestParameters) throws IOException {
-        return repository.follow((int)requestParameters.get("follower"), (int)requestParameters.get("followed"));
+    public String follow(@RequestBody Map<String,Object> requestParameters, HttpServletRequest request) throws
+            IOException {
+        return userService.follow(request, (int)requestParameters.get("followed"));
     }
 
     @RequestMapping(value = "/users/unfollow", method = RequestMethod.OPTIONS)
@@ -94,8 +94,9 @@ public class UserController {
     }
     @RequestMapping(value = "/users/unfollow", method = RequestMethod.POST)
     @ResponseBody
-    public String unfollow(@RequestBody Map<String,Object> requestParameters) throws IOException {
-        return repository.unfollow((int)requestParameters.get("follower"), (int)requestParameters.get("followed"));
+    public String unfollow(@RequestBody Map<String,Object> requestParameters,
+                           HttpServletRequest request) throws IOException {
+        return userService.unfollow(request, (int)requestParameters.get("followed"));
     }
 
     @RequestMapping(value = "/users/image/create", method = RequestMethod.OPTIONS)
@@ -106,7 +107,7 @@ public class UserController {
     @ResponseBody
     public String createImage(@RequestBody Map<String,Object> requestParameters,
                               HttpServletRequest request) throws IOException {
-        return repository.createImage((String) requestParameters.get("image"), Integer.parseInt(request.getHeader("userid")));
+        return userService.createImage((String) requestParameters.get("image"), request);
     }
 
     @RequestMapping(value = "/users/register", method = RequestMethod.OPTIONS)
@@ -117,16 +118,13 @@ public class UserController {
     @RequestMapping(value = "/users/register", method = RequestMethod.POST)
     @ResponseBody
     public String createUser(HttpServletResponse response, @RequestBody final User user) throws InvalidKeySpecException, NoSuchAlgorithmException {
-        return repository.createUser(response, HtmlUtils.htmlEscape(user.getUsername()),
-                HtmlUtils.htmlEscape(user.getName()), HtmlUtils.htmlEscape(user.getEmail()),
-                HtmlUtils.htmlEscape(user.getPassword()));
-
+        return userService.createUser(response, user);
     }
 
     @RequestMapping(value = "/search/users", method = RequestMethod.GET)
     @ResponseBody
     public List<String> searchTweet(@RequestParam("term") String username) throws
             IOException {
-        return repository.searchUsers(username.substring(1));
+        return userService.searchUsers(username);
     }
 }

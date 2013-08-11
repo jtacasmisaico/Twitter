@@ -21,12 +21,10 @@ import java.util.regex.Pattern;
 public class UserRepository {
 
     private final JdbcTemplate jdbcTemplate;
-    private final AuthenticationRepository authenticationRepository;
 
     @Autowired
     public UserRepository(JdbcTemplate jdbcTemplate, AuthenticationRepository authenticationRepository) {
         this.jdbcTemplate = jdbcTemplate;
-        this.authenticationRepository = authenticationRepository;
     }
 
     public User findById(int id) {
@@ -79,49 +77,27 @@ public class UserRepository {
         }
     }
 
-    public static boolean isValidEmailAddress(String email) {
-        Pattern pattern = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*" +
-                    "(\\.[A-Za-z]{2,})$");
-        Matcher matcher = pattern.matcher(email);
-        return matcher.matches();
-    }
-
     public String createUser(HttpServletResponse response, String username, String name, String email,
                              String password) {
         System.out.println("Creating user...");
-        if(!isValidEmailAddress(email)) { response.setStatus(403); return "Invalid Email Address"; }
-        else if(name.length()<=0) { response.setStatus(403); return "Please specify your full name"; }
-        else if(username.length()<3) { response.setStatus(403); return "Username should be minimum 3 characters " +
-                "long"; }
-        else if(password.length()<6) {response.setStatus(403);  return "Password should be minimum 6 characters " +
-                "long"; }
-        else {
-            final SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate);
-            insert.setTableName("users");
-            insert.setColumnNames(Arrays.asList("username", "password", "email", "name"));
-            insert.setGeneratedKeyName("userid");
-            Map<String, Object> param = new HashMap<>();
-            param.put("username", username);
-            try {
-                String generatedPassword = authenticationRepository.createHash(password);
-                System.out.println("Generated Password : "+generatedPassword);
-                param.put("password", generatedPassword);
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            } catch (InvalidKeySpecException e) {
-                e.printStackTrace();
-            }
-            param.put("name", name);
-            param.put("email", email);
-            try{
-                response.setStatus(200);
-                return String.valueOf(insert.executeAndReturnKey(param));
-            }
-            catch(Exception e){
-                e.printStackTrace();
-                response.setStatus(403);
-                return "Email Address/Username already taken";
-            }
+
+        final SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate);
+        insert.setTableName("users");
+        insert.setColumnNames(Arrays.asList("username", "password", "email", "name"));
+        insert.setGeneratedKeyName("userid");
+        Map<String, Object> param = new HashMap<>();
+        param.put("username", username);
+        param.put("password", password);
+        param.put("name", name);
+        param.put("email", email);
+        try{
+            response.setStatus(200);
+            return String.valueOf(insert.executeAndReturnKey(param));
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            response.setStatus(403);
+            return "Email Address/Username already taken";
         }
     }
 
