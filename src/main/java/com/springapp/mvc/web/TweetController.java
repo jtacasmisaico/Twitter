@@ -4,6 +4,7 @@ import com.springapp.mvc.data.TweetRepository;
 import com.springapp.mvc.data.UserRepository;
 import com.springapp.mvc.model.Tweet;
 import com.springapp.mvc.model.User;
+import com.springapp.mvc.service.TweetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -23,19 +24,17 @@ import java.util.Map;
  */
 @Controller
 public class TweetController {
-    private final TweetRepository tweetRepository;
-    private final UserRepository userRepository;
+    private final TweetService tweetService;
 
     @Autowired
-    public TweetController(TweetRepository tweetRepository, UserRepository userRepository) {
-        this.tweetRepository = tweetRepository;
-        this.userRepository = userRepository;
+    public TweetController(TweetService tweetService) {
+        this.tweetService = tweetService;
     }
 
     @RequestMapping(value = "/fetch/tweet/{id}", method = RequestMethod.GET)
     @ResponseBody
     public Tweet fetchTweetById(@PathVariable("tweetid") int tweetid) throws IOException {
-        return tweetRepository.findTweetByTweetId(tweetid);
+        return tweetService.findTweetByTweetId(tweetid);
     }
 
     @RequestMapping(value = "/search/tweets", method = RequestMethod.GET)
@@ -43,7 +42,7 @@ public class TweetController {
     public List<Tweet> searchTweet(@RequestParam("keyword") String keyword, @RequestParam("offset") int offset,
                                    @RequestParam("limit") int limit) throws
             IOException {
-        return tweetRepository.searchTweet(keyword, offset, limit);
+        return tweetService.searchTweet(keyword, offset, limit);
     }
 
     @RequestMapping(value = "/post/tweet", method = RequestMethod.OPTIONS)
@@ -54,20 +53,14 @@ public class TweetController {
     @RequestMapping(value = "/post/tweet", method = RequestMethod.POST)
     @ResponseBody
     public Tweet createTweet(@RequestBody final Tweet tweet, HttpServletResponse response, HttpServletRequest request){
-        int id = tweetRepository.createTweet(HtmlUtils.htmlEscape(tweet.getContent()),
-                Integer.parseInt(request.getHeader("userid")));
-        if (id != -1){
-            response.setStatus(200);
-            return tweetRepository.findTweetByTweetId(id);
-        }
-        response.setStatus(403);
-        return null;
+        return tweetService.createTweet(tweet, request, response);
     }
 
     @RequestMapping(value = "/fetch/posts/{userid}", method = RequestMethod.GET)
     @ResponseBody
-    public List<Tweet> fetchPosts(@PathVariable("userid") int userid, @RequestParam("offset") int offset, HttpServletResponse response){
-        return tweetRepository.findTweetsByUserId(userid, offset, 5);
+    public List<Tweet> fetchPosts(@PathVariable("userid") int userid, @RequestParam("offset") int offset,
+                                  @RequestParam("limit") int limit){
+        return tweetService.findTweetsByUserId(userid, offset, limit);
     }
 
     @RequestMapping(value = "/fetch/feed", method = RequestMethod.OPTIONS)
@@ -79,8 +72,7 @@ public class TweetController {
     @ResponseBody
     public List<Tweet> fetchFeed(HttpServletRequest request, @RequestParam("lastTweet") int lastTweet,
                                  @RequestParam("limit") int limit){
-        int userid = Integer.parseInt(request.getHeader("userid"));
-        return tweetRepository.fetchFeed(userid, lastTweet, limit);
+        return tweetService.fetchFeed(request, lastTweet, limit);
     }
 
     @RequestMapping(value = "/fetch/feed/latest", method = RequestMethod.OPTIONS)
@@ -91,7 +83,6 @@ public class TweetController {
     @RequestMapping(value = "/fetch/feed/latest", method = RequestMethod.GET)
     @ResponseBody
     public List<Tweet> fetchNewFeed(HttpServletRequest request, @RequestParam("tweetid") int tweetid){
-        int userid = Integer.parseInt(request.getHeader("userid"));
-        return tweetRepository.fetchNewFeed(userid, tweetid);
+        return tweetService.fetchNewFeed(request, tweetid);
     }
 }
