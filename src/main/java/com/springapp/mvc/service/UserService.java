@@ -1,6 +1,5 @@
 package com.springapp.mvc.service;
 
-import com.springapp.mvc.data.AuthenticationRepository;
 import com.springapp.mvc.data.UserRepository;
 import com.springapp.mvc.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,13 +23,13 @@ import java.util.regex.Pattern;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final AuthenticationRepository authenticationRepository;
+    private final AuthenticationService authenticationService;
 
 
     @Autowired
-    public UserService(UserRepository userRepository, AuthenticationRepository authenticationRepository) {
+    public UserService(UserRepository userRepository, AuthenticationService authenticationService) {
         this.userRepository = userRepository;
-        this.authenticationRepository = authenticationRepository;
+        this.authenticationService = authenticationService;
     }
 
     public User findById(int userid) {
@@ -90,7 +89,7 @@ public class UserService {
         else if(password.length()<6) {response.setStatus(403);  return "Password should be minimum 6 characters " +
                 "long"; }
         try {
-            generatedPassword = authenticationRepository.createHash(password);
+            generatedPassword = authenticationService.createHash(password);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (InvalidKeySpecException e) {

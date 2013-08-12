@@ -41,7 +41,6 @@ public class TweetController {
     @ResponseBody
     public List<Tweet> searchTweet(@RequestParam("keyword") String keyword, @RequestParam("lastTweet") int lastTweet,
                                    @RequestParam("limit") int limit) throws IOException {
-        System.out.println();
         return tweetService.searchTweet(keyword, lastTweet, limit);
     }
 

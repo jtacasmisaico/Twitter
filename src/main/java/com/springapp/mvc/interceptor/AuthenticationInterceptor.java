@@ -1,4 +1,4 @@
-package com.springapp.mvc.web;
+package com.springapp.mvc.interceptor;
 
 import com.springapp.mvc.data.AuthenticationRepository;
 import com.springapp.mvc.model.AuthenticatedUser;

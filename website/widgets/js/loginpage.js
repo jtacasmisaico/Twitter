@@ -48,9 +48,24 @@ var login = function() {
 
 var logout = function() {
     console.log("Logout");
-    localStorage.clear();
-    document.location.href="./#";
-    document.location.reload();
+    $.ajax({
+        url: serverAddress + "users/logout",
+        type: 'POST',
+        xhrFields: {
+            withCredentials: true
+        },        
+        headers: {
+            'token': localStorage.sessionid,
+            'userid': localStorage.userid
+        },
+        error: function(jqXHR) {
+            console.log(jqXHR);
+        }
+    }).done(function(data, textStatus, response) {
+        localStorage.clear();
+        document.location.href="./#";
+        document.location.reload();
+    });
 }
 var checkKeyRegister = function(event) {
     if(event.keyCode == 13) {
