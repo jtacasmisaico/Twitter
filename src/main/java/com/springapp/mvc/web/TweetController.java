@@ -58,9 +58,9 @@ public class TweetController {
 
     @RequestMapping(value = "/fetch/posts/{userid}", method = RequestMethod.GET)
     @ResponseBody
-    public List<Tweet> fetchPosts(@PathVariable("userid") int userid, @RequestParam("offset") int offset,
+    public List<Tweet> fetchPosts(@PathVariable("userid") int userid, @RequestParam("lastTweet") int lastTweet,
                                   @RequestParam("limit") int limit){
-        return tweetService.findTweetsByUserId(userid, offset, limit);
+        return tweetService.findTweetsByUserId(userid, lastTweet, limit);
     }
 
     @RequestMapping(value = "/fetch/feed", method = RequestMethod.OPTIONS)

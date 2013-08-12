@@ -1,7 +1,10 @@
-var fetchTweets = function(userid, offset) {
-    if (offset == undefined) offset = 0;
+var fetchTweets = function(userid, lastTweet) {
+    if (lastTweet == undefined || lastTweet == 0) {
+        lastTweet = 2147483647;
+        viewingUser.posts = [];
+    }
     $.ajax({
-        url: serverAddress + "fetch/posts/" + userid + "?offset=" + offset,
+        url: serverAddress + "fetch/posts/" + userid + "?lastTweet=" + lastTweet + "&limit=10",
         type: 'GET',
         xhrFields: {
             withCredentials: true
@@ -10,7 +13,9 @@ var fetchTweets = function(userid, offset) {
             logout();
         }
     }).done(function(data, textStatus, response) {
-        if (offset == 0) document.getElementById('userPosts').innerHTML = "";
+        console.log(response.responseJSON);
+        if(viewingUser.posts == undefined) viewingUser.posts = [];
+        viewingUser.posts = viewingUser.posts.concat(response.responseJSON);
         renderUserPosts(response.responseJSON);
         $('#userPosts').show();
     });
@@ -51,7 +56,7 @@ var fetchFollowers = function(userid, offset, limit) {
 }
 
 var fetchFeed = function(lastTweet) {
-    if(alreadyFetchingFeed == true) return;
+    if (alreadyFetchingFeed == true) return;
     $('#loading').show();
     alreadyFetchingFeed = true;
     if (lastTweet == undefined) {
@@ -136,14 +141,16 @@ var fetchUserDetails = function(username) {
     }).done(function(data, textStatus, response) {
         $('#profileSideBar').slideDown('slow');
         clearSidebar();
-        renderProfileSideBar(response.responseJSON);
-        fetchFollowers(response.responseJSON.userid);
-        fetchFollowing(response.responseJSON.userid);
-        fetchTweets(response.responseJSON.userid);
+        clearUserPosts();
         viewingUser = response.responseJSON;
-        fetchFollowingCount(response.responseJSON.userid)
-        fetchFollowersCount(response.responseJSON.userid)
-        if (response.responseJSON.userid == localStorage.userid)
+        renderProfileSideBar(viewingUser);
+        fetchFollowers(viewingUser.userid);
+        fetchFollowing(viewingUser.userid);
+        setInfiniteScroll("profile");
+        fetchFollowingCount(viewingUser.userid)
+        fetchFollowersCount(viewingUser.userid)
+        fetchTweets(viewingUser.userid);
+        if (viewingUser.userid == localStorage.userid)
             $('#followButton').hide();
         else
             follows(localStorage.userid, viewingUser.userid);
@@ -196,5 +203,4 @@ var follows = function(follower, followed) {
             showUnFollowButton(true);
         else showUnFollowButton(false);
     });
-
 }

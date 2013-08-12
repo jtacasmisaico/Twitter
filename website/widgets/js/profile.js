@@ -34,6 +34,11 @@ var clearSidebar = function() {
     $('#following')[0].innerHTML = '<li class="divider"></li>';
 }
 
+var clearUserPosts = function() {
+    $('#userPosts')[0].innerHTML = '';
+}
+
+
 var showUnFollowButton = function(alreadyFollowing) {
     console.log("Already Following : " + alreadyFollowing);
     if(alreadyFollowing) {

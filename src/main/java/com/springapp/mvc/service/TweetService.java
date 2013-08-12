@@ -45,8 +45,8 @@ public class TweetService {
         return null;
     }
 
-    public List<Tweet> findTweetsByUserId(int userid, int offset, int limit) {
-        return tweetRepository.findTweetsByUserId(userid, offset, limit);
+    public List<Tweet> findTweetsByUserId(int userid, int lastTweet, int limit) {
+        return tweetRepository.findTweetsByUserId(userid, lastTweet, limit);
     }
 
     public List<Tweet> fetchFeed(HttpServletRequest request, int lastTweet, int limit) {

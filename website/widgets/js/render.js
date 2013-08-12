@@ -30,7 +30,7 @@ var renderFeed = function(tweets) {
 }
 
 var renderUserPosts = function(tweets) {
-    if (tweets.length == 0) document.getElementById('userPosts').innerHTML = '<h4><em>The newb is yet to tweet :/</em></h3>';
+    if (tweets.length == 0 && viewingUser.posts.length == 0) document.getElementById('userPosts').innerHTML = '<h4><em>The newb is yet to tweet :/</em></h3>';
     for (var i = 0; i < tweets.length; i++) {
         pushTweet(tweets[i], 'userPosts');
     }

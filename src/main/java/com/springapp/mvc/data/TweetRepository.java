@@ -34,10 +34,10 @@ public class TweetRepository {
         }
     }
 
-    public List<Tweet> findTweetsByUserId(int userid, int offset, int limit) {
+    public List<Tweet> findTweetsByUserId(int userid, int lastTweet, int limit) {
         try {
-            return jdbcTemplate.query("select tweets.tweetid, tweets.content, tweets.userid, tweets.timestamp, users.username, users.image from tweets inner join users on users.userid = tweets.userid where tweets.userid = ? ORDER BY tweets.timestamp DESC OFFSET ? LIMIT ?",
-                    new Object[]{userid, offset, limit}, new BeanPropertyRowMapper<>(Tweet.class));
+            return jdbcTemplate.query("select tweets.tweetid, tweets.content, tweets.userid, tweets.timestamp, users.username, users.image from tweets inner join users on users.userid = tweets.userid where tweets.userid = ? and tweets.tweetid < ? ORDER BY tweets.timestamp DESC LIMIT ?",
+                    new Object[]{userid, lastTweet, limit}, new BeanPropertyRowMapper<>(Tweet.class));
         }
         catch(Exception e) {
             e.printStackTrace();
