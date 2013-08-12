@@ -52,5 +52,6 @@
     <div id="userPosts" class="feed" style="display:none;">
     </div>
     <div id="searchResults" class="feed" style="display:none;">
+        <div id="searchResultsHeader"></div>
     </div>
 </div>

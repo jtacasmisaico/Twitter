@@ -62,7 +62,16 @@ var setInfiniteScroll = function(action) {
 		window.onscroll = function(ev) {
 			if ((window.innerHeight + window.scrollY + 200) >= document.body.offsetHeight) {
 				console.log("Fetching User Posts!");
-				fetchTweets(viewingUser.userid, viewingUser.posts[viewingUser.posts.length-1].tweetid)
+				fetchTweets(viewingUser.userid, viewingUser.posts[viewingUser.posts.length-1].tweetid);
+			}
+		};
+		return;
+	}
+	if (action == "search") {
+		window.onscroll = function(ev) {
+			if ((window.innerHeight + window.scrollY + 200) >= document.body.offsetHeight) {
+				console.log("Fetching Search Results!");
+				searchFunction(query, search.result[search.result.length-1].tweetid);
 			}
 		};
 		return;
@@ -90,6 +99,7 @@ var detectURL = function() {
 var displaySearch = function() {
 	$('#userPosts').hide();
 	$('#newsFeed').hide();
+	setInfiniteScroll("search");
 	query = decodeURI(window.location.hash.split('#')[1].split(/\?|\//)[1].substring(2));
 	searchFunction(query);
 }

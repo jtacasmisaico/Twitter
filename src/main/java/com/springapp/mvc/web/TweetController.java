@@ -39,10 +39,10 @@ public class TweetController {
 
     @RequestMapping(value = "/search/tweets", method = RequestMethod.GET)
     @ResponseBody
-    public List<Tweet> searchTweet(@RequestParam("keyword") String keyword, @RequestParam("offset") int offset,
-                                   @RequestParam("limit") int limit) throws
-            IOException {
-        return tweetService.searchTweet(keyword, offset, limit);
+    public List<Tweet> searchTweet(@RequestParam("keyword") String keyword, @RequestParam("lastTweet") int lastTweet,
+                                   @RequestParam("limit") int limit) throws IOException {
+        System.out.println();
+        return tweetService.searchTweet(keyword, lastTweet, limit);
     }
 
     @RequestMapping(value = "/post/tweet", method = RequestMethod.OPTIONS)

@@ -37,7 +37,7 @@ var renderUserPosts = function(tweets) {
 }
 
 var renderResults = function(tweets) {
-    document.getElementById('searchResults').innerHTML = '<h4><em>Showing results for "' + decodeURIComponent(query) + '" : </em></h4>';
+    document.getElementById('searchResultsHeader').innerHTML = '<h4><em>Showing results for "' + decodeURIComponent(query) + '" : </em></h4>';
     if (tweets.length == 0) document.getElementById('searchResults').innerHTML = '<h4><em>You can\'t haz resultz :3</em></h4>';
     for (var i = 0; i < tweets.length; i++) {
         pushTweet(tweets[i], 'searchResults');

@@ -45,12 +45,13 @@ public class TweetRepository {
         }
     }
 
-    public List<Tweet> searchTweet(String keyword, int offset, int limit) {
+    public List<Tweet> searchTweet(String keyword, int lastTweet, int limit) {
+        System.out.println("select tweets.tweetid, tweets.content, tweets.userid, tweets.timestamp, users.username, " +
+                "users.image from tweets inner join users on users.userid = tweets.userid where lower(content) like " +
+                "'%"+keyword.toLowerCase()+"%' and tweetid < 10 ORDER BY tweetid DESC LIMIT 10");
         try {
-            return jdbcTemplate.query("select tweets.tweetid, tweets.content, tweets.userid, tweets.timestamp, " +
-                    "users.username, users.image from tweets inner join users on users.userid = tweets.userid where " +
-                    "lower(content) like \'%"+keyword.toLowerCase()+"%\' OFFSET ? LIMIT ?",
-                    new Object[]{offset, limit}, new BeanPropertyRowMapper<>(Tweet.class));
+            return jdbcTemplate.query("select tweets.tweetid, tweets.content, tweets.userid, tweets.timestamp, users.username, users.image from tweets inner join users on users.userid = tweets.userid where lower(content) like '%"+keyword.toLowerCase()+"%' and tweetid < ? ORDER BY tweetid DESC LIMIT ?",
+                    new Object[]{lastTweet, limit}, new BeanPropertyRowMapper<>(Tweet.class));
         }
         catch(Exception e) {
             e.printStackTrace();

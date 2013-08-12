@@ -30,8 +30,8 @@ public class TweetService {
         return tweetRepository.findTweetByTweetId(tweetid);
     }
 
-    public List<Tweet> searchTweet(String keyword, int offset, int limit) {
-        return tweetRepository.searchTweet(keyword, offset, limit);
+    public List<Tweet> searchTweet(String keyword, int lastTweet, int limit) {
+        return tweetRepository.searchTweet(keyword, lastTweet, limit);
     }
 
     public Tweet createTweet(Tweet tweet, HttpServletRequest request, HttpServletResponse response) {

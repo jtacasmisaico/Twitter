@@ -19,15 +19,16 @@ var doSearch = function() {
         document.location.href = document.location.href.split('#')[0] + '#search?q=' + encodeURIComponent(query.substring(1));
     else
         document.location.href = document.location.href.split('#')[0] + '#users/' + encodeURIComponent(query);
-        
-
-
     return false;
 }
 
-var searchFunction = function(query) {
+var searchFunction = function(query, lastTweet) {
+    if(lastTweet == undefined || lastTweet == 0) {
+        lastTweet = 2147483647;
+        search.result = [];
+    }
     $.ajax({
-        url: serverAddress + "search/tweets?keyword=" + query + "&offset=" + 0 + "&limit=" + 10,
+        url: serverAddress + "search/tweets?keyword=" + query + "&lastTweet=" + lastTweet + "&limit=" + 10,
         type: 'GET',
         xhrFields: {
             withCredentials: true
@@ -37,6 +38,8 @@ var searchFunction = function(query) {
             logout();
         }
     }).done(function(data, textStatus, response) {
+        if(search.results == undefined) search.result = [];
+        search.result = search.result.concat(response.responseJSON);
         renderResults(response.responseJSON);
         $('#searchResults').slideDown();
     });
