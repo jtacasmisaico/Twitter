@@ -3,6 +3,7 @@ package com.springapp.mvc.web;
 import com.springapp.mvc.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -55,6 +56,26 @@ public class AuthenticationController {
         catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @RequestMapping(value = "/oauth/getRequestToken", method = RequestMethod.GET)
+    @ResponseBody
+    public String getRequestToken(HttpServletRequest request) {
+        return "/oauth/authorizeToken/"+authenticationService.insertToken(request.getHeader("consumerid"));
+    }
+
+    @RequestMapping(value = "/oauth/authorizeToken/{token}", method = RequestMethod.GET)
+    public String oauthLogin(ModelMap model, @PathVariable("token") String token) {
+        model.addAttribute("token", token);
+        return "login";
+    }
+
+    @RequestMapping(value = "/oauth/authorize", method = RequestMethod.POST)
+    @ResponseBody
+    public String oauthAuthorize(@RequestParam("token") String token, @RequestParam("email") String email,
+                                 @RequestParam("password") String password) {
+        System.out.println("Entered Authorizer");
+        return authenticationService.authorizeRequestToken(token, email, password);
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)

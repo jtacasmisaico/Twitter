@@ -46,6 +46,23 @@ public class AuthenticationRepository {
         }
     }
 
+    public String insertToken(String token, String consumerid) {
+        final SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate);
+        insert.setTableName("requesttokens");
+        insert.setColumnNames(Arrays.asList("token", "consumerid"));
+        Map<String, Object> param = new HashMap<>();
+        param.put("token", token);
+        param.put("consumerid", consumerid);
+        try{
+            insert.execute(param);
+            return token;
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public void invalidateSessions() {
         try {
             jdbcTemplate.update("delete from sessions where timestamp < 'now()'");
@@ -70,6 +87,23 @@ public class AuthenticationRepository {
                 new Object[]{authenticatedUser.getSessionid(), authenticatedUser.getUserid()});
         if(count>0) return true;
         else return false;
+    }
+
+    public boolean isValidToken(String token) {
+        int count =  jdbcTemplate.queryForInt("SELECT count(*) FROM requesttokens WHERE token = ?",
+                new Object[]{token});
+        System.out.println("Count : "+count);
+        if(count>0) return true;
+        else return false;
+    }
+
+    public void authorizeRequestToken(String token) {
+        try {
+            jdbcTemplate.update("UPDATE requesttokens SET isauthorized = \'TRUE\' WHERE token = '"+token+"\'");
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

@@ -17,6 +17,7 @@ import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,7 +29,6 @@ import java.util.Map;
 public class AuthenticationService {
     private final UserRepository userRepository;
     private final AuthenticationRepository authenticationRepository;
-    private SecureRandom random = new SecureRandom();
     private final String PBKDF2_ALGORITHM = "PBKDF2WithHmacSHA1";
     private final int SALT_BYTE_SIZE = 24;
     private final int HASH_BYTE_SIZE = 24;
@@ -49,34 +49,63 @@ public class AuthenticationService {
         authenticationRepository.invalidateSessions();
     }
 
-    public Map<String, Object> login(String email, String password, HttpServletResponse response) {
+    public boolean validLogin(String email, String password) {
         User user = userRepository.findByEmail(email);
-        if(user == null) {
-            response.setStatus(403);
-            return null;
-        }
+        if(user == null) return false;
         try {
-            if(this.validatePassword(password, user.getPassword())) {
-                String sessionid = new BigInteger(130, random).toString(32);
-                AuthenticatedUser session = new AuthenticatedUser(sessionid, user.getUserid());
-                User authenticatedUser = userRepository.findById(user.getUserid());
-                Map<String, Object> sessionMap = new HashMap<>();
-                sessionMap.put("sessionid", sessionid);
-                sessionMap.put("user", authenticatedUser);
-                authenticationRepository.addSession(session);
-                response.setStatus(200);
-                return sessionMap;
-            }
-            else {
-                response.setStatus(403);
-                return null;
-            }
+            if(this.validatePassword(password, user.getPassword())) return true;
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (InvalidKeySpecException e) {
             e.printStackTrace();
         }
-        return null;
+        return false;
+    }
+
+    public Map<String, Object> createSession(User user) {
+        String sessionid = createRandomToken();
+        AuthenticatedUser session = new AuthenticatedUser(sessionid, user.getUserid());
+        User authenticatedUser = userRepository.findById(user.getUserid());
+        Map<String, Object> sessionMap = new HashMap<>();
+        sessionMap.put("sessionid", sessionid);
+        sessionMap.put("user", authenticatedUser);
+        authenticationRepository.addSession(session);
+        return sessionMap;
+    }
+
+    public Map<String, Object> login(String email, String password, HttpServletResponse response) {
+        if(!validLogin(email, password)) {
+            response.setStatus(403);
+            return null;
+        }
+        else {
+            User user = userRepository.findByEmail(email);
+            response.setStatus(200);
+            return createSession(user);
+         }
+    }
+
+    public String createRandomToken() {
+        return UUID.randomUUID().toString().replaceAll("-","");
+    }
+
+    public String insertToken(String consumerid) {
+        return authenticationRepository.insertToken(createRandomToken(), consumerid);
+    }
+
+    public String authorizeRequestToken(String token,String  email,String password) {
+        if(validLogin(email, password)) {
+            if(isValidToken(token)) {
+                System.out.println("Authorized!");
+                authenticationRepository.authorizeRequestToken(token);
+                return (String) createSession(userRepository.findByEmail(email)).get("sessionid");
+            }
+        }
+        return "Error";
+    }
+
+    public boolean isValidToken(String token) {
+        return authenticationRepository.isValidToken(token);
     }
 
     public void logout(String sessionid, int userid) {

@@ -85,7 +85,7 @@ public class UserController {
     @ResponseBody
     public String follow(@RequestBody Map<String,Object> requestParameters, HttpServletRequest request) throws
             IOException {
-        return userService.follow(request, (int)requestParameters.get("followed"));
+        return userService.follow(request, (int) requestParameters.get("followed"));
     }
 
     @RequestMapping(value = "/users/unfollow", method = RequestMethod.OPTIONS)
@@ -96,7 +96,7 @@ public class UserController {
     @ResponseBody
     public String unfollow(@RequestBody Map<String,Object> requestParameters,
                            HttpServletRequest request) throws IOException {
-        return userService.unfollow(request, (int)requestParameters.get("followed"));
+        return userService.unfollow(request, (int) requestParameters.get("followed"));
     }
 
     @RequestMapping(value = "/users/image/create", method = RequestMethod.OPTIONS)
