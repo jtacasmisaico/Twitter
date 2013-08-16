@@ -4,7 +4,7 @@ var fetchTweets = function(userid, lastTweet) {
         viewingUser.posts = [];
     }
     $.ajax({
-        url: serverAddress + "fetch/posts/" + userid + "?lastTweet=" + lastTweet + "&limit=10",
+        url: serverAddress + "fetch/posts/" + userid + "?lastTweet=" + lastTweet + "&limit=20",
         type: 'GET',
         xhrFields: {
             withCredentials: true
@@ -61,9 +61,12 @@ var fetchFeed = function(lastTweet) {
     alreadyFetchingFeed = true;
     if (lastTweet == undefined) {
         if (localStorage.feed != undefined) {
-            if (document.getElementById('newsFeed').children.length == JSON.parse(localStorage.feed).length)
+            if (document.getElementById('newsFeed').children.length == JSON.parse(localStorage.feed).length) {
+                $('#loading').hide();
                 return;
+            }
             renderFeed(JSON.parse(localStorage.feed));
+            $('#loading').hide();
             return;
         }
         localStorage.feed = "[]";
