@@ -1,3 +1,4 @@
+//init.js profile.js
 var fetchTweets = function(userid, lastTweet) {
     if (lastTweet == undefined || lastTweet == 0) {
         lastTweet = 2147483647;

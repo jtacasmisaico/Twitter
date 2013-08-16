@@ -1,4 +1,4 @@
-
+//init.js
 var renderFollowing = function(following) {
     var followingDiv = document.getElementById('following');
     for (var i = 0; i < following.length; i++) {

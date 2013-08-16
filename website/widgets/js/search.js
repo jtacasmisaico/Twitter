@@ -1,4 +1,4 @@
-
+//init.js
 var checkKeySearch = function(event) {
     $("#search").autocomplete("enable");
     if (event.keyCode == 13) {

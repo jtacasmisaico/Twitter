@@ -1,4 +1,4 @@
-
+//init.js
 var validateLogin = function(e) {
     if(validate('inputEmail') && validate('inputPassword')) {login(); return false;}
     else return false;

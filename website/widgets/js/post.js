@@ -1,4 +1,4 @@
-
+//init.js
 var follow = function(followerid, followedid) {
     $.ajax({
         url: serverAddress + "users/follow",

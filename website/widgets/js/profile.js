@@ -1,4 +1,4 @@
-
+//init.js
 var displayProfile = function(username) {
     removeAndAddFollowButton();
     $('#searchResults').hide();
