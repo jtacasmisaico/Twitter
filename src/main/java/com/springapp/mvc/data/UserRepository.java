@@ -92,7 +92,8 @@ public class UserRepository {
         param.put("email", email);
         try{
             response.setStatus(200);
-            return String.valueOf(insert.executeAndReturnKey(param));
+            insert.executeAndReturnKey(param);
+            return "Success";
         }
         catch(Exception e){
             e.printStackTrace();

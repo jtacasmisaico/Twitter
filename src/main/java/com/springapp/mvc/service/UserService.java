@@ -217,7 +217,9 @@ public class UserService {
             e.printStackTrace();
         }
 
-        return userRepository.createUser(response, username, name, email, generatedPassword);
+        String status = userRepository.createUser(response, username, name, email, generatedPassword);
+        if(status == "Success") userNames.insertWord(userNames.root, username);
+        return status;
     }
 
     public List<String> searchUsers(String username) {
