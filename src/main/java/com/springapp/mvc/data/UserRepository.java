@@ -210,4 +210,14 @@ public class UserRepository {
         }
     }
 
+    public List<String> getAllUsers () {
+        try {
+            return jdbcTemplate.queryForList("select username from users", String.class);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }

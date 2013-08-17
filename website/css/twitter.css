@@ -11,6 +11,12 @@ body {
     display:inline-block;
 }
 
+.ui-autocomplete { 
+  max-height: 205px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
 #loginDiv {
 	padding:30 30 10 30;
 	width:240px;

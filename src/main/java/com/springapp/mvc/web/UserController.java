@@ -51,6 +51,12 @@ public class UserController {
         return userService.fetchFollowers(userid, offset, limit);
     }
 
+    @RequestMapping(value = "/users/fetch/all", method = RequestMethod.GET)
+    @ResponseBody
+    public List<String> fetchAllUsers() throws IOException {
+        return userService.getAllUsers();
+    }
+
     @RequestMapping(value = "/users/follows/{id}", method = RequestMethod.GET)
     @ResponseBody
     public List<User> fetchFollows(@PathVariable("id") int userid, @RequestParam("offset") int offset,
