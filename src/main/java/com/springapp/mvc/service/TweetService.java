@@ -1,5 +1,6 @@
 package com.springapp.mvc.service;
 
+import com.springapp.mvc.cache.CacheManager;
 import com.springapp.mvc.data.TweetRepository;
 import com.springapp.mvc.data.UserRepository;
 import com.springapp.mvc.model.Tweet;
@@ -20,10 +21,12 @@ import java.util.List;
 @Service
 public class TweetService {
     private final TweetRepository tweetRepository;
+    private final CacheManager cacheManager;
 
     @Autowired
-    public TweetService(TweetRepository tweetRepository, UserRepository userRepository) {
+    public TweetService(TweetRepository tweetRepository, CacheManager cacheManager) {
         this.tweetRepository = tweetRepository;
+        this.cacheManager = cacheManager;
     }
 
     public Tweet findTweetByTweetId(int tweetid) {

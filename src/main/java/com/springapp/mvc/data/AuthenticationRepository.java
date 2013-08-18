@@ -1,5 +1,6 @@
 package com.springapp.mvc.data;
 
+import com.springapp.mvc.cache.CacheManager;
 import com.springapp.mvc.model.AuthenticatedUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -23,13 +24,16 @@ import java.util.*;
 @Repository
 public class AuthenticationRepository {
     private final JdbcTemplate jdbcTemplate;
+    private final CacheManager cacheManager;
 
     @Autowired
-    public AuthenticationRepository(JdbcTemplate jdbcTemplate) {
+    public AuthenticationRepository(JdbcTemplate jdbcTemplate, CacheManager cacheManager) {
         this.jdbcTemplate = jdbcTemplate;
+        this.cacheManager = cacheManager;
     }
 
     public String addSession(AuthenticatedUser authenticatedUser) {
+        cacheManager.set("session"+authenticatedUser.getUserid(), authenticatedUser);
         final SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate);
         insert.setTableName("sessions");
         insert.setColumnNames(Arrays.asList("sessionid", "userid"));
@@ -83,9 +87,15 @@ public class AuthenticationRepository {
     }
 
     public boolean isValidSession(AuthenticatedUser authenticatedUser) {
+        if(cacheManager.exists("session"+authenticatedUser.getUserid())) {
+            return true;
+        }
         int count =  jdbcTemplate.queryForInt("SELECT count(*) FROM sessions WHERE sessionid = ? and userid= ?",
                 new Object[]{authenticatedUser.getSessionid(), authenticatedUser.getUserid()});
-        if(count>0) return true;
+        if(count>0) {
+            cacheManager.set("session"+authenticatedUser.getUserid(), authenticatedUser);
+            return true;
+        }
         else return false;
     }
 

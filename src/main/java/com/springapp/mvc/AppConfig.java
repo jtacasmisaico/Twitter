@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import redis.clients.jedis.Jedis;
 
 import java.beans.PropertyVetoException;
 
@@ -46,6 +47,11 @@ public class AppConfig extends WebMvcConfigurerAdapter {
     @Bean
     public PropertySourcesPlaceholderConfigurer propertiesConfigurer() {
         return new PropertySourcesPlaceholderConfigurer();
+    }
+
+    @Bean
+    Jedis jedis() {
+        return new Jedis("localhost");
     }
 
 }

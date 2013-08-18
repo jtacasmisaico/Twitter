@@ -223,7 +223,7 @@ public class UserService {
     }
 
     public List<String> searchUsers(String username) {
-        return userNames.getAllPrefixMatches(username.substring(1));
+        return userNames.getAllPrefixMatches(username.substring(1)).subList(0, 20);
     }
 
     public List<String> getAllUsers() {
