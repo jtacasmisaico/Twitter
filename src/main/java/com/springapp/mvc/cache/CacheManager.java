@@ -31,6 +31,17 @@ public class CacheManager {
         }
     }
 
+    public void set(String key, Object value, int expiry) {
+        try {
+            cache.set(key, gson.toJson(value));
+            cache.expire(key, expiry);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public Object get(String key, Class classType) {
         try {
             System.out.println(gson.toJson(gson.fromJson(cache.get(key), classType)));

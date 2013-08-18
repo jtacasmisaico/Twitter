@@ -61,7 +61,7 @@ public class TweetRepository {
                     "tweets.timestamp, " +
                     "users.username, users.image from tweets inner join users on users.userid = tweets.userid where lower(content) like '%"+keyword.toLowerCase()+"%' and tweetid < ? ORDER BY tweetid DESC LIMIT ?",
                     new Object[]{lastTweet, limit}, new BeanPropertyRowMapper<>(Tweet.class));
-            cacheManager.set("search:"+keyword+":"+lastTweet+":"+limit, cachedResult);
+            cacheManager.set("search:"+keyword+":"+lastTweet+":"+limit, cachedResult, 300);
             return cachedResult;
         }
         catch(Exception e) {
