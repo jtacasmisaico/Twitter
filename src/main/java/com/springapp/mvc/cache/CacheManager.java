@@ -1,10 +1,13 @@
 package com.springapp.mvc.cache;
 
 import com.google.gson.Gson;
+import com.springapp.mvc.model.Tweet;
 import com.springapp.mvc.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
+
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -30,7 +33,19 @@ public class CacheManager {
 
     public Object get(String key, Class classType) {
         try {
+            System.out.println(gson.toJson(gson.fromJson(cache.get(key), classType)));
             return gson.fromJson(cache.get(key), classType);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public Tweet[] getTweetList(String key) {
+        try {
+            System.out.println("Fetching results from cache!");
+            return gson.fromJson(cache.get(key), Tweet[].class);
         }
         catch (Exception e) {
             e.printStackTrace();

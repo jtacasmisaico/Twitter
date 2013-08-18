@@ -78,6 +78,8 @@ public class AuthenticationRepository {
 
     public void endSession(AuthenticatedUser authenticatedUser) {
         try {
+            if(cacheManager.exists("session"+authenticatedUser.getUserid()))
+                cacheManager.delete("session"+authenticatedUser.getUserid());
             jdbcTemplate.update("delete from sessions where sessionid = \'"+authenticatedUser.getSessionid()+"\' and userid " +
                 " = "+authenticatedUser.getUserid());
         }

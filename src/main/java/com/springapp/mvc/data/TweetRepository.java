@@ -1,5 +1,7 @@
 package com.springapp.mvc.data;
 
+import com.google.gson.reflect.TypeToken;
+import com.springapp.mvc.cache.CacheManager;
 import com.springapp.mvc.model.Tweet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -16,10 +18,12 @@ import java.util.Map;
 public class TweetRepository {
 
     private final JdbcTemplate jdbcTemplate;
+    private final CacheManager cacheManager;
 
     @Autowired
-    public TweetRepository(JdbcTemplate jdbcTemplate) {
+    public TweetRepository(JdbcTemplate jdbcTemplate, CacheManager cacheManager) {
         this.jdbcTemplate = jdbcTemplate;
+        this.cacheManager = cacheManager;
     }
 
     public Tweet findTweetByTweetId(int tweetid) {
@@ -46,12 +50,19 @@ public class TweetRepository {
     }
 
     public List<Tweet> searchTweet(String keyword, int lastTweet, int limit) {
-        System.out.println("select tweets.tweetid, tweets.content, tweets.userid, tweets.timestamp, users.username, " +
-                "users.image from tweets inner join users on users.userid = tweets.userid where lower(content) like " +
-                "'%"+keyword.toLowerCase()+"%' and tweetid < 10 ORDER BY tweetid DESC LIMIT 10");
         try {
-            return jdbcTemplate.query("select tweets.tweetid, tweets.content, tweets.userid, tweets.timestamp, users.username, users.image from tweets inner join users on users.userid = tweets.userid where lower(content) like '%"+keyword.toLowerCase()+"%' and tweetid < ? ORDER BY tweetid DESC LIMIT ?",
+            if(cacheManager.exists("search:"+keyword+":"+lastTweet+":"+limit)){
+                List<Tweet> results =  Arrays.asList(cacheManager.getTweetList("search:" + keyword + ":" + lastTweet + ":" +
+                        limit));
+                return results;
+            }
+
+            List<Tweet> cachedResult = jdbcTemplate.query("select tweets.tweetid, tweets.content, tweets.userid, " +
+                    "tweets.timestamp, " +
+                    "users.username, users.image from tweets inner join users on users.userid = tweets.userid where lower(content) like '%"+keyword.toLowerCase()+"%' and tweetid < ? ORDER BY tweetid DESC LIMIT ?",
                     new Object[]{lastTweet, limit}, new BeanPropertyRowMapper<>(Tweet.class));
+            cacheManager.set("search:"+keyword+":"+lastTweet+":"+limit, cachedResult);
+            return cachedResult;
         }
         catch(Exception e) {
             e.printStackTrace();
