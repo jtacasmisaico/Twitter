@@ -55,7 +55,7 @@ public class CacheManager {
 
     public Tweet[] getTweetList(String key) {
         try {
-            System.out.println("Fetching results from cache!");
+            System.out.println("Hit Cache : "+key);
             return gson.fromJson(cache.get(key), Tweet[].class);
         }
         catch (Exception e) {

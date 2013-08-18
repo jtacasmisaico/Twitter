@@ -40,8 +40,16 @@ public class TweetRepository {
 
     public List<Tweet> findTweetsByUserId(int userid, int lastTweet, int limit) {
         try {
-            return jdbcTemplate.query("select tweets.tweetid, tweets.content, tweets.userid, tweets.timestamp, users.username, users.image from tweets inner join users on users.userid = tweets.userid where tweets.userid = ? and tweets.tweetid < ? ORDER BY tweets.timestamp DESC LIMIT ?",
+            if(cacheManager.exists("posts:"+userid+":"+lastTweet+":"+limit)) {
+                List<Tweet> posts = Arrays.asList(cacheManager.getTweetList
+                        ("posts:"+userid+":"+lastTweet+":"+limit));
+                return posts;
+            }
+            List<Tweet> posts = jdbcTemplate.query("select tweets.tweetid, tweets.content, tweets.userid, " +
+                    "tweets.timestamp, users.username, users.image from tweets inner join users on users.userid = tweets.userid where tweets.userid = ? and tweets.tweetid < ? ORDER BY tweets.timestamp DESC LIMIT ?",
                     new Object[]{userid, lastTweet, limit}, new BeanPropertyRowMapper<>(Tweet.class));
+            cacheManager.set("posts:"+userid+":"+lastTweet+":"+limit, posts, 60);
+            return posts;
         }
         catch(Exception e) {
             e.printStackTrace();
