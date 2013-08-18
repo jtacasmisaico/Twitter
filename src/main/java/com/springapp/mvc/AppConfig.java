@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 
 import java.beans.PropertyVetoException;
 
@@ -50,8 +52,8 @@ public class AppConfig extends WebMvcConfigurerAdapter {
     }
 
     @Bean
-    Jedis jedis() {
-        return new Jedis("localhost");
+    public static JedisPool jedis() {
+        return new JedisPool(new JedisPoolConfig(), "localhost");
     }
 
 }

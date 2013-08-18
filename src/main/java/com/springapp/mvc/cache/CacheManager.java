@@ -6,6 +6,7 @@ import com.springapp.mvc.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
 import java.util.List;
 
@@ -18,13 +19,15 @@ import java.util.List;
 @Service
 public class CacheManager {
     @Autowired
-    Jedis cache;
+    JedisPool cachedResource;
     Gson gson = new Gson();
 
     public void set(String key, Object value) {
         try {
+            Jedis cache = cachedResource.getResource();
             cache.set(key, gson.toJson(value));
             cache.expire(key, 60*60);
+            cachedResource.returnResource(cache);
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -33,8 +36,10 @@ public class CacheManager {
 
     public void set(String key, Object value, int expiry) {
         try {
+            Jedis cache = cachedResource.getResource();
             cache.set(key, gson.toJson(value));
             cache.expire(key, expiry);
+            cachedResource.returnResource(cache);
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -44,8 +49,11 @@ public class CacheManager {
 
     public Object get(String key, Class classType) {
         try {
-            System.out.println(gson.toJson(gson.fromJson(cache.get(key), classType)));
-            return gson.fromJson(cache.get(key), classType);
+            Jedis cache = cachedResource.getResource();
+            System.out.println("Hit Cache : "+key);
+            Object value = gson.fromJson(cache.get(key), classType);
+            cachedResource.returnResource(cache);
+            return value;
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -53,10 +61,27 @@ public class CacheManager {
         }
     }
 
+    public int getInt(String key) {
+        try {
+            Jedis cache = cachedResource.getResource();
+            System.out.println("Hit Cache : "+key);
+            int value = gson.fromJson(cache.get(key), int.class);
+            cachedResource.returnResource(cache);
+            return value;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
     public Tweet[] getTweetList(String key) {
         try {
+            Jedis cache = cachedResource.getResource();
             System.out.println("Hit Cache : "+key);
-            return gson.fromJson(cache.get(key), Tweet[].class);
+            Tweet[] value = gson.fromJson(cache.get(key), Tweet[].class);
+            cachedResource.returnResource(cache);
+            return value;
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -66,7 +91,9 @@ public class CacheManager {
 
     public void delete(String key) {
         try{
+            Jedis cache = cachedResource.getResource();
             cache.del(key);
+            cachedResource.returnResource(cache);
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -75,7 +102,10 @@ public class CacheManager {
 
     public boolean exists(String key) {
         try {
-            return cache.exists(key);
+            Jedis cache = cachedResource.getResource();
+            boolean value = cache.exists(key);
+            cachedResource.returnResource(cache);
+            return value;
         }
         catch (Exception e) {
             e.printStackTrace();

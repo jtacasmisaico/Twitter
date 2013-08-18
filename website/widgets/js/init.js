@@ -14,6 +14,7 @@ window.onload = function() {
 	$(function() {
 		$("#search").autocomplete({
 			minLength: 2,
+			delay:500,
 			source: serverAddress + "search/users"
 		});
 	});

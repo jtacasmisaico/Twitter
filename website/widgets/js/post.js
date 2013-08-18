@@ -100,6 +100,9 @@ var postTweet = function() {
         document.getElementById('tweetBox').value = "";
         changeTweetButtonState();
         var pushedTweet = response.responseJSON;
+        var existingFeed = JSON.parse(localStorage.feed);
+        existingFeed.unshift(response.responseJSON);
+        localStorage.feed = JSON.stringify(existingFeed);
         pushNewTweet(pushedTweet, 'newsFeed');
     });
     return false;

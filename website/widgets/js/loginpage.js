@@ -48,7 +48,7 @@ var login = function() {
 
 var logout = function() {
     console.log("Logout");
-    $.ajax({
+        $.ajax({
         url: serverAddress + "users/logout",
         type: 'POST',
         xhrFields: {

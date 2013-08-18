@@ -1,5 +1,6 @@
 package com.springapp.mvc.data;
 
+import com.springapp.mvc.cache.CacheManager;
 import com.springapp.mvc.model.Tweet;
 import com.springapp.mvc.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +22,11 @@ import java.util.regex.Pattern;
 public class UserRepository {
 
     private final JdbcTemplate jdbcTemplate;
-
+    private final CacheManager cacheManager;
     @Autowired
-    public UserRepository(JdbcTemplate jdbcTemplate, AuthenticationRepository authenticationRepository) {
+    public UserRepository(JdbcTemplate jdbcTemplate, CacheManager cacheManager) {
         this.jdbcTemplate = jdbcTemplate;
+        this.cacheManager = cacheManager;
     }
 
     public User findById(int id) {
@@ -49,7 +51,13 @@ public class UserRepository {
 
     public int findFollowersCount(int userid) {
         try{
-            return jdbcTemplate.queryForInt("SELECT count(*) FROM followers WHERE followed = ?", new Object[]{userid});
+            if(cacheManager.exists("followersCount:"+userid)) {
+                return cacheManager.getInt("followersCount:"+userid);
+            }
+            int followersCount = jdbcTemplate.queryForInt("SELECT count(*) FROM followers WHERE followed = ?",
+                    new Object[]{userid});
+            cacheManager.set("followersCount:"+userid, followersCount, 300);
+            return followersCount;
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -59,7 +67,13 @@ public class UserRepository {
 
     public int findFollowingCount(int userid) {
         try{
-            return jdbcTemplate.queryForInt("SELECT count(*) FROM followers WHERE follower = ?", new Object[]{userid});
+            if(cacheManager.exists("followingCount:"+userid)) {
+                return cacheManager.getInt("followingCount:"+userid);
+            }
+            int followingCount = jdbcTemplate.queryForInt("SELECT count(*) FROM followers WHERE follower = ?",
+                    new Object[]{userid});
+            cacheManager.set("followingCount:"+userid, followingCount, 300);
+            return followingCount;
         }
         catch(Exception e) {
             e.printStackTrace();

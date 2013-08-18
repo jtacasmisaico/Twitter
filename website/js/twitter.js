@@ -14,6 +14,7 @@ window.onload = function() {
 	$(function() {
 		$("#search").autocomplete({
 			minLength: 2,
+			delay:500,
 			source: serverAddress + "search/users"
 		});
 	});
@@ -480,7 +481,7 @@ var login = function() {
 
 var logout = function() {
     console.log("Logout");
-    $.ajax({
+        $.ajax({
         url: serverAddress + "users/logout",
         type: 'POST',
         xhrFields: {
@@ -633,6 +634,9 @@ var postTweet = function() {
         document.getElementById('tweetBox').value = "";
         changeTweetButtonState();
         var pushedTweet = response.responseJSON;
+        var existingFeed = JSON.parse(localStorage.feed);
+        existingFeed.unshift(response.responseJSON);
+        localStorage.feed = JSON.stringify(existingFeed);
         pushNewTweet(pushedTweet, 'newsFeed');
     });
     return false;
@@ -724,9 +728,10 @@ var pushFollowers = function(user) {
 var pushTweet = function(tweet, divId) {
     var element = document.createElement('div');
     element.setAttribute('class', 'media');
-    element.innerHTML = '<a class="pull-left" href="#users/' + tweet.username + '"><img class="media-object pthumbnail" src="' + fetchImage(tweet) + '"></a><div class="media-body tweet"><h4 class="media-heading"><a href="#users/' + tweet.username + '">' + tweet.username + '</a></h4>' + imageParser(tweet.content) + '</div><div class="timestamp">' + new Date(tweet.timestamp).toString().substring(0, 21) + '</div></div>'
+    element.innerHTML = '<a class="pull-left" href="#users/' + tweet.username + '"><img class="media-object pthumbnail" src="' + fetchImage(tweet) + '"></a><div class="media-body tweet"><h4 class="media-heading"><a href="#users/' + tweet.username + '">' + tweet.username + '</a></h4>' + imageParser(tweet.content) + '</div><abbr class="timestamp" title="'+new Date(tweet.timestamp).toISOString()+'">' + new Date(tweet.timestamp).toString().substring(0, 21) + '</abbr></div>'
     var feedDiv = document.getElementById(divId);
     feedDiv.appendChild(element);
+    jQuery("abbr.timestamp").timeago();
 }
 
 var pushLatestFeed = function(tweets) {
@@ -737,9 +742,10 @@ var pushLatestFeed = function(tweets) {
 var pushNewTweet = function(tweet, divId) {
     var element = document.createElement('div');
     element.setAttribute('class', 'media');
-    element.innerHTML = '<a class="pull-left" href="#users/' + tweet.username + '"><img class="media-object pthumbnail" src="' + fetchImage(tweet) + '"></a><div class="media-body tweet"><h4 class="media-heading"><a href="#users/' + tweet.username + '">' + tweet.username + '</a></h4>' + imageParser(tweet.content) + '</div><div class="timestamp">' + new Date(tweet.timestamp).toString().substring(0, 21) + '</div></div>'
+    element.innerHTML = '<a class="pull-left" href="#users/' + tweet.username + '"><img class="media-object pthumbnail" src="' + fetchImage(tweet) + '"></a><div class="media-body tweet"><h4 class="media-heading"><a href="#users/' + tweet.username + '">' + tweet.username + '</a></h4>' + imageParser(tweet.content) + '</div><abbr class="timestamp" title="'+new Date(tweet.timestamp).toISOString()+'">' + new Date(tweet.timestamp).toString().substring(0, 21) + '</abbr></div>'
     var feedDiv = document.getElementById(divId);
     feedDiv.insertBefore(element, feedDiv.firstChild);
+    jQuery("abbr.timestamp").timeago();
 }
 
 var imageParser = function(content) {

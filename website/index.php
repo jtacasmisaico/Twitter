@@ -11,6 +11,7 @@
     <script src="js/bootbox.min.js"></script>
     <script src="js/formValidation.js"></script> 
     <script src="js/jquery-ui.js"></script>
+    <script src="js/jquery.timeago.js"></script>
 
     <?include("jsLoader.php");?>
 
