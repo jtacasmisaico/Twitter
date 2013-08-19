@@ -1,72 +1,72 @@
-//init.js profile.js
-var fetchTweets = function(userid, lastTweet) {
+//boot.js profile.js
+_$.fetch.tweets = function(userid, lastTweet) {
     if (lastTweet == undefined || lastTweet == 0) {
         lastTweet = 2147483647;
-        viewingUser.posts = [];
+        _$.global.viewingUser.posts = [];
     }
     $.ajax({
-        url: serverAddress + "fetch/posts/" + userid + "?lastTweet=" + lastTweet + "&limit=20",
+        url: _$.global.serverAddress + "fetch/posts/" + userid + "?lastTweet=" + lastTweet + "&limit=20",
         type: 'GET',
         xhrFields: {
             withCredentials: true
         },
         error: function(jqXHR) {
-            logout();
+            _$.authentication.logout();
         }
     }).done(function(data, textStatus, response) {
         console.log(response.responseJSON);
-        if(viewingUser.posts == undefined) viewingUser.posts = [];
-        viewingUser.posts = viewingUser.posts.concat(response.responseJSON);
-        renderUserPosts(response.responseJSON);
+        if(_$.global.viewingUser.posts == undefined) _$.global.viewingUser.posts = [];
+        _$.global.viewingUser.posts = _$.global.viewingUser.posts.concat(response.responseJSON);
+        _$.render.userPosts(response.responseJSON);
         $('#userPosts').show();
     });
 }
 
-var fetchFollowing = function(userid, offset, limit) {
+_$.fetch.following = function(userid, offset, limit) {
     if (offset == undefined) offset = $('#following > li').children().length;
     if (limit == undefined) limit = 5;
     $.ajax({
-        url: serverAddress + "users/follows/" + userid + "?offset=" + offset + "&limit=" + limit,
+        url: _$.global.serverAddress + "users/follows/" + userid + "?offset=" + offset + "&limit=" + limit,
         type: 'GET',
         xhrFields: {
             withCredentials: true
         },
         error: function(jqXHR) {
-            logout();
+            _$.authentication.logout();
         }
     }).done(function(data, textStatus, response) {
-        renderFollowing(response.responseJSON);
+        _$.render.following(response.responseJSON);
     });
 }
 
-var fetchFollowers = function(userid, offset, limit) {
+_$.fetch.followers = function(userid, offset, limit) {
     if (offset == undefined) offset = $('#followers > li').children().length;
     if (limit == undefined) limit = 5;
     $.ajax({
-        url: serverAddress + "users/followers/" + userid + "?offset=" + offset + "&limit=" + limit,
+        url: _$.global.serverAddress + "users/followers/" + userid + "?offset=" + offset + "&limit=" + limit,
         type: 'GET',
         xhrFields: {
             withCredentials: true
         },
         error: function(jqXHR) {
-            logout();
+            _$.authentication.logout();
         }
     }).done(function(data, textStatus, response) {
-        renderFollowers(response.responseJSON);
+        _$.render.followers(response.responseJSON);
     });
 }
 
-var fetchFeed = function(lastTweet) {
-    if (alreadyFetchingFeed == true) return;
+_$.fetch.feed = function(lastTweet) {
+    if (_$.global.alreadyFetchingFeed == true) return;
     $('#loading').show();
-    alreadyFetchingFeed = true;
+    _$.global.alreadyFetchingFeed = true;
     if (lastTweet == undefined) {
         if (localStorage.feed != undefined) {
             if (document.getElementById('newsFeed').children.length == JSON.parse(localStorage.feed).length) {
                 $('#loading').hide();
                 return;
             }
-            renderFeed(JSON.parse(localStorage.feed));
+            _$.render.feed(JSON.parse(localStorage.feed));
             $('#loading').hide();
             return;
         }
@@ -74,7 +74,7 @@ var fetchFeed = function(lastTweet) {
         lastTweet = 2147483647;
     }
     $.ajax({
-        url: serverAddress + "fetch/feed?lastTweet=" + lastTweet + "&limit=30",
+        url: _$.global.serverAddress + "fetch/feed?lastTweet=" + lastTweet + "&limit=30",
         type: 'GET',
         xhrFields: {
             withCredentials: true
@@ -86,25 +86,24 @@ var fetchFeed = function(lastTweet) {
             'userid': localStorage.userid
         },
         error: function(jqXHR) {
-            logout();
+            _$.authentication.logout();
         }
     }).done(function(data, textStatus, response) {
-        alreadyFetchingFeed = false;
+        _$.global.alreadyFetchingFeed = false;
         $('#loading').hide();
         localStorage.lastTweet = response.responseJSON[response.responseJSON.length - 1].tweetid;
         var existingFeed = JSON.parse(localStorage.feed);
         var newFeed = existingFeed.concat(response.responseJSON);
         localStorage.feed = JSON.stringify(newFeed);
-        renderFeed(response.responseJSON)
+        _$.render.feed(response.responseJSON)
     });
 }
 
-
-var fetchNewFeed = function() {
+_$.fetch.newFeed = function() {
     if (localStorage.feed != undefined) {
         var finalTweet = JSON.parse(localStorage.feed)[0].tweetid;
         $.ajax({
-            url: serverAddress + "fetch/feed/latest?tweetid=" + finalTweet,
+            url: _$.global.serverAddress + "fetch/feed/latest?tweetid=" + finalTweet,
             type: 'GET',
             xhrFields: {
                 withCredentials: true
@@ -116,95 +115,95 @@ var fetchNewFeed = function() {
                 'userid': localStorage.userid
             },
             error: function(jqXHR) {
-                logout();
+                _$.authentication.logout();
             }
         }).done(function(data, textStatus, response) {
             var existingFeed = JSON.parse(localStorage.feed);
             var newFeed = response.responseJSON.concat(existingFeed);
             localStorage.feed = JSON.stringify(newFeed);
-            pushLatestFeed(response.responseJSON);
+            _$.render.push.latestFeed(response.responseJSON);
         });
     }
 }
 
-var fetchImage = function(tweet) {
+_$.fetch.image = function(tweet) {
     if (tweet.image == null) return "./img/profile/avatar.png";
     return "./img/profile/" + tweet.image;
 }
 
-var fetchUserDetails = function(username) {
+_$.fetch.userDetails = function(username) {
     $.ajax({
-        url: serverAddress + "users/" + username,
+        url: _$.global.serverAddress + "users/" + username,
         type: 'GET',
         xhrFields: {
             withCredentials: true
         },
         error: function(jqXHR) {
-            logout();
+            _$.authentication.logout();
         }
     }).done(function(data, textStatus, response) {
         $('#profileSideBar').slideDown('slow');
-        clearSidebar();
-        clearUserPosts();
-        viewingUser = response.responseJSON;
-        renderProfileSideBar(viewingUser);
-        fetchFollowers(viewingUser.userid);
-        fetchFollowing(viewingUser.userid);
-        setInfiniteScroll("profile");
-        fetchFollowingCount(viewingUser.userid)
-        fetchFollowersCount(viewingUser.userid)
-        fetchTweets(viewingUser.userid);
-        if (viewingUser.userid == localStorage.userid)
+        _$.render.clearSidebar();
+        _$.render.clearUserPosts();
+        _$.global.viewingUser = response.responseJSON;
+        _$.render.profileSideBar(_$.global.viewingUser);
+        _$.fetch.followers(_$.global.viewingUser.userid);
+        _$.fetch.following(_$.global.viewingUser.userid);
+        _$.utils.setInfiniteScroll("profile");
+        _$.fetch.followingCount(_$.global.viewingUser.userid)
+        _$.fetch.followersCount(_$.global.viewingUser.userid)
+        _$.fetch.tweets(_$.global.viewingUser.userid);
+        if (_$.global.viewingUser.userid == localStorage.userid)
             $('#followButton').hide();
         else
-            follows(localStorage.userid, viewingUser.userid);
+            _$.fetch.follows(localStorage.userid, _$.global.viewingUser.userid);
     });
 }
 
-var fetchFollowersCount = function(userid) {
+_$.fetch.followersCount = function(userid) {
     $.ajax({
-        url: serverAddress + "users/followers/count/" + userid,
+        url: _$.global.serverAddress + "users/followers/count/" + userid,
         type: 'GET',
         xhrFields: {
             withCredentials: true
         },
         error: function(jqXHR) {
-            logout();
+            _$.authentication.logout();
         }
     }).done(function(data, textStatus, response) {
-        renderFollowersCount(parseInt(response.responseText));
+        _$.render.followersCount(parseInt(response.responseText));
     });
 }
 
-var fetchFollowingCount = function(userid) {
-    $.ajax({
-        url: serverAddress + "users/follows/count/" + userid,
+_$.fetch.followingCount = function(userid) {
+    $.ajax({    
+        url: _$.global.serverAddress + "users/follows/count/" + userid,
         type: 'GET',
         xhrFields: {
             withCredentials: true
         },
         error: function(jqXHR) {
-            logout();
+            _$.authentication.logout();
         }
     }).done(function(data, textStatus, response) {
-        renderFollowingCount(parseInt(response.responseText));
+        _$.render.followingCount(parseInt(response.responseText));
     });
 }
 
-var follows = function(follower, followed) {
+_$.fetch.follows = function(follower, followed) {
     $.ajax({
-        url: serverAddress + "users/check/follows/?follower=" + follower + "&followed=" + followed,
+        url: _$.global.serverAddress + "users/check/follows/?follower=" + follower + "&followed=" + followed,
         type: 'GET',
         xhrFields: {
             withCredentials: true
         },
         error: function(jqXHR) {
             console.log(jqXHR);
-            logout();
+            _$.authentication.logout();
         }
     }).done(function(data, textStatus, response) {
         if (response.responseText == "true")
-            showUnFollowButton(true);
-        else showUnFollowButton(false);
+            _$.render.showUnFollowButton(true);
+        else _$.render.showUnFollowButton(false);
     });
 }

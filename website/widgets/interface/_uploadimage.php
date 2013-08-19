@@ -17,7 +17,7 @@ error_reporting(E_ALL);
   echo returnStatus($filename);
 
 function returnStatus($filename){
-  return "<html><body><script type='text/javascript'>function init(){if(top.uploadComplete) top.uploadComplete('".$filename."');}window.onload=init;</script></body></html>";
+  return "<html><body><script type='text/javascript'>function initPhoto(){if(top._$.utils.uploadComplete) top._$.utils.uploadComplete('".$filename."');}window.onload=initPhoto;</script></body></html>";
 }
 
 ?>

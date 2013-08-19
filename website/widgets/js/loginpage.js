@@ -1,25 +1,25 @@
 //init.js
-var validateLogin = function(e) {
-    if(validate('inputEmail') && validate('inputPassword')) {login(); return false;}
+_$.utils.validateLogin = function(e) {
+    if(validate('inputEmail') && validate('inputPassword')) {_$.authentication.login(); return false;}
     else return false;
 }
 
-var checkKeyLogin = function(event) {
+_$.utils.checkKeyLogin = function(event) {
     if(event.keyCode == 13) {
-        return validateLogin();
+        return _$.utils.validate_$.authentication.login();
     }
     else return true;
 }
 
-var loggedIn = function() {
+_$.authentication.loggedIn = function() {
     if(localStorage.sessionid == undefined)
         return false;
     else return true;
 }
 
-var login = function() {
+_$.authentication.login = function() {
     $.ajax({
-        url: serverAddress+"users/login",
+        url: _$.global.serverAddress+"users/login",
         type: 'POST',
         contentType : "application/json",
         crossDomain : true,
@@ -29,27 +29,27 @@ var login = function() {
         data: JSON.stringify({ email: document.getElementById('inputEmail').value, password: document.getElementById('inputPassword').value }),
         error: function(jqXHR){
             console.log(jqXHR);
-            $('#loginDiv').popover('show');
+            $('#_$.authentication.loginDiv').popover('show');
             $('#inputEmail').focus();
-            setTimeout(function() {$('#loginDiv').popover('hide');}, 3000);
+            setTimeout(function() {$('#_$.authentication.loginDiv').popover('hide');}, 3000);
         }
     }).done(function(data, textStatus, response) {
-            viewingUser = response.responseJSON.user;
-            localStorage.user = JSON.stringify(viewingUser);
+            _$.global.viewingUser = response.responseJSON.user;
+            localStorage.user = JSON.stringify(_$.global.viewingUser);
             localStorage.sessionid = response.responseJSON.sessionid;
             localStorage.userid = response.responseJSON.user.userid;
             localStorage.username = response.responseJSON.user.username;
             localStorage.name = response.responseJSON.user.name;
             localStorage.tweetsFetched = 0;
-            displayPage();
+            _$.display.page();
     });
     return false;
 }
 
-var logout = function() {
-    console.log("Logout");
+_$.authentication.logout = function() {
+    console.log("_$.authentication.logout");
         $.ajax({
-        url: serverAddress + "users/logout",
+        url: _$.global.serverAddress + "users/logout",
         type: 'POST',
         xhrFields: {
             withCredentials: true
@@ -67,21 +67,21 @@ var logout = function() {
         document.location.reload();
     });
 }
-var checkKeyRegister = function(event) {
+_$.utils.checkKeyRegister = function(event) {
     if(event.keyCode == 13) {
-        return validateRegistrationForm();
+        return _$.utils.validateRegistrationForm();
     }
         else return true;
 }
 
-var validateRegistrationForm = function(e) {
-    if(validate('inputNameRegistration') && validate('inputUsernameRegistration') && validate('inputEmailRegistration') && validate('inputPasswordRegistration')) {register(); return false;}
+_$.utils.validateRegistrationForm = function(e) {
+    if(validate('inputNameRegistration') && validate('inputUsernameRegistration') && validate('inputEmailRegistration') && validate('inputPasswordRegistration')) {_$.authentication.register(); return false;}
     else return false;
 }
 
-var register = function() {
+_$.authentication.register = function() {
     $.ajax({
-        url: serverAddress+"users/register",
+        url: _$.global.serverAddress+"users/_$.authentication.register",
         contentType : "application/json",
         type: 'POST',
         xhrFields: {
@@ -96,7 +96,7 @@ var register = function() {
         error: function(jqXHR){console.log(jqXHR.responseText);}
         }).done(function(data, textStatus, jqXHR) {
             document.getElementById('registrationForm').reset();
-            bootbox.alert("Registeration complete. You can now sign in :)");
+            bootbox.alert("_$.authentication.registeration complete. You can now sign in :)");
             document.getElementById('inputEmail').focus();
         });
 }

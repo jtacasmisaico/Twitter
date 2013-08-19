@@ -42,9 +42,9 @@
         </div>
         <div id="loading">Loading...</div>
     </div>
-    <form id="tweetForm" style="display:none;" onsubmit="postTweet()">
-            <textarea id="tweetBox" rows="3" style="width:500px;" onkeyup="changeTweetButtonState()" maxlength="140"></textarea>
-            <button type="button" style="width:500px;" id="tweetButton" class="btn disabled" disabled onclick="postTweet()">Tweet</button>
+    <form id="tweetForm" style="display:none;" onsubmit="_$.post.tweet()">
+            <textarea id="tweetBox" rows="3" style="width:500px;" onkeyup="_$.utils.changeTweetButtonState()" maxlength="140"></textarea>
+            <button type="button" style="width:500px;" id="tweetButton" class="btn disabled" disabled onclick="_$.post.tweet()">Tweet</button>
             <div id="characterCount">&nbsp;</div>
     </form>
     <div id="newsFeed" class="feed" style="display:none;">

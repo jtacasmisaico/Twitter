@@ -1,18 +1,5 @@
-//init.js
-var displayProfile = function(username) {
-    removeAndAddFollowButton();
-    $('#searchResults').hide();
-    $('#newsFeed').hide();
-    $('#tweetForm').slideUp('slow');
-    $('#newsFeed').slideUp('slow');
-    $('#userPosts').slideDown('slow');
-    $('#profileSideBar').slideUp('fast', function() {
-        $('#editProfileImage').hide();
-        fetchUserDetails(username);
-    });
-    initUpload();
-}
-var changeTweetButtonState = function() {
+//boot.js
+_$.utils.changeTweetButtonState = function() {
     document.getElementById("characterCount").innerHTML = (140-document.getElementById("tweetBox").value.length) + " characters left";
     if (document.getElementById("tweetBox").value.length > 0) {
         document.getElementById("tweetButton").removeAttribute('disabled');
@@ -25,54 +12,53 @@ var changeTweetButtonState = function() {
 }
 
 
-var setProfileImage = function(image) {
+ _$.utils.setProfileImage = function(image) {
     document.getElementById('profileImageDiv').innerHTML = '<img id="profileImage" src = "' + image + '?lastModified=' + new Date().getTime() + '">';
 }
 
-var clearSidebar = function() {
+_$.render.clearSidebar = function() {
     $('#followers')[0].innerHTML = '<li class="divider"></li>';
     $('#following')[0].innerHTML = '<li class="divider"></li>';
 }
 
-var clearUserPosts = function() {
+_$.render.clearUserPosts = function() {
     $('#userPosts')[0].innerHTML = '';
 }
 
-
-var showUnFollowButton = function(alreadyFollowing) {
+_$.render.showUnFollowButton = function(alreadyFollowing) {
     console.log("Already Following : " + alreadyFollowing);
     if(alreadyFollowing) {
         $('#followButton')[0].setAttribute('class','btn btn-warning');
         $('#followButton')[0].innerHTML = "Unfollow";
         $('#followButton').click(function() {
-            unfollow(parseInt(localStorage.userid), viewingUser.userid);
+            _$.post.unfollow(parseInt(localStorage.userid), _$.global.viewingUser.userid);
         });
     }
     else {
         $('#followButton')[0].setAttribute('class','btn btn-success');
         $('#followButton')[0].innerHTML = "Follow";
         $('#followButton').click(function() {
-            follow(parseInt(localStorage.userid), viewingUser.userid);
+            _$.post.follow(parseInt(localStorage.userid), _$.global.viewingUser.userid);
         });                    
     }
     $('#followButton').show(); 
 }
-var removeAndAddFollowButton = function() {
+_$.render.removeAndAddFollowButton = function() {
     $('#followButtonDiv').empty();
     document.getElementById('followButtonDiv').innerHTML = '<button id="followButton" class="btn btn-warning" style="display:none;width:198px;">Unfollow</button>';
 }
 
-var initUpload = function() {
+_$.utils.initUpload = function() {
     document.getElementById('imageName').value = localStorage.username;
     document.getElementById('profileImageForm').onsubmit = function() {
     document.getElementById('profileImageForm').target = 'target_iframe';
     }
 }
 
-var uploadComplete = function(fileName) {
-    viewingUser.image = fileName;
-    localStorage.user = JSON.stringify(viewingUser);
-    setProfileImage(fetchImage(viewingUser));
-    changeProfileImage(fileName);
-    reRenderFeed(fileName);
+_$.utils.uploadComplete = function(fileName) {
+    _$.global.viewingUser.image = fileName;
+    localStorage.user = JSON.stringify(_$.global.viewingUser);
+    _$.utils.setProfileImage(_$.fetch.image(_$.global.viewingUser));
+    _$.post.changeProfileImage(fileName);
+    _$.render.againFeed(fileName);
 }

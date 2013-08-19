@@ -1357,7 +1357,7 @@ function addHandle( attrs, handler ) {
  * Checks document order of two siblings
  * @param {Element} a
  * @param {Element} b
- * @returns {Number} Returns less than 0 if a precedes b, greater than 0 if a follows b
+ * @returns {Number} Returns less than 0 if a precedes b, greater than 0 if a _$.fetch.follows b
  */
 function siblingCheck( a, b ) {
 	var cur = b && a,
@@ -1370,7 +1370,7 @@ function siblingCheck( a, b ) {
 		return diff;
 	}
 
-	// Check if b follows a
+	// Check if b _$.fetch.follows a
 	if ( cur ) {
 		while ( (cur = cur.nextSibling) ) {
 			if ( cur === b ) {

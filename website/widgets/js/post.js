@@ -1,7 +1,7 @@
-//init.js
-var follow = function(followerid, followedid) {
+//boot.js
+_$.post.follow = function(followerid, followedid) {
     $.ajax({
-        url: serverAddress + "users/follow",
+        url: _$.global.serverAddress + "users/follow",
         type: 'POST',
         xhrFields: {
             withCredentials: true
@@ -17,7 +17,7 @@ var follow = function(followerid, followedid) {
         },
         error: function(jqXHR) {
             console.log(jqXHR);
-            logout();
+            _$.authentication.logout();
         }
     }).done(function(data, textStatus, response) {
         document.location.reload();
@@ -25,9 +25,9 @@ var follow = function(followerid, followedid) {
     return false;
 }
 
-var unfollow = function(followerid, followedid) {
+_$.post.unfollow = function(followerid, followedid) {
     $.ajax({
-        url: serverAddress + "users/unfollow",
+        url: _$.global.serverAddress + "users/unfollow",
         type: 'POST',
         xhrFields: {
             withCredentials: true
@@ -43,7 +43,7 @@ var unfollow = function(followerid, followedid) {
         },
         error: function(jqXHR) {
             console.log(jqXHR);
-            logout();
+            _$.authentication.logout();
         }
     }).done(function(data, textStatus, response) {
         document.location.reload();
@@ -51,9 +51,9 @@ var unfollow = function(followerid, followedid) {
     return false;
 }
 
-var changeProfileImage = function(image) {
+_$.post.changeProfileImage = function(image) {
     $.ajax({
-        url: serverAddress + "users/image/create",
+        url: _$.global.serverAddress + "users/image/create",
         type: 'POST',
         xhrFields: {
             withCredentials: true
@@ -68,7 +68,7 @@ var changeProfileImage = function(image) {
         },
         error: function(jqXHR) {
             console.log(jqXHR);
-            //logout();
+            //_$.authentication.logout();
         }
     }).done(function(data, textStatus, response) {
         $('#profileImageForm').hide('slow', function() {
@@ -77,9 +77,9 @@ var changeProfileImage = function(image) {
     });
 }
 
-var postTweet = function() {
+_$.post.tweet = function() {
     $.ajax({
-        url: serverAddress + "post/tweet",
+        url: _$.global.serverAddress + "post/tweet",
         type: 'POST',
         xhrFields: {
             withCredentials: true
@@ -94,16 +94,16 @@ var postTweet = function() {
         },
         error: function(jqXHR) {
             console.log(jqXHR);
-            logout();
+            _$.authentication.logout();
         }
     }).done(function(data, textStatus, response) {
         document.getElementById('tweetBox').value = "";
-        changeTweetButtonState();
+        _$.utils.changeTweetButtonState();
         var pushedTweet = response.responseJSON;
         var existingFeed = JSON.parse(localStorage.feed);
         existingFeed.unshift(response.responseJSON);
         localStorage.feed = JSON.stringify(existingFeed);
-        pushNewTweet(pushedTweet, 'newsFeed');
+        _$.render.push.newTweet(pushedTweet, 'newsFeed');
     });
     return false;
 }

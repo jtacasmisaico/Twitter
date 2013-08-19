@@ -88,7 +88,7 @@ if(! defined('PNGCRUSH_PATH') ) 		define ('PNGCRUSH_PATH', '/usr/bin/pngcrush');
 	6. make
 	7. cp CutyCapt /usr/local/bin/
 	8. Test it by running: xvfb-run --server-args="-screen 0, 1024x768x24" CutyCapt --url="http://markmaunder.com/" --out=test.png
-	9. If you get a file called test.png with something in it, it probably worked. Now test the script by accessing it as follows:
+	9. If you get a file called test.png with something in it, it probably worked. Now test the script by accessing it as _$.fetch.follows:
 	10. http://yoursite.com/path/to/timthumb.php?src=http://markmaunder.com/&webshot=1
 
 	Notes on performance: 

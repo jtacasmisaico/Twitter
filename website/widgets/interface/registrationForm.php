@@ -1,6 +1,6 @@
 <div id="registerationDiv" style="display:none;">
     <h4 style="text-align:center">New to Twitter? Sign up!</h4>
-    <form id="registrationForm" class="form-horizontal" onsubmit="return validateRegistrationForm()" onkeypress="return checkKeyRegister(event)">
+    <form id="registrationForm" class="form-horizontal" onsubmit="return _$.utils.validateRegistrationForm()" onkeypress="return _$.utils.checkKey_$.authentication.register(event)">
         <div class="control-group">
             <div class="controls">
                 <input type="text" id="inputNameRegistration" placeholder="Full Name" style="height:25px;width:240px;" requiredField>
