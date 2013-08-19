@@ -26,7 +26,6 @@ _$.render.clearUserPosts = function() {
 }
 
 _$.render.showUnFollowButton = function(alreadyFollowing) {
-    console.log("Already Following : " + alreadyFollowing);
     if(alreadyFollowing) {
         $('#followButton')[0].setAttribute('class','btn btn-warning');
         $('#followButton')[0].innerHTML = "Unfollow";
