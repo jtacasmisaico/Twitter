@@ -207,3 +207,20 @@ _$.fetch.follows = function(follower, followed) {
         else _$.render.showUnFollowButton(false);
     });
 }
+
+_$.fetch.hashTag = function(tag) {
+    $.ajax({
+        url: _$.global.serverAddress + "hashtag/"+_$.global.hashtag,
+        type: 'GET',
+        xhrFields: {
+            withCredentials: true
+        },
+        error: function(jqXHR) {
+            console.log(jqXHR);
+            _$.authentication.logout();
+        }
+    }).done(function(data, textStatus, response) {
+        _$.render.results(response.responseJSON, "hashtag");
+        $('#searchResults').slideDown();
+    });
+}

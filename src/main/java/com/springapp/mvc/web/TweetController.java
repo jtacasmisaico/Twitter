@@ -84,4 +84,10 @@ public class TweetController {
     public List<Tweet> fetchNewFeed(HttpServletRequest request, @RequestParam("tweetid") int tweetid){
         return tweetService.fetchNewFeed(request, tweetid);
     }
+
+    @RequestMapping(value = "/hashtag/{tag}", method = RequestMethod.GET)
+    @ResponseBody
+    public List<Tweet> fetchHashTag(@PathVariable("tag") String tag){
+        return tweetService.fetchHashTag(tag);
+    }
 }

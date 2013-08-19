@@ -11,6 +11,7 @@ _$.display = {};
 _$.global.serverAddress;
 _$.global.viewingUser;
 _$.global.query;
+_$.global.hashtag;
 _$.global.alreadyFetchingFeed = false;
 
 window.onload = function() {
@@ -99,6 +100,11 @@ _$.utils.detectURL = function() {
 		document.getElementById('navProfileButon').setAttribute("class","active");
 		document.getElementById('navHomeButon').setAttribute("class","");
 		_$.display.profile(localStorage.username);
+	}
+	else if (path[0] == "hashtag") {
+		_$.display.homePage();
+		_$.global.hashtag = path[1];
+		_$.display.hashTag();
 	}
 	else _$.display.homePage();
 }

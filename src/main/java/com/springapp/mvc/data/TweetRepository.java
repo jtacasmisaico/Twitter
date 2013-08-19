@@ -120,6 +120,18 @@ public class TweetRepository {
             return null;
         }
     }
+
+    public List<Tweet> fetchHashTag(String tag) {
+        try {
+            return jdbcTemplate.query("select tweets.tweetid, tweets.content, tweets.userid, tweets.timestamp, users.username, users.image from tweets, users, hashtags where tweets.tweetid = hashtags.tweetid and users.userid = tweets.userid and hashtags.tag = ?",
+                    new Object[]{tag},
+                    new BeanPropertyRowMapper<>(Tweet.class));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
 
 

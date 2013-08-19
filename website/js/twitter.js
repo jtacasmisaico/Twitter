@@ -11,6 +11,7 @@ _$.display = {};
 _$.global.serverAddress;
 _$.global.viewingUser;
 _$.global.query;
+_$.global.hashtag;
 _$.global.alreadyFetchingFeed = false;
 
 window.onload = function() {
@@ -100,6 +101,11 @@ _$.utils.detectURL = function() {
 		document.getElementById('navHomeButon').setAttribute("class","");
 		_$.display.profile(localStorage.username);
 	}
+	else if (path[0] == "hashtag") {
+		_$.display.homePage();
+		_$.global.hashtag = path[1];
+		_$.display.hashTag();
+	}
 	else _$.display.homePage();
 }
 //boot.js
@@ -132,6 +138,13 @@ _$.display.search = function() {
     _$.utils.setInfiniteScroll("search");
     _$.global.query = decodeURI(window.location.hash.split('#')[1].split(/\?|\//)[1].substring(2));
     _$.utils.searchFunction(_$.global.query);
+}
+
+_$.display.hashTag = function() {
+    $('#userPosts').hide();
+    $('#newsFeed').hide();
+    _$.utils.setInfiniteScroll("search");
+    _$.fetch.hashTag(_$.global.hashTag);
 }
 
 _$.display.loggedIn = function() {
@@ -443,7 +456,25 @@ _$.fetch.follows = function(follower, followed) {
             _$.render.showUnFollowButton(true);
         else _$.render.showUnFollowButton(false);
     });
-}//init.js
+}
+
+_$.fetch.hashTag = function(tag) {
+    $.ajax({
+        url: _$.global.serverAddress + "hashtag/"+_$.global.hashtag,
+        type: 'GET',
+        xhrFields: {
+            withCredentials: true
+        },
+        error: function(jqXHR) {
+            console.log(jqXHR);
+            _$.authentication.logout();
+        }
+    }).done(function(data, textStatus, response) {
+        _$.render.results(response.responseJSON, "hashtag");
+        $('#searchResults').slideDown();
+    });
+}
+//init.js
 _$.utils.validateLogin = function(e) {
     if(validate('inputEmail') && validate('inputPassword')) {_$.authentication.login(); return false;}
     else return false;
@@ -691,9 +722,12 @@ _$.render.userPosts = function(tweets) {
     }
 }
 
-_$.render.results = function(tweets) {
-    document.getElementById('searchResultsHeader').innerHTML = '<h4><em>Showing results for "' + decodeURIComponent(_$.global.query) + '" : </em></h4>';
-    if (tweets.length == 0) document.getElementById('searchResults').innerHTML = '<h4><em>You can\'t haz resultz :3</em></h4>';
+_$.render.results = function(tweets, hashtag) {
+    if(hashtag == undefined)
+        document.getElementById('searchResultsHeader').innerHTML = '<h4><em>Showing results for "' + decodeURIComponent(_$.global.query) + '" : </em></h4>';
+    else
+        document.getElementById('searchResultsHeader').innerHTML = '<h4><em>Showing tweets for "#' + _$.global.hashtag + '" : </em></h4>'; 
+    if (tweets.length == 0) document.getElementById('searchResults').innerHTML = '<h4><em>You can\'t haz resultz :3</em></h4><div id="searchResultsHeader"></div>';
     for (var i = 0; i < tweets.length; i++) {
         _$.render.push.tweet(tweets[i], 'searchResults');
     }
@@ -770,7 +804,7 @@ _$.utils.youTubeParser = function(content) {
 }
 
 _$.utils.hashTagsParser = function(content) {
-    return content.replace(/#(\w+)/g, '<a href="./#hashtags/$1">#$1</a>');
+    return content.replace(/#(\w+)/g, '<a href="./#hashtag/$1">#$1</a>');
 }//boot.js
 _$.utils.checkKeySearch = function(event) {
     $("#search").autocomplete("enable");
@@ -781,7 +815,7 @@ _$.utils.checkKeySearch = function(event) {
             $("#search").autocomplete("disable");
         return true;
     }
-bb}
+}
 
 _$.utils.doSearch = function() {
     var query = document.getElementById('search').value;

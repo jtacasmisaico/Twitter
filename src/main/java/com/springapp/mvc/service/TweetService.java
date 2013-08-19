@@ -61,4 +61,8 @@ public class TweetService {
         int userid = Integer.parseInt(request.getHeader("userid"));
         return tweetRepository.fetchNewFeed(userid, tweetid);
     }
+
+    public List<Tweet> fetchHashTag(String tag) {
+        return tweetRepository.fetchHashTag(tag.toLowerCase());
+    }
 }

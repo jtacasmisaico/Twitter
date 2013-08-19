@@ -36,9 +36,12 @@ _$.render.userPosts = function(tweets) {
     }
 }
 
-_$.render.results = function(tweets) {
-    document.getElementById('searchResultsHeader').innerHTML = '<h4><em>Showing results for "' + decodeURIComponent(_$.global.query) + '" : </em></h4>';
-    if (tweets.length == 0) document.getElementById('searchResults').innerHTML = '<h4><em>You can\'t haz resultz :3</em></h4>';
+_$.render.results = function(tweets, hashtag) {
+    if(hashtag == undefined)
+        document.getElementById('searchResultsHeader').innerHTML = '<h4><em>Showing results for "' + decodeURIComponent(_$.global.query) + '" : </em></h4>';
+    else
+        document.getElementById('searchResultsHeader').innerHTML = '<h4><em>Showing tweets for "#' + _$.global.hashtag + '" : </em></h4>'; 
+    if (tweets.length == 0) document.getElementById('searchResults').innerHTML = '<h4><em>You can\'t haz resultz :3</em></h4><div id="searchResultsHeader"></div>';
     for (var i = 0; i < tweets.length; i++) {
         _$.render.push.tweet(tweets[i], 'searchResults');
     }
@@ -115,5 +118,5 @@ _$.utils.youTubeParser = function(content) {
 }
 
 _$.utils.hashTagsParser = function(content) {
-    return content.replace(/#(\w+)/g, '<a href="./#hashtags/$1">#$1</a>');
+    return content.replace(/#(\w+)/g, '<a href="./#hashtag/$1">#$1</a>');
 }

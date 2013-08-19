@@ -30,6 +30,13 @@ _$.display.search = function() {
     _$.utils.searchFunction(_$.global.query);
 }
 
+_$.display.hashTag = function() {
+    $('#userPosts').hide();
+    $('#newsFeed').hide();
+    _$.utils.setInfiniteScroll("search");
+    _$.fetch.hashTag(_$.global.hashTag);
+}
+
 _$.display.loggedIn = function() {
     $('#navBarLoggedOut').hide();
     $('#navBarLoggedIn').show();

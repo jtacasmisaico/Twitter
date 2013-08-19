@@ -8,7 +8,7 @@ _$.utils.checkKeySearch = function(event) {
             $("#search").autocomplete("disable");
         return true;
     }
-bb}
+}
 
 _$.utils.doSearch = function() {
     var query = document.getElementById('search').value;
