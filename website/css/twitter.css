@@ -11,6 +11,39 @@ body {
     display:inline-block;
 }
 
+.smiley {
+    background: transparent url("../img/smileys.png") no-repeat;
+    width: 24px;
+    height: 21px;
+    color: #fff;
+    display: inline-block;
+    vertical-align: top;
+}
+.smiley.smiley_happy { background-position: 0 0 }
+.smiley.smiley_sad { background-position: -24px 0 }
+.smiley.smiley_grin { background-position: -48px 0 }
+.smiley.smiley_indifferent { background-position: -72px 0 }
+.smiley.smiley_wink { background-position: -96px 0 }
+.smiley.smiley_smirk { background-position: 0px -21px }
+.smiley.smiley_surprise { background-position: -24px -21px }
+.smiley.smiley_tongue { background-position: -48px -21px }
+.smiley.smiley_heart { background-position: -72px -21px }
+.smiley.smiley_heartbreak { background-position: -96px -21px }
+.smiley.smiley_angry { background-position: 0px -42px }
+.smiley.smiley_shades { background-position: -24px -42px }
+.smiley.smiley_kiss { background-position: -48px -42px }
+.smiley.smiley_confused { background-position: -72px -42px }
+.smiley.smiley_sleeping { background-position: -96px -42px }
+.smiley.smiley_crying { background-position: 0px -63px }
+.smiley.smiley_zipped { background-position: -24px -63px }
+.smiley.smiley_yell { background-position: -48px -63px }
+.smiley.smiley_angel { background-position: -72px -63px }
+.smiley.smiley_perplexed { background-position: -96px -63px }
+.smiley.smiley_shy { background-position: 0px -84px }
+.smiley.smiley_speechless { background-position: -24px -84px }
+.smiley.smiley_thumbsUp { background-position: -48px -84px }
+.smiley.smiley_thumbsDown { background-position: -72px -84px }
+
 .ui-autocomplete { 
   max-height: 205px;
   overflow-y: scroll;

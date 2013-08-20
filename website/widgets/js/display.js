@@ -25,12 +25,14 @@ _$.display.profile = function(username) {
 _$.display.search = function() {
     $('#userPosts').hide();
     $('#newsFeed').hide();
+    document.getElementById('searchResults').innerHTML = '<div id="searchResultsHeader"></div>';
     _$.utils.setInfiniteScroll("search");
     _$.global.query = decodeURI(window.location.hash.split('#')[1].split(/\?|\//)[1].substring(2));
     _$.utils.searchFunction(_$.global.query);
 }
 
-_$.display.hashTag = function() {
+_$.display.hashTag = function() {    
+    document.getElementById('searchResults').innerHTML = '<div id="searchResultsHeader"></div>';
     $('#userPosts').hide();
     $('#newsFeed').hide();
     _$.utils.setInfiniteScroll("search");

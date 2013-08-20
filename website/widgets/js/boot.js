@@ -80,6 +80,14 @@ _$.utils.setInfiniteScroll = function(action) {
 		};
 		return;
 	}
+	if (action == "hashtag") {
+		window.onscroll = function(ev) {
+			if ((window.innerHeight + window.scrollY + 200) >= document.body.offsetHeight) {
+				console.log("Fetching Hashtag Results!");
+			}
+		};
+		return;
+	}
 }
 
 _$.utils.detectURL = function() {
