@@ -167,25 +167,25 @@ body {
 	float:left;
 	margin : 0 0 0 0;
 	max-width:200px;
-	height:600px;
 	position:fixed;
   overflow-x: hidden;
+  overflow-y: auto;
 	border-style:dashed;
 	border-width:2px;
 	border-radius:5px;
 	border-color: #696969;
 	background-color: rgba(255,255,255,0.2);
 }
-#followers, #following {
-  width:160px;
+#followers, #following, #trending {
+  width:165px;
 }
 #editProfileImage {
   width: 200px;
 }
-#followersDiv, #followingDiv {
+#followersDiv, #followingDiv, #trendingDiv {
   max-height:150px;
   width:200px;
-  overflow:scroll;
+  overflow:auto;
   overflow-x:hidden;
   text-align:left;
 }

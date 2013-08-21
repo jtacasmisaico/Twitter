@@ -1,0 +1,151 @@
+
+<!-- saved from url=(0026)https://localhost/twitter/ -->
+<html manifest="twitter.appcache"><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+	<title>Twitter</title>
+    <link href="https://localhost/twitter/img/favicon.ico" rel="shortcut icon" type="image/x-icon">
+    <link href="https://localhost/twitter/css/bootstrap.css" rel="stylesheet" media="screen"> 
+    <link href="https://localhost/twitter/css/bootstrap-responsive.css" rel="stylesheet" media="screen">
+    <link href="https://localhost/twitter/css/twitter.css" rel="stylesheet" media="screen">
+    <link href="https://localhost/twitter/css/jquery-ui.css" rel="stylesheet" media="screen">
+	<script src="./static_files/jquery.js"></script><style type="text/css"></style>
+    <script src="./static_files/bootstrap.min.js"></script>
+    <script src="./static_files/bootbox.min.js"></script>
+    <script src="./static_files/formValidation.js"></script> 
+    <script src="./static_files/jquery-ui.js"></script>
+    <script src="./static_files/jquery.timeago.js"></script>
+
+    
+    <script src="./static_files/twitter.js"></script>
+<script type="text/javascript" src="chrome-extension://bfbmjmiodbnnpllbbbfblcplfjjepjdn/js/injected.js"></script></head>
+<body style="">
+	<div id="loginDiv" style="" data-toggle="popover" data-placement="left" data-trigger="manual" data-content="Please check the username and password combination that you provided." data-original-title="Invalid Credentials">
+  <form id="loginForm" class="form-horizontal" onsubmit="return _$.authentication.login()" onkeypress="return _$.utils.checkKeyLogin(event)">
+    <div class="control-group">
+      <div class="controls">
+        <input type="text" id="inputEmail" placeholder="Email" style="height:25px; width:240px;" requiredfield="">
+      </div>
+    </div>
+    <div class="control-group">
+      <div class="controls">
+        <input class="span2" type="password" id="inputPassword" placeholder="Password" style="height:25px;" requiredfield="">
+        <button type="submit" id="signInButton" class="btn btn-primary" onclick="return _$.utils.validateLogin()" style="margin-left:5px;">Sign In</button>
+      </div>
+    </div>
+  </form>
+</div><div id="navBarLoggedOut" style="" class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+    <a class="brand" style="margin-left:0px;" href="https://localhost/twitter/#">Twitter</a>
+    <ul class="nav" style="float:none; display:inline-block;">
+  		<img src="./static_files/icon.png" style="height:40px">
+    </ul>
+    <ul class="nav pull-right">
+      <li><a href="https://localhost/twitter/#">Settings</a></li>
+    </ul>
+  </div>
+</div>
+
+<div id="navBarLoggedIn" style="display: none;" class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+    <a class="brand" style="margin-left:0px;" href="https://localhost/twitter/#">Twitter</a>
+    <ul class="nav" style="float:none; display:inline-block;">
+  		<li id="navHomeButon" class="active"><a href="https://localhost/twitter/#">Home</a></li>
+	    <li id="navProfileButon"><a href="https://localhost/twitter/#profile">Profile</a></li>
+      <li><a href="https://localhost/twitter/#about">About</a></li>
+    </ul>
+    <ul class="nav pull-right">
+    	<li class="divider-vertical"></li>
+    	<form id="searchBox" onsubmit="return _$.utils.doSearch()" onkeydown="return _$.utils.checkKeySearch(event)" class="navbar-search typeahead-devs">
+				<span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span><input id="search" type="text" class="search-query span3 ui-autocomplete-input" placeholder="@username / #tweet" style="height:25px;margin-top:3px;" autocomplete="off">
+					<div class="icon-search icon-white"></div>
+		</form>
+		<li class="divider-vertical"></li>
+      	<li onclick="_$.authentication.logout()"><a href="https://localhost/twitter/#">Logout</a></li>
+    </ul>
+  </div>
+</div><div id="loggedIn">
+    <div id="profileSideBar" style="display: none;">
+        <div id="profileImageDiv"></div>
+        <div id="editProfileImage">
+            <i class="icon-edit" onclick="$(&#39;#profileImageForm&#39;).toggle(&#39;slow&#39;)"></i>
+            <form id="profileImageForm" action="https://localhost/twitter/widgets/interface/_uploadimage.php" style="display:none;" method="post" enctype="multipart/form-data">
+                <div class="fileupload fileupload-new" data-provides="fileupload">
+                    <div class="fileupload-new thumbnail" style="width: 200px; height: 150px;"><img src="./static_files/noimage.gif"></div>
+                    <div class="fileupload-preview fileupload-exists thumbnail" style="max-width: 200px; max-height: 150px; line-height: 20px;"></div>
+                    <div>
+                        <span class="btn btn-file btn-inverse">
+                            <span class="fileupload-new">Select Image</span>
+                            <span class="fileupload-exists btn-inverse"><i class="icon-edit"></i></span>
+                            <input type="file" name="image">
+                            <input id="imageName" type="hidden" name="imageName">
+                        </span>
+                        <a href="https://localhost/twitter/#" class="btn fileupload-exists btn-inverse" data-dismiss="fileupload"><i class="icon-remove"></i></a>
+                        <button type="submit" class="fileupload-exists btn btn-inverse" id="uploadImage"><i class="icon-upload"></i></button>
+                    </div>
+                </div>
+                <iframe id="target_iframe" name="target_iframe" src="" style="width:0;height:0;border:0px"></iframe>
+            </form>
+        </div>
+        <div id="username"></div>
+        <div id="followButtonDiv"></div>
+        <div class="accordion" id="sidebarAccordion">
+            <div class="accordion-group" style="border:0px;">
+                <button id="followersButton" class="btn btn-inverse" style="width:198px;" data-toggle="collapse" data-parent="#sidebarAccordion" data-target="#followersDiv">
+                Followers
+                </button>
+                <div id="followersDiv" class="collapse">
+                    <ul id="followers" class="nav nav-list"><li class="divider"></li></ul>
+                </div>
+
+                <button id="followingButton" class="btn btn-inverse" style="width:198px;" data-toggle="collapse" data-parent="#sidebarAccordion" data-target="#followingDiv">
+                Following
+                </button>
+                <div id="followingDiv" class="collapse">
+                    <ul id="following" class="nav nav-list"><li class="divider"></li></ul>
+                </div>
+            </div>
+        </div>
+        <div id="loading">Loading...</div>
+    </div>
+    <form id="tweetForm" style="display:none;" onsubmit="_$.post.tweet()">
+            <textarea id="tweetBox" rows="3" style="width:500px;" onkeyup="_$.utils.changeTweetButtonState()" maxlength="140"></textarea>
+            <button type="button" style="width:500px;" id="tweetButton" class="btn disabled" disabled="" onclick="_$.post.tweet()">Tweet</button>
+            <div id="characterCount">&nbsp;</div>
+    </form>
+    <div id="newsFeed" class="feed" style="display: none;">
+    </div>
+    <div id="userPosts" class="feed" style="display:none;">
+    </div>
+    <div id="searchResults" class="feed" style="display: none;">
+        <div id="searchResultsHeader"></div>
+    </div>
+</div><div id="registerationDiv" style="">
+    <h4 style="text-align:center">New to Twitter? Sign up!</h4>
+    <form id="registrationForm" class="form-horizontal" onsubmit="return _$.utils.validateRegistrationForm()" onkeypress="return _$.utils.checkKey_$.authentication.register(event)">
+        <div class="control-group">
+            <div class="controls">
+                <input type="text" id="inputNameRegistration" placeholder="Full Name" style="height:25px;width:240px;" requiredfield="">
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <input type="text" id="inputUsernameRegistration" form-validation="length" min-length-value="3" placeholder="Username" style="height:25px;width:240px;">
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <input type="text" form-validation="email" id="inputEmailRegistration" placeholder="Email" style="height:25px;width:240px;">
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <input type="password" id="inputPasswordRegistration" form-validation="length" min-length-value="6" placeholder="Password" style="height:25px;width:240px;">
+            </div>
+        </div>  
+        <div class="control-group">
+            <div class="controls">
+                <button id="registrationButton" type="submit" class="btn btn-info">Register</button>
+            </div>
+        </div>
+    </form>
+</div><img id="splash" src="./static_files/background-icon.png" style="">
+<ul class="ui-autocomplete ui-front ui-menu ui-widget ui-widget-content ui-corner-all" id="ui-id-1" tabindex="0" style="display: none;"></ul></body></html>

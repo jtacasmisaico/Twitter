@@ -515,9 +515,9 @@ _$.authentication.login = function() {
         data: JSON.stringify({ email: document.getElementById('inputEmail').value, password: document.getElementById('inputPassword').value }),
         error: function(jqXHR){
             console.log(jqXHR);
-            $('#loginDiv').popover('show');
+            $('#_$.authentication.loginDiv').popover('show');
             $('#inputEmail').focus();
-            setTimeout(function() {$('#loginDiv').popover('hide');}, 3000);
+            setTimeout(function() {$('#_$.authentication.loginDiv').popover('hide');}, 3000);
         }
     }).done(function(data, textStatus, response) {
             _$.global.viewingUser = response.responseJSON.user;
@@ -533,7 +533,8 @@ _$.authentication.login = function() {
 }
 
 _$.authentication.logout = function() {
-    $.ajax({
+    console.log("_$.authentication.logout");
+        $.ajax({
         url: _$.global.serverAddress + "users/logout",
         type: 'POST',
         xhrFields: {
@@ -808,7 +809,7 @@ _$.utils.imageParser = function(content) {
 }
 
 _$.utils.youTubeParser = function(content) {
-    return content.replace(/(?:http:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?(.+)/g, '<iframe width="240" height="180" src="http://www.youtube.com/embed/$1" frameborder="0" allowfullscreen></iframe>');
+    return content.replace(/(?:http:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?(.+)/g, '<iframe width="210" height="160" src="http://www.youtube.com/embed/$1" frameborder="0" allowfullscreen></iframe>');
 }
 
 _$.utils.hashTagsParser = function(content) {
@@ -816,29 +817,30 @@ _$.utils.hashTagsParser = function(content) {
 }
 
 _$.utils.smileyParser = function(content) {
-    var parsedContent = content.replace(/(^|\s):-?D/g, '<div class="smiley smiley_grin" title=":-D"></div>');
+    console.error(content);
+    var parsedContent = content.replace(/:-?D/g, '<div class="smiley smiley_grin" title=":-D"></div>');
     parsedContent = parsedContent.replace(/(^|\s):-?\)/g, '<div class="smiley smiley_happy" title=":-)"></div>');
-    parsedContent = parsedContent.replace(/(^|\s):-?\(/g, '<div class="smiley smiley_sad" title=":-("></div>');
-    parsedContent = parsedContent.replace(/(^|\s)O:-?\)/g, '<div class="smiley smiley_angel" title="O:)"></div>');
-    parsedContent = parsedContent.replace(/(^|\s):-?\//g, '<div class="smiley smiley_smirk" title=":-/"></div>');
-    parsedContent = parsedContent.replace(/(^|\s);-?\)/g, '<div class="smiley smiley_wink" title=";-)"></div>');
-    parsedContent = parsedContent.replace(/(^|\s):-?O/g, '<div class="smiley smiley_surprise" title=":-O"></div>');
-    parsedContent = parsedContent.replace(/(^|\s):-?P/g, '<div class="smiley smiley_tongue" title=":-P"></div>');
-    parsedContent = parsedContent.replace(/(^|\s)&lt;3/g, '<div class="smiley smiley_heart" title="<3"></div>');
-    parsedContent = parsedContent.replace(/(^|\s)&lt;\/3/g, '<div class="smiley smiley_heartbreak" title="</3"></div>');
-    parsedContent = parsedContent.replace(/(^|\s):-?\|/g, '<div class="smiley smiley_indifferent" title=":-|"></div>');
-    parsedContent = parsedContent.replace(/(^|\s)X-?\(/g, '<div class="smiley smiley_angry" title="X-("></div>');
-    parsedContent = parsedContent.replace(/(^|\s)B-?\)/g, '<div class="smiley smiley_shades" title="B-)"></div>');
-    parsedContent = parsedContent.replace(/(^|\s):-?\*/g, '<div class="smiley smiley_kiss" title=":-*"></div>');
-    parsedContent = parsedContent.replace(/(^|\s)o_O/g, '<div class="smiley smiley_confused" title="o_O"></div>');
-    parsedContent = parsedContent.replace(/(^|\s)-_-/g, '<div class="smiley smiley_sleeping" title="-_-"></div>');
-    parsedContent = parsedContent.replace(/(^|\s):&#39;\(/g, '<div class="smiley smiley_crying" title=":\'("></div>');
-    parsedContent = parsedContent.replace(/(^|\s):!/g, '<div class="smiley smiley_zipped" title=":!"></div>');
-    parsedContent = parsedContent.replace(/(^|\s)&gt;O/g, '<div class="smiley smiley_yell" title="\>O"></div>');
-    parsedContent = parsedContent.replace(/(^|\s):-?S/g, '<div class="smiley smiley_perplexed" title=":S"></div>');
-    parsedContent = parsedContent.replace(/(^|\s):-?\$/g, '<div class="smiley smiley_shy" title=":$"></div>');
-    parsedContent = parsedContent.replace(/(^|\s):-?X/g, '<div class="smiley smiley_speechless" title=":X"></div>');
-    parsedContent = parsedContent.replace(/(^|\s)\(Y\)/g, '<div class="smiley smiley_thumbsUp" title="(Y)"></div>');
+    parsedContent = parsedContent.replace(/:-?\(/g, '<div class="smiley smiley_sad" title=":-("></div>');
+    parsedContent = parsedContent.replace(/O:-?\)/g, '<div class="smiley smiley_angel" title="O:)"></div>');
+    parsedContent = parsedContent.replace(/:-?\//g, '<div class="smiley smiley_smirk" title=":-/"></div>');
+    parsedContent = parsedContent.replace(/;-?\)/g, '<div class="smiley smiley_wink" title=";-)"></div>');
+    parsedContent = parsedContent.replace(/:-?O/g, '<div class="smiley smiley_surprise" title=":-O"></div>');
+    parsedContent = parsedContent.replace(/:-?P/g, '<div class="smiley smiley_tongue" title=":-P"></div>');
+    parsedContent = parsedContent.replace(/&lt;3/g, '<div class="smiley smiley_heart" title="<3"></div>');
+    parsedContent = parsedContent.replace(/&lt;\/3/g, '<div class="smiley smiley_heartbreak" title="</3"></div>');
+    parsedContent = parsedContent.replace(/:-?\|/g, '<div class="smiley smiley_indifferent" title=":-|"></div>');
+    parsedContent = parsedContent.replace(/X-?\(/g, '<div class="smiley smiley_angry" title="X-("></div>');
+    parsedContent = parsedContent.replace(/B-?\)/g, '<div class="smiley smiley_shades" title="B-)"></div>');
+    parsedContent = parsedContent.replace(/:-?\*/g, '<div class="smiley smiley_kiss" title=":-*"></div>');
+    parsedContent = parsedContent.replace(/o_O/g, '<div class="smiley smiley_confused" title="o_O"></div>');
+    parsedContent = parsedContent.replace(/-_-/g, '<div class="smiley smiley_sleeping" title="-_-"></div>');
+    parsedContent = parsedContent.replace(/:&#39;\(/g, '<div class="smiley smiley_crying" title=":\'("></div>');
+    parsedContent = parsedContent.replace(/:!/g, '<div class="smiley smiley_zipped" title=":!"></div>');
+    parsedContent = parsedContent.replace(/&gt;O/g, '<div class="smiley smiley_yell" title="\>O"></div>');
+    parsedContent = parsedContent.replace(/:-?S/g, '<div class="smiley smiley_perplexed" title=":S"></div>');
+    parsedContent = parsedContent.replace(/:-?\$/g, '<div class="smiley smiley_shy" title=":$"></div>');
+    parsedContent = parsedContent.replace(/:-?X/g, '<div class="smiley smiley_speechless" title=":X"></div>');
+    parsedContent = parsedContent.replace(/\(Y\)/g, '<div class="smiley smiley_thumbsUp" title="(Y)"></div>');
     parsedContent = parsedContent.replace(/\(N\)/g, '<div class="smiley smiley_thumbsDown" title="(N)"></div>');
     return parsedContent;
 }//boot.js

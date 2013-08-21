@@ -29,9 +29,9 @@ _$.authentication.login = function() {
         data: JSON.stringify({ email: document.getElementById('inputEmail').value, password: document.getElementById('inputPassword').value }),
         error: function(jqXHR){
             console.log(jqXHR);
-            $('#_$.authentication.loginDiv').popover('show');
+            $('#loginDiv').popover('show');
             $('#inputEmail').focus();
-            setTimeout(function() {$('#_$.authentication.loginDiv').popover('hide');}, 3000);
+            setTimeout(function() {$('#loginDiv').popover('hide');}, 3000);
         }
     }).done(function(data, textStatus, response) {
             _$.global.viewingUser = response.responseJSON.user;
@@ -47,8 +47,7 @@ _$.authentication.login = function() {
 }
 
 _$.authentication.logout = function() {
-    console.log("_$.authentication.logout");
-        $.ajax({
+    $.ajax({
         url: _$.global.serverAddress + "users/logout",
         type: 'POST',
         xhrFields: {

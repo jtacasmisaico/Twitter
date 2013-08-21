@@ -122,10 +122,10 @@ public class TweetRepository {
         }
     }
 
-    public List<Tweet> fetchHashTag(String tag, int lastTweet, int limit) {
+    public List<Tweet> fetchHashTag(String tag) {
         try {
-            return jdbcTemplate.query("select tweets.tweetid, tweets.content, tweets.userid, tweets.timestamp, users.username, users.image from tweets, users, hashtags where tweets.tweetid = hashtags.tweetid and users.userid = tweets.userid and hashtags.tag = ? and tweets.tweetid < ? ORDER BY tweetid LIMIT ?",
-                    new Object[]{tag, lastTweet, limit},
+            return jdbcTemplate.query("select tweets.tweetid, tweets.content, tweets.userid, tweets.timestamp, users.username, users.image from tweets, users, hashtags where tweets.tweetid = hashtags.tweetid and users.userid = tweets.userid and hashtags.tag = ? ORDER BY tweetid DESC LIMIT 100",
+                    new Object[]{tag},
                     new BeanPropertyRowMapper<>(Tweet.class));
         }
         catch (Exception e) {

@@ -72,8 +72,8 @@ public class TweetService {
         return tweetRepository.fetchNewFeed(userid, tweetid);
     }
 
-    public List<Tweet> fetchHashTag(String tag, int lastTweet, int limit) {
-        return tweetRepository.fetchHashTag(tag.toLowerCase(), lastTweet, limit);
+    public List<Tweet> fetchHashTag(String tag) {
+        return tweetRepository.fetchHashTag(tag.toLowerCase());
     }
 
     public void createHashTag(int id, String tweet) {

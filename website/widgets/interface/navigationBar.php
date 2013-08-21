@@ -1,4 +1,4 @@
-<div id="navBarLoggedOut" style="display:none;" class="navbar navbar-fixed-top">
+<div id="navBarLoggedOut" style="display:none;position:fixed;" class="navbar navbar-fixed-top">
   <div class="navbar-inner">
     <a class="brand" style="margin-left:0px;" href="#">Twitter</a>
     <ul class="nav" style="float:none; display:inline-block;">
@@ -10,7 +10,7 @@
   </div>
 </div>
 
-<div id="navBarLoggedIn" style="display:none;" class="navbar navbar-fixed-top">
+<div id="navBarLoggedIn" style="display:none;position:fixed;" class="navbar navbar-fixed-top">
   <div class="navbar-inner">
     <a class="brand" style="margin-left:0px;" href="#">Twitter</a>
     <ul class="nav" style="float:none; display:inline-block;">
