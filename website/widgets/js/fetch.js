@@ -225,17 +225,19 @@ _$.fetch.hashTag = function(tag) {
 }
 
 _$.fetch.trending = function() {
-    $.ajax({
-        url: _$.global.serverAddress + "fetch/trending",
-        type: 'GET',
-        xhrFields: {
-            withCredentials: true
-        },
-        error: function(jqXHR) {
-            console.log(jqXHR);
-            _$.authentication.logout();
-        }
-    }).done(function(data, textStatus, response) {
-        _$.render.trending(response.responseJSON);
-    });
+    if(_$.global.trending == undefined)
+        $.ajax({
+            url: _$.global.serverAddress + "fetch/trending",
+            type: 'GET',
+            xhrFields: {
+                withCredentials: true
+            },
+            error: function(jqXHR) {
+                console.log(jqXHR);
+                _$.authentication.logout();
+            }
+        }).done(function(data, textStatus, response) {
+            _$.global.trending = response.responseJSON;
+            _$.render.trending(response.responseJSON);
+        });
 }

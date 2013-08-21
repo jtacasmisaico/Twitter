@@ -47,24 +47,24 @@ _$.authentication.login = function() {
 }
 
 _$.authentication.logout = function() {
-    // $.ajax({
-    //     url: _$.global.serverAddress + "users/logout",
-    //     type: 'POST',
-    //     xhrFields: {
-    //         withCredentials: true
-    //     },        
-    //     headers: {
-    //         'token': localStorage.sessionid,
-    //         'userid': localStorage.userid
-    //     },
-    //     error: function(jqXHR) {
-    //         console.log(jqXHR);
-    //     }
-    // }).done(function(data, textStatus, response) {
-    //     localStorage.clear();
-    //     document.location.href="./#";
-    //     document.location.reload();
-    // });
+    $.ajax({
+        url: _$.global.serverAddress + "users/logout",
+        type: 'POST',
+        xhrFields: {
+            withCredentials: true
+        },        
+        headers: {
+            'token': localStorage.sessionid,
+            'userid': localStorage.userid
+        },
+        error: function(jqXHR) {
+            console.log(jqXHR);
+        }
+    }).done(function(data, textStatus, response) {
+        localStorage.clear();
+        document.location.href="./#";
+        document.location.reload();
+    });
 }
 _$.utils.checkKeyRegister = function(event) {
     if(event.keyCode == 13) {

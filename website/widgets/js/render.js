@@ -108,9 +108,10 @@ _$.render.push.newTweet = function(tweet, divId) {
 }
 
 _$.render.trending = function(trends) {
-    for (var i = 0; i < trends.length; i++) {
-        _$.render.push.trending(trends[i]);
-    }
+    if(_$.global.trends == undefined)
+        for (var i = 0; i < trends.length; i++) {
+            _$.render.push.trending(trends[i]);
+        }
 }
 
 _$.render.push.trending = function(trend) {

@@ -150,7 +150,7 @@ _$.display.search = function() {
 }
 
 _$.display.hashTag = function() {    
-    if(_$.global.viewingUser != localStorage.userid) {
+    if(_$.global.viewingUser.userid != localStorage.userid) {
         _$.render.clearSidebar();
         _$.global.viewingUser = JSON.parse(localStorage.user);
         $('#profileSideBar').slideUp('fast', function() {
@@ -166,6 +166,7 @@ _$.display.hashTag = function() {
         });
     }
     document.getElementById('searchResults').innerHTML = '<div id="searchResultsHeader"></div>';
+    $('#tweetForm').hide();
     $('#newsFeed').hide();
     _$.utils.setInfiniteScroll("search");
     _$.fetch.hashTag(_$.global.hashTag);
@@ -500,19 +501,21 @@ _$.fetch.hashTag = function(tag) {
 }
 
 _$.fetch.trending = function() {
-    $.ajax({
-        url: _$.global.serverAddress + "fetch/trending",
-        type: 'GET',
-        xhrFields: {
-            withCredentials: true
-        },
-        error: function(jqXHR) {
-            console.log(jqXHR);
-            _$.authentication.logout();
-        }
-    }).done(function(data, textStatus, response) {
-        _$.render.trending(response.responseJSON);
-    });
+    if(_$.global.trending == undefined)
+        $.ajax({
+            url: _$.global.serverAddress + "fetch/trending",
+            type: 'GET',
+            xhrFields: {
+                withCredentials: true
+            },
+            error: function(jqXHR) {
+                console.log(jqXHR);
+                _$.authentication.logout();
+            }
+        }).done(function(data, textStatus, response) {
+            _$.global.trending = response.responseJSON;
+            _$.render.trending(response.responseJSON);
+        });
 }
 //init.js
 _$.utils.validateLogin = function(e) {
@@ -563,24 +566,24 @@ _$.authentication.login = function() {
 }
 
 _$.authentication.logout = function() {
-    // $.ajax({
-    //     url: _$.global.serverAddress + "users/logout",
-    //     type: 'POST',
-    //     xhrFields: {
-    //         withCredentials: true
-    //     },        
-    //     headers: {
-    //         'token': localStorage.sessionid,
-    //         'userid': localStorage.userid
-    //     },
-    //     error: function(jqXHR) {
-    //         console.log(jqXHR);
-    //     }
-    // }).done(function(data, textStatus, response) {
-    //     localStorage.clear();
-    //     document.location.href="./#";
-    //     document.location.reload();
-    // });
+    $.ajax({
+        url: _$.global.serverAddress + "users/logout",
+        type: 'POST',
+        xhrFields: {
+            withCredentials: true
+        },        
+        headers: {
+            'token': localStorage.sessionid,
+            'userid': localStorage.userid
+        },
+        error: function(jqXHR) {
+            console.log(jqXHR);
+        }
+    }).done(function(data, textStatus, response) {
+        localStorage.clear();
+        document.location.href="./#";
+        document.location.reload();
+    });
 }
 _$.utils.checkKeyRegister = function(event) {
     if(event.keyCode == 13) {
@@ -833,9 +836,10 @@ _$.render.push.newTweet = function(tweet, divId) {
 }
 
 _$.render.trending = function(trends) {
-    for (var i = 0; i < trends.length; i++) {
-        _$.render.push.trending(trends[i]);
-    }
+    if(_$.global.trends == undefined)
+        for (var i = 0; i < trends.length; i++) {
+            _$.render.push.trending(trends[i]);
+        }
 }
 
 _$.render.push.trending = function(trend) {

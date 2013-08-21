@@ -32,7 +32,7 @@ _$.display.search = function() {
 }
 
 _$.display.hashTag = function() {    
-    if(_$.global.viewingUser != localStorage.userid) {
+    if(_$.global.viewingUser.userid != localStorage.userid) {
         _$.render.clearSidebar();
         _$.global.viewingUser = JSON.parse(localStorage.user);
         $('#profileSideBar').slideUp('fast', function() {
@@ -48,6 +48,7 @@ _$.display.hashTag = function() {
         });
     }
     document.getElementById('searchResults').innerHTML = '<div id="searchResultsHeader"></div>';
+    $('#tweetForm').hide();
     $('#newsFeed').hide();
     _$.utils.setInfiniteScroll("search");
     _$.fetch.hashTag(_$.global.hashTag);
