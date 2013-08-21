@@ -46,7 +46,7 @@ window.onload = function() {
 };
 
 _$.utils.init = function() {
-	_$.global.serverAddress = "http://localhost:8080/";
+	_$.global.serverAddress = "http://172.16.138.138:8080/";
 }
 
 window.onhashchange = function() {
@@ -408,7 +408,7 @@ _$.fetch.image = function(tweet) {
 
 _$.fetch.userDetails = function(username) {
     $.ajax({
-        url: _$.global.serverAddress + "users/" + username,
+        url: _$.global.serverAddress + "users/username/" + username,
         type: 'GET',
         xhrFields: {
             withCredentials: true
@@ -522,7 +522,7 @@ _$.utils.validateLogin = function(e) {
 
 _$.utils.checkKeyLogin = function(event) {
     if(event.keyCode == 13) {
-        return _$.utils.validate_$.authentication.login();
+        return _$.utils.validateLogin();
     }
     else return true;
 }

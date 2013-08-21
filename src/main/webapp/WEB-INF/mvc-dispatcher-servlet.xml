@@ -39,6 +39,7 @@
                       class="com.springapp.mvc.interceptor.AuthenticationInterceptor" />
             </mvc:interceptor>
             <mvc:interceptor>
+                <mvc:mapping path="/users/username/*" />
                 <mvc:mapping path="/users/register" />
                 <mvc:mapping path="/users/followers/*" />
                 <mvc:mapping path="/users/follows/*" />

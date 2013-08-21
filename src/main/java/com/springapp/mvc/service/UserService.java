@@ -157,10 +157,7 @@ public class UserService {
         return userRepository.findById(userid);
     }
 
-    public User findByUsername(String username, HttpServletResponse response) {
-        response.setHeader("Access-Control-Allow-Origin", "https://localhost");
-        response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("Access-Control-Allow-Methods", "GET");
+    public User findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 

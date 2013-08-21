@@ -6,7 +6,7 @@ _$.utils.validateLogin = function(e) {
 
 _$.utils.checkKeyLogin = function(event) {
     if(event.keyCode == 13) {
-        return _$.utils.validate_$.authentication.login();
+        return _$.utils.validateLogin();
     }
     else return true;
 }

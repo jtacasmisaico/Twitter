@@ -27,8 +27,8 @@ public class AuthenticationController {
     }
 
     @RequestMapping(value = "/users/login", method = RequestMethod.OPTIONS)
-    public void getLoginOptions(HttpServletResponse response) {
-        response.addHeader("Access-Control-Allow-Origin", "https://localhost");
+    public void getLoginOptions(HttpServletRequest request, HttpServletResponse response) {
+        response.addHeader("Access-Control-Allow-Origin", request.getHeader("origin"));
         response.addHeader("Access-Control-Allow-Credentials", "true");
         response.addHeader("Access-Control-Allow-Headers", "Content-Type");
         response.addHeader("Access-Control-Allow-Methods", "OPTIONS, POST");
@@ -36,9 +36,9 @@ public class AuthenticationController {
 
     @RequestMapping(value = "/users/login", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> login(HttpServletResponse response, @RequestBody Map<String,
+    public Map<String, Object> login(HttpServletRequest request, HttpServletResponse response, @RequestBody Map<String,
             Object> requestParameters) throws InvalidKeySpecException, NoSuchAlgorithmException {
-        response.addHeader("Access-Control-Allow-Origin", "https://localhost");
+        response.addHeader("Access-Control-Allow-Origin", request.getHeader("origin"));
         response.addHeader("Access-Control-Allow-Credentials", "true");
         return authenticationService.login((String) requestParameters.get("email"), (String) requestParameters.get("password"),
                 response);

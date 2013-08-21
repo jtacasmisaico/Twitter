@@ -23,7 +23,7 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle( HttpServletRequest request, HttpServletResponse response,
                               Object handler) {
-        response.addHeader("Access-Control-Allow-Origin", "https://localhost");
+        response.addHeader("Access-Control-Allow-Origin", request.getHeader("origin"));
         response.addHeader("Access-Control-Allow-Credentials", "true");
         response.addHeader("Access-Control-Allow-Headers", "Content-Type, token, userid");
         response.addHeader("Access-Control-Allow-Methods", "OPTIONS, POST");

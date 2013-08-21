@@ -133,7 +133,7 @@ _$.fetch.image = function(tweet) {
 
 _$.fetch.userDetails = function(username) {
     $.ajax({
-        url: _$.global.serverAddress + "users/" + username,
+        url: _$.global.serverAddress + "users/username/" + username,
         type: 'GET',
         xhrFields: {
             withCredentials: true

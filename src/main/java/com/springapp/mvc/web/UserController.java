@@ -36,11 +36,12 @@ public class UserController {
         return userService.findById(userid);
     }
 
-    @RequestMapping(value = "/users/{username}", method = RequestMethod.GET)
+    @RequestMapping(value = "/users/username/{username}", method = RequestMethod.GET)
     @ResponseBody
-    public User fetchUserByUsername(@PathVariable("username") String username, HttpServletResponse response) throws
+    public User fetchUserByUsername(@PathVariable("username") String username) throws
             IOException {
-        return userService.findByUsername(username, response);
+        System.out.println(username);
+        return userService.findByUsername(username);
     }
 
 
