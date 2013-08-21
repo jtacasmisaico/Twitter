@@ -23,5 +23,25 @@
 		<servlet-name>mvc-dispatcher</servlet-name>
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
-
+    <!--
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>HTTPSOnly</web-resource-name>
+            <url-pattern>/oauth/*</url-pattern>
+            <url-pattern>/users/register</url-pattern>
+            <url-pattern>/users/login</url-pattern>
+            <url-pattern>/users/logout</url-pattern>
+            <url-pattern>/users/follow</url-pattern>
+            <url-pattern>/users/unfollow</url-pattern>
+            <url-pattern>/users/image/create</url-pattern>
+            <url-pattern>/post/tweet</url-pattern>
+            <url-pattern>/fetch/feed</url-pattern>
+            <url-pattern>/fetch/feed/latest</url-pattern>
+            <url-pattern>/fetch/feed/latest</url-pattern>
+        </web-resource-collection>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    -->
 </web-app>
