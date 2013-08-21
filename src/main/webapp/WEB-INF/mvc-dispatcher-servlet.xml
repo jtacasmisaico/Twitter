@@ -47,9 +47,11 @@
                 <mvc:mapping path="/users/check/follows/*" />
                 <mvc:mapping path="/fetch/tweets/*" />
                 <mvc:mapping path="/fetch/posts/*" />
+                <mvc:mapping path="/fetch/trending/*" />
                 <mvc:mapping path="/search/tweets" />
                 <mvc:mapping path="/search/users" />
                 <mvc:mapping path="/hashtag/*" />
+                <mvc:mapping path="/hashtag/refresh/*" />
                 <bean id= "corsInterceptor"
                       class="com.springapp.mvc.interceptor.CORSInterceptor" />
             </mvc:interceptor>

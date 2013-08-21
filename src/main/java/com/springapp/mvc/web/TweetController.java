@@ -87,7 +87,19 @@ public class TweetController {
 
     @RequestMapping(value = "/hashtag/{tag}", method = RequestMethod.GET)
     @ResponseBody
-    public List<Tweet> fetchHashTag(@PathVariable("tag") String tag){
-        return tweetService.fetchHashTag(tag);
+    public List<Tweet> fetchHashTag(@PathVariable("tag") String tag, @RequestParam("lastTweet") int lastTweet,
+                                    @RequestParam("limit") int limit){
+        return tweetService.fetchHashTag(tag, lastTweet, limit);
+    }
+    @RequestMapping(value = "/hashtag/refresh/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public String fetchHashTag(@PathVariable("id") int tweetId){
+        tweetService.refreshHashes(tweetId);
+        return "Done";
+    }
+    @RequestMapping(value = "/fetch/trending", method = RequestMethod.GET)
+    @ResponseBody
+    public List<String> fetchTrending(){
+        return tweetService.fetchTrending();
     }
 }

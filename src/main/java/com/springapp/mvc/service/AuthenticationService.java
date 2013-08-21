@@ -1,5 +1,6 @@
 package com.springapp.mvc.service;
 
+import com.springapp.mvc.cache.CacheManager;
 import com.springapp.mvc.data.AuthenticationRepository;
 import com.springapp.mvc.data.UserRepository;
 import com.springapp.mvc.model.AuthenticatedUser;

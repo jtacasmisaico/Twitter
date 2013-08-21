@@ -4,15 +4,16 @@ import com.google.gson.reflect.TypeToken;
 import com.springapp.mvc.cache.CacheManager;
 import com.springapp.mvc.model.Tweet;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.*;
 
 @Repository
 public class TweetRepository {
@@ -121,15 +122,57 @@ public class TweetRepository {
         }
     }
 
-    public List<Tweet> fetchHashTag(String tag) {
+    public List<Tweet> fetchHashTag(String tag, int lastTweet, int limit) {
         try {
-            return jdbcTemplate.query("select tweets.tweetid, tweets.content, tweets.userid, tweets.timestamp, users.username, users.image from tweets, users, hashtags where tweets.tweetid = hashtags.tweetid and users.userid = tweets.userid and hashtags.tag = ?",
-                    new Object[]{tag},
+            return jdbcTemplate.query("select tweets.tweetid, tweets.content, tweets.userid, tweets.timestamp, users.username, users.image from tweets, users, hashtags where tweets.tweetid = hashtags.tweetid and users.userid = tweets.userid and hashtags.tag = ? and tweets.tweetid < ? ORDER BY tweetid LIMIT ?",
+                    new Object[]{tag, lastTweet, limit},
                     new BeanPropertyRowMapper<>(Tweet.class));
         }
         catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+    public void insertHashTag(int tweetId, ArrayList<String> hashTags) {
+        final SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate);
+        Map batch[] = new Map[hashTags.size()];
+        insert.setTableName("hashtags");
+        insert.setColumnNames(Arrays.asList("tweetid", "tag"));
+        for(int i = 0; i< hashTags.size(); i++) {
+            Map<String, Object> param = new HashMap<>();
+            param.put("tweetid", tweetId);
+            param.put("tag", hashTags.get(i));
+            batch[i] = param;
+        }
+
+        try{
+            insert.executeBatch(batch);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    public List<Tweet> fetchAllTweets(int tweetId) {
+        try {
+            return jdbcTemplate.query("select tweets.tweetid, tweets.content from tweets where tweets.tweetid < ?",
+                    new Object[]{tweetId},
+                    new BeanPropertyRowMapper<>(Tweet.class));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public List<String> fetchTrending() {
+        if(cacheManager.exists("trending"))
+            return Arrays.asList(cacheManager.getStringList("trending"));
+        else {
+            int lastTweet = jdbcTemplate.queryForInt("SELECT MAX(tweetid) from tweets");
+            List<String> results = jdbcTemplate.queryForList("SELECT tag FROM hashtags WHERE tweetid > ? GROUP BY tag ORDER BY COUNT(tag) DESC LIMIT 10", new Object[]{lastTweet-100000}, String.class);
+            String[] trending = results.toArray(new String[results.size()]);
+            cacheManager.set("trending", trending, 60);
+            return results;
         }
     }
 }

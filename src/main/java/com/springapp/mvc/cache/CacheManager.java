@@ -89,6 +89,20 @@ public class CacheManager {
         }
     }
 
+    public String[] getStringList(String key) {
+        try {
+            Jedis cache = cachedResource.getResource();
+            System.out.println("Hit Cache : "+key);
+            String[] value = gson.fromJson(cache.get(key), String[].class);
+            cachedResource.returnResource(cache);
+            return value;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public void delete(String key) {
         try{
             Jedis cache = cachedResource.getResource();
@@ -112,4 +126,6 @@ public class CacheManager {
             return false;
         }
     }
+
+
 }
