@@ -94,8 +94,8 @@ _$.utils.setInfiniteScroll = function(action) {
 _$.utils.detectURL = function() {
 	var path = window.location.hash.split('#')[1];
 	if (path == undefined) {
-		document.getElementById('navProfileButon').setAttribute("class","");
-		document.getElementById('navHomeButon').setAttribute("class","active");
+		document.getElementById('navProfileButton').setAttribute("class","");
+		document.getElementById('navHomeButton').setAttribute("class","active");
 		_$.display.homePage();
 		return;
 	}
@@ -106,8 +106,8 @@ _$.utils.detectURL = function() {
 		_$.display.search();
 	} 
 	else if (path[0] == "profile") {
-		document.getElementById('navProfileButon').setAttribute("class","active");
-		document.getElementById('navHomeButon').setAttribute("class","");
+		document.getElementById('navProfileButton').setAttribute("class","active");
+		document.getElementById('navHomeButton').setAttribute("class","");
 		_$.display.profile(localStorage.username);
 	}
 	else if (path[0] == "hashtag") {

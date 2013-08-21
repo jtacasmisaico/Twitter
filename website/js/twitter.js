@@ -94,8 +94,8 @@ _$.utils.setInfiniteScroll = function(action) {
 _$.utils.detectURL = function() {
 	var path = window.location.hash.split('#')[1];
 	if (path == undefined) {
-		document.getElementById('navProfileButon').setAttribute("class","");
-		document.getElementById('navHomeButon').setAttribute("class","active");
+		document.getElementById('navProfileButton').setAttribute("class","");
+		document.getElementById('navHomeButton').setAttribute("class","active");
 		_$.display.homePage();
 		return;
 	}
@@ -106,8 +106,8 @@ _$.utils.detectURL = function() {
 		_$.display.search();
 	} 
 	else if (path[0] == "profile") {
-		document.getElementById('navProfileButon').setAttribute("class","active");
-		document.getElementById('navHomeButon').setAttribute("class","");
+		document.getElementById('navProfileButton').setAttribute("class","active");
+		document.getElementById('navHomeButton').setAttribute("class","");
 		_$.display.profile(localStorage.username);
 	}
 	else if (path[0] == "hashtag") {
@@ -127,6 +127,8 @@ _$.display.page = function() {
 }
 
 _$.display.profile = function(username) {
+    document.getElementById('navHomeButton').setAttribute('class', '');
+    if(username != localStorage.username) document.getElementById('navProfileButton').setAttribute('class', '');
     _$.render.removeAndAddFollowButton();
     $('#searchResults').hide();
     $('#newsFeed').hide();
@@ -138,6 +140,7 @@ _$.display.profile = function(username) {
         _$.fetch.userDetails(username);
     });
     _$.utils.initUpload();
+    _$.fetch.trending();
 }
 
 _$.display.search = function() {
@@ -150,24 +153,27 @@ _$.display.search = function() {
 }
 
 _$.display.hashTag = function() {    
-    if(_$.global.viewingUser.userid != localStorage.userid) {
+    _$.fetch.trending();
+    if(_$.global.viewingUser!=undefined && _$.global.viewingUser.userid != localStorage.userid) {
         _$.render.clearSidebar();
         _$.global.viewingUser = JSON.parse(localStorage.user);
         $('#profileSideBar').slideUp('fast', function() {
             _$.fetch.following(localStorage.userid);
             _$.fetch.followers(localStorage.userid);
-            _$.fetch.feed();
-            _$.render.profileSideBar(_$.global.viewingUser);
+            _$.render.profileSideBar(_$.global.viewingUser,false);
             $('#userPosts').slideUp('fast');
-            $('#profileSideBar').slideDown('slow');
+            $('#profileSideBar').show();
             $('#followButton').hide();
             _$.fetch.followingCount(parseInt(localStorage.userid));
             _$.fetch.followersCount(parseInt(localStorage.userid));
         });
     }
+    else _$.render.profileSideBar(JSON.parse(localStorage.user), false);
     document.getElementById('searchResults').innerHTML = '<div id="searchResultsHeader"></div>';
     $('#tweetForm').hide();
     $('#newsFeed').hide();
+    $('#userPosts').hide();    
+    $('#profileSideBar').show();
     _$.utils.setInfiniteScroll("search");
     _$.fetch.hashTag(_$.global.hashTag);
 }
@@ -225,8 +231,9 @@ _$.utils.changeTweetButtonState = function() {
 }
 
 
- _$.utils.setProfileImage = function(image) {
-    document.getElementById('profileImageDiv').innerHTML = '<img id="profileImage" src = "' + image + '?lastModified=' + new Date().getTime() + '">';
+_$.utils.setProfileImage = function(image, reload) {
+    if(reload == false) document.getElementById('profileImageDiv').innerHTML = '<img id="profileImage" src = "' + image + '">';
+    else document.getElementById('profileImageDiv').innerHTML = '<img id="profileImage" src = "' + image + '?lastModified=' + new Date().getTime() + '">';
 }
 
 _$.render.clearSidebar = function() {
@@ -599,7 +606,7 @@ _$.utils.validateRegistrationForm = function(e) {
 
 _$.authentication.register = function() {
     $.ajax({
-        url: _$.global.serverAddress+"users/_$.authentication.register",
+        url: _$.global.serverAddress+"users/register",
         contentType : "application/json",
         type: 'POST',
         xhrFields: {
@@ -614,7 +621,7 @@ _$.authentication.register = function() {
         error: function(jqXHR){console.log(jqXHR.responseText);}
         }).done(function(data, textStatus, jqXHR) {
             document.getElementById('registrationForm').reset();
-            bootbox.alert("_$.authentication.registeration complete. You can now sign in :)");
+            bootbox.alert("Registeration complete. You can now sign in :)");
             document.getElementById('inputEmail').focus();
         });
 }//boot.js
@@ -739,13 +746,14 @@ _$.render.followers = function(followers) {
     }
 }
 
-_$.render.profileSideBar = function(user, timestamp) {
+_$.render.profileSideBar = function(user, reload) {
+    console.log(user,"",reload);
     if (user.userid == localStorage.userid) {
         $('#editProfileImage').show();
         _$.utils.initUpload();
     }
     document.getElementById('username').innerHTML = "<h4>" + user.name + "</h4>";
-    _$.utils.setProfileImage(_$.fetch.image(user));
+    _$.utils.setProfileImage(_$.fetch.image(user, reload));
 }
 
 

@@ -12,8 +12,9 @@ _$.utils.changeTweetButtonState = function() {
 }
 
 
- _$.utils.setProfileImage = function(image) {
-    document.getElementById('profileImageDiv').innerHTML = '<img id="profileImage" src = "' + image + '?lastModified=' + new Date().getTime() + '">';
+_$.utils.setProfileImage = function(image, reload) {
+    if(reload == false) document.getElementById('profileImageDiv').innerHTML = '<img id="profileImage" src = "' + image + '">';
+    else document.getElementById('profileImageDiv').innerHTML = '<img id="profileImage" src = "' + image + '?lastModified=' + new Date().getTime() + '">';
 }
 
 _$.render.clearSidebar = function() {

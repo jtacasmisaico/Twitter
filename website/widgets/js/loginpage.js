@@ -80,7 +80,7 @@ _$.utils.validateRegistrationForm = function(e) {
 
 _$.authentication.register = function() {
     $.ajax({
-        url: _$.global.serverAddress+"users/_$.authentication.register",
+        url: _$.global.serverAddress+"users/register",
         contentType : "application/json",
         type: 'POST',
         xhrFields: {
@@ -95,7 +95,7 @@ _$.authentication.register = function() {
         error: function(jqXHR){console.log(jqXHR.responseText);}
         }).done(function(data, textStatus, jqXHR) {
             document.getElementById('registrationForm').reset();
-            bootbox.alert("_$.authentication.registeration complete. You can now sign in :)");
+            bootbox.alert("Registeration complete. You can now sign in :)");
             document.getElementById('inputEmail').focus();
         });
 }

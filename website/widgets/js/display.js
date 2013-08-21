@@ -9,6 +9,8 @@ _$.display.page = function() {
 }
 
 _$.display.profile = function(username) {
+    document.getElementById('navHomeButton').setAttribute('class', '');
+    if(username != localStorage.username) document.getElementById('navProfileButton').setAttribute('class', '');
     _$.render.removeAndAddFollowButton();
     $('#searchResults').hide();
     $('#newsFeed').hide();
@@ -20,6 +22,7 @@ _$.display.profile = function(username) {
         _$.fetch.userDetails(username);
     });
     _$.utils.initUpload();
+    _$.fetch.trending();
 }
 
 _$.display.search = function() {
@@ -32,24 +35,27 @@ _$.display.search = function() {
 }
 
 _$.display.hashTag = function() {    
-    if(_$.global.viewingUser.userid != localStorage.userid) {
+    _$.fetch.trending();
+    if(_$.global.viewingUser!=undefined && _$.global.viewingUser.userid != localStorage.userid) {
         _$.render.clearSidebar();
         _$.global.viewingUser = JSON.parse(localStorage.user);
         $('#profileSideBar').slideUp('fast', function() {
             _$.fetch.following(localStorage.userid);
             _$.fetch.followers(localStorage.userid);
-            _$.fetch.feed();
-            _$.render.profileSideBar(_$.global.viewingUser);
+            _$.render.profileSideBar(_$.global.viewingUser,false);
             $('#userPosts').slideUp('fast');
-            $('#profileSideBar').slideDown('slow');
+            $('#profileSideBar').show();
             $('#followButton').hide();
             _$.fetch.followingCount(parseInt(localStorage.userid));
             _$.fetch.followersCount(parseInt(localStorage.userid));
         });
     }
+    else _$.render.profileSideBar(JSON.parse(localStorage.user), false);
     document.getElementById('searchResults').innerHTML = '<div id="searchResultsHeader"></div>';
     $('#tweetForm').hide();
     $('#newsFeed').hide();
+    $('#userPosts').hide();    
+    $('#profileSideBar').show();
     _$.utils.setInfiniteScroll("search");
     _$.fetch.hashTag(_$.global.hashTag);
 }

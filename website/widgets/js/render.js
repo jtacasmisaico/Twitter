@@ -11,13 +11,14 @@ _$.render.followers = function(followers) {
     }
 }
 
-_$.render.profileSideBar = function(user, timestamp) {
+_$.render.profileSideBar = function(user, reload) {
+    console.log(user,"",reload);
     if (user.userid == localStorage.userid) {
         $('#editProfileImage').show();
         _$.utils.initUpload();
     }
     document.getElementById('username').innerHTML = "<h4>" + user.name + "</h4>";
-    _$.utils.setProfileImage(_$.fetch.image(user));
+    _$.utils.setProfileImage(_$.fetch.image(user, reload));
 }
 
 
