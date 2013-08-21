@@ -32,8 +32,22 @@ _$.display.search = function() {
 }
 
 _$.display.hashTag = function() {    
+    if(_$.global.viewingUser != localStorage.userid) {
+        _$.render.clearSidebar();
+        _$.global.viewingUser = JSON.parse(localStorage.user);
+        $('#profileSideBar').slideUp('fast', function() {
+            _$.fetch.following(localStorage.userid);
+            _$.fetch.followers(localStorage.userid);
+            _$.fetch.feed();
+            _$.render.profileSideBar(_$.global.viewingUser);
+            $('#userPosts').slideUp('fast');
+            $('#profileSideBar').slideDown('slow');
+            $('#followButton').hide();
+            _$.fetch.followingCount(parseInt(localStorage.userid));
+            _$.fetch.followersCount(parseInt(localStorage.userid));
+        });
+    }
     document.getElementById('searchResults').innerHTML = '<div id="searchResultsHeader"></div>';
-    $('#userPosts').hide();
     $('#newsFeed').hide();
     _$.utils.setInfiniteScroll("search");
     _$.fetch.hashTag(_$.global.hashTag);
@@ -63,8 +77,9 @@ _$.display.homePage = function() {
     $('#newsFeed').show();
     $('#tweetForm').show();
     $('#followButton').hide();
-    _$.fetch.followingCount(parseInt(localStorage.userid))
-    _$.fetch.followersCount(parseInt(localStorage.userid))
+    _$.fetch.followingCount(parseInt(localStorage.userid));
+    _$.fetch.followersCount(parseInt(localStorage.userid));
+    _$.fetch.trending();
     _$.utils.setInfiniteScroll("feed");
 }
 

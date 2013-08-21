@@ -12,6 +12,7 @@ _$.global.serverAddress;
 _$.global.viewingUser;
 _$.global.query;
 _$.global.hashtag;
+_$.global.trending;
 _$.global.alreadyFetchingFeed = false;
 
 window.onload = function() {
@@ -110,7 +111,6 @@ _$.utils.detectURL = function() {
 		_$.display.profile(localStorage.username);
 	}
 	else if (path[0] == "hashtag") {
-		_$.display.homePage();
 		_$.global.hashtag = path[1];
 		_$.display.hashTag();
 	}

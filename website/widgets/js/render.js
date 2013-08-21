@@ -1,13 +1,11 @@
 //boot.js
 _$.render.following = function(following) {
-    var followingDiv = document.getElementById('following');
     for (var i = 0; i < following.length; i++) {
         _$.render.push.following(following[i]);
     }
 }
 
 _$.render.followers = function(followers) {
-    var followersDiv = document.getElementById('followers');
     for (var i = 0; i < followers.length; i++) {
         _$.render.push.followers(followers[i]);
     }
@@ -45,6 +43,7 @@ _$.render.results = function(tweets, hashtag) {
     for (var i = 0; i < tweets.length; i++) {
         _$.render.push.tweet(tweets[i], 'searchResults');
     }
+    $('#searchResults').slideDown();
 }
 
 _$.render.againFeed = function(newImage) {
@@ -107,6 +106,23 @@ _$.render.push.newTweet = function(tweet, divId) {
     feedDiv.insertBefore(element, feedDiv.firstChild);
     jQuery("abbr.timestamp").timeago();
 }
+
+_$.render.trending = function(trends) {
+    for (var i = 0; i < trends.length; i++) {
+        _$.render.push.trending(trends[i]);
+    }
+}
+
+_$.render.push.trending = function(trend) {
+    var element = document.createElement('li');
+    element.innerHTML = '<a href="#hashtag/' + trend + '">' + trend + '</a>';
+    var separator = document.createElement('li');
+    separator.setAttribute('class', 'divider');
+    var followerDiv = document.getElementById('trending');
+    followerDiv.appendChild(element);
+    followerDiv.appendChild(separator);
+}
+
 _$.utils.imageParser = function(content) {
     var expression = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])\.(jpeg|jpg|png|gif)/ig;
     return content.replace(expression, '<br><a href="$1.$3" target="_blank"><img src="$1.$3" style="width:100px;height:100px;"></a><br>')

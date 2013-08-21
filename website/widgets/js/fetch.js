@@ -221,6 +221,21 @@ _$.fetch.hashTag = function(tag) {
         }
     }).done(function(data, textStatus, response) {
         _$.render.results(response.responseJSON, "hashtag");
-        $('#searchResults').slideDown();
+    });
+}
+
+_$.fetch.trending = function() {
+    $.ajax({
+        url: _$.global.serverAddress + "fetch/trending",
+        type: 'GET',
+        xhrFields: {
+            withCredentials: true
+        },
+        error: function(jqXHR) {
+            console.log(jqXHR);
+            _$.authentication.logout();
+        }
+    }).done(function(data, textStatus, response) {
+        _$.render.trending(response.responseJSON);
     });
 }

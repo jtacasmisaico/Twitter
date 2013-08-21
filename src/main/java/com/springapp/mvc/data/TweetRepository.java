@@ -124,9 +124,18 @@ public class TweetRepository {
 
     public List<Tweet> fetchHashTag(String tag) {
         try {
-            return jdbcTemplate.query("select tweets.tweetid, tweets.content, tweets.userid, tweets.timestamp, users.username, users.image from tweets, users, hashtags where tweets.tweetid = hashtags.tweetid and users.userid = tweets.userid and hashtags.tag = ? ORDER BY tweetid DESC LIMIT 100",
-                    new Object[]{tag},
-                    new BeanPropertyRowMapper<>(Tweet.class));
+            if(cacheManager.exists("hashtag:"+tag)) {
+                return Arrays.asList(cacheManager.getTweetList("hashtag:"+tag));
+            }
+            else {
+                List<Tweet> result = jdbcTemplate.query("select tweets.tweetid, tweets.content, tweets.userid, " +
+                        "tweets.timestamp, " +
+                        "users.username, users.image from tweets, users, hashtags where tweets.tweetid = hashtags.tweetid and users.userid = tweets.userid and hashtags.tag = ? ORDER BY tweetid DESC LIMIT 20",
+                        new Object[]{tag},
+                        new BeanPropertyRowMapper<>(Tweet.class));
+                cacheManager.set("hashtag:"+tag, result, 300);
+                return result;
+            }
         }
         catch (Exception e) {
             e.printStackTrace();

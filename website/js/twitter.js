@@ -12,6 +12,7 @@ _$.global.serverAddress;
 _$.global.viewingUser;
 _$.global.query;
 _$.global.hashtag;
+_$.global.trending;
 _$.global.alreadyFetchingFeed = false;
 
 window.onload = function() {
@@ -110,7 +111,6 @@ _$.utils.detectURL = function() {
 		_$.display.profile(localStorage.username);
 	}
 	else if (path[0] == "hashtag") {
-		_$.display.homePage();
 		_$.global.hashtag = path[1];
 		_$.display.hashTag();
 	}
@@ -150,8 +150,22 @@ _$.display.search = function() {
 }
 
 _$.display.hashTag = function() {    
+    if(_$.global.viewingUser != localStorage.userid) {
+        _$.render.clearSidebar();
+        _$.global.viewingUser = JSON.parse(localStorage.user);
+        $('#profileSideBar').slideUp('fast', function() {
+            _$.fetch.following(localStorage.userid);
+            _$.fetch.followers(localStorage.userid);
+            _$.fetch.feed();
+            _$.render.profileSideBar(_$.global.viewingUser);
+            $('#userPosts').slideUp('fast');
+            $('#profileSideBar').slideDown('slow');
+            $('#followButton').hide();
+            _$.fetch.followingCount(parseInt(localStorage.userid));
+            _$.fetch.followersCount(parseInt(localStorage.userid));
+        });
+    }
     document.getElementById('searchResults').innerHTML = '<div id="searchResultsHeader"></div>';
-    $('#userPosts').hide();
     $('#newsFeed').hide();
     _$.utils.setInfiniteScroll("search");
     _$.fetch.hashTag(_$.global.hashTag);
@@ -181,8 +195,9 @@ _$.display.homePage = function() {
     $('#newsFeed').show();
     $('#tweetForm').show();
     $('#followButton').hide();
-    _$.fetch.followingCount(parseInt(localStorage.userid))
-    _$.fetch.followersCount(parseInt(localStorage.userid))
+    _$.fetch.followingCount(parseInt(localStorage.userid));
+    _$.fetch.followersCount(parseInt(localStorage.userid));
+    _$.fetch.trending();
     _$.utils.setInfiniteScroll("feed");
 }
 
@@ -481,7 +496,22 @@ _$.fetch.hashTag = function(tag) {
         }
     }).done(function(data, textStatus, response) {
         _$.render.results(response.responseJSON, "hashtag");
-        $('#searchResults').slideDown();
+    });
+}
+
+_$.fetch.trending = function() {
+    $.ajax({
+        url: _$.global.serverAddress + "fetch/trending",
+        type: 'GET',
+        xhrFields: {
+            withCredentials: true
+        },
+        error: function(jqXHR) {
+            console.log(jqXHR);
+            _$.authentication.logout();
+        }
+    }).done(function(data, textStatus, response) {
+        _$.render.trending(response.responseJSON);
     });
 }
 //init.js
@@ -533,24 +563,24 @@ _$.authentication.login = function() {
 }
 
 _$.authentication.logout = function() {
-    $.ajax({
-        url: _$.global.serverAddress + "users/logout",
-        type: 'POST',
-        xhrFields: {
-            withCredentials: true
-        },        
-        headers: {
-            'token': localStorage.sessionid,
-            'userid': localStorage.userid
-        },
-        error: function(jqXHR) {
-            console.log(jqXHR);
-        }
-    }).done(function(data, textStatus, response) {
-        localStorage.clear();
-        document.location.href="./#";
-        document.location.reload();
-    });
+    // $.ajax({
+    //     url: _$.global.serverAddress + "users/logout",
+    //     type: 'POST',
+    //     xhrFields: {
+    //         withCredentials: true
+    //     },        
+    //     headers: {
+    //         'token': localStorage.sessionid,
+    //         'userid': localStorage.userid
+    //     },
+    //     error: function(jqXHR) {
+    //         console.log(jqXHR);
+    //     }
+    // }).done(function(data, textStatus, response) {
+    //     localStorage.clear();
+    //     document.location.href="./#";
+    //     document.location.reload();
+    // });
 }
 _$.utils.checkKeyRegister = function(event) {
     if(event.keyCode == 13) {
@@ -695,14 +725,12 @@ _$.post.tweet = function() {
 }
 //boot.js
 _$.render.following = function(following) {
-    var followingDiv = document.getElementById('following');
     for (var i = 0; i < following.length; i++) {
         _$.render.push.following(following[i]);
     }
 }
 
 _$.render.followers = function(followers) {
-    var followersDiv = document.getElementById('followers');
     for (var i = 0; i < followers.length; i++) {
         _$.render.push.followers(followers[i]);
     }
@@ -740,6 +768,7 @@ _$.render.results = function(tweets, hashtag) {
     for (var i = 0; i < tweets.length; i++) {
         _$.render.push.tweet(tweets[i], 'searchResults');
     }
+    $('#searchResults').slideDown();
 }
 
 _$.render.againFeed = function(newImage) {
@@ -802,6 +831,23 @@ _$.render.push.newTweet = function(tweet, divId) {
     feedDiv.insertBefore(element, feedDiv.firstChild);
     jQuery("abbr.timestamp").timeago();
 }
+
+_$.render.trending = function(trends) {
+    for (var i = 0; i < trends.length; i++) {
+        _$.render.push.trending(trends[i]);
+    }
+}
+
+_$.render.push.trending = function(trend) {
+    var element = document.createElement('li');
+    element.innerHTML = '<a href="#hashtag/' + trend + '">' + trend + '</a>';
+    var separator = document.createElement('li');
+    separator.setAttribute('class', 'divider');
+    var followerDiv = document.getElementById('trending');
+    followerDiv.appendChild(element);
+    followerDiv.appendChild(separator);
+}
+
 _$.utils.imageParser = function(content) {
     var expression = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])\.(jpeg|jpg|png|gif)/ig;
     return content.replace(expression, '<br><a href="$1.$3" target="_blank"><img src="$1.$3" style="width:100px;height:100px;"></a><br>')
