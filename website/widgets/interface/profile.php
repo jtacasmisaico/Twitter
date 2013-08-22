@@ -46,7 +46,6 @@
         <div id="trendingDiv">
             <ul id="trending" class="nav nav-list"><li class="divider"></li></ul>
         </div>
-        <div id="loading" style="display:none;">Loading...</div>
     </div>
     <form id="tweetForm" style="display:none;" onsubmit="_$.post.tweet()">
             <textarea id="tweetBox" rows="3" style="width:500px;" onkeyup="_$.utils.changeTweetButtonState()" maxlength="140"></textarea>

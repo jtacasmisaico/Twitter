@@ -1,0 +1,75 @@
+<html>
+<head>
+    <title>Twitter.2</title>
+</head>
+<link href='http://fonts.googleapis.com/css?family=Just+Me+Again+Down+Here' rel='stylesheet' type='text/css'>
+<style>
+body { 
+  font-family: 'Just Me Again Down Here', cursive;
+  font-size: 64px;
+  text-shadow: 4px 4px 4px #aaa;
+}
+#content{
+    margin-top:20%;
+    text-align:center;
+    color: rgb(0, 90, 180);
+}
+</style>
+<script src="../js/jquery.js"></script>
+<script>
+var content = [
+    "Twitter.2",
+    "Stack",
+    "Database Schema",
+    "Numbers",
+    "Uhmm...",
+    "UI",
+    "Single Page App",
+    "No refreshes. Ever.",
+    "Cool stuff learned",
+    "Regex",
+    "Module loader"        
+]
+
+var index = 0;
+
+var loadContent = function() {
+    var speed = 'fast';
+    $('#content').fadeOut(speed, function() {
+        document.getElementById('content').innerHTML = content[index];
+        $('#content').fadeIn(speed);
+    });
+}
+
+var back = function() {
+    if(index > 0) {
+        index--;
+        loadContent();
+    }
+}
+
+var forward = function() {
+    if(index < content.length-1) {
+        index++;
+        loadContent();
+    }
+}
+
+var keyPress = function(event) {
+    var move_forward = [13, 32, 39];
+    var move_backword = [37];
+    if(move_backword.indexOf(event.keyCode) > -1)
+        back();
+    else if(move_forward.indexOf(event.keyCode) > -1)
+        forward();
+}
+
+window.onload = function() {
+    loadContent();
+}
+
+</script>
+<body onkeydown="return keyPress(event)">
+    <div id="content"></div>
+</body>
+</html>

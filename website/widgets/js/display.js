@@ -61,6 +61,7 @@ _$.display.hashTag = function() {
 }
 
 _$.display.loggedIn = function() {
+    $('#loggedIn').show();
     $('#navBarLoggedOut').hide();
     $('#navBarLoggedIn').show();
     $('#loginDiv').hide();
@@ -77,6 +78,7 @@ _$.display.homePage = function() {
         _$.fetch.feed();
         _$.render.profileSideBar(_$.global.viewingUser);
     });
+    if(_$.authentication.loggedIn()) _$.display.loggedIn();
     $('#searchResults').hide();
     $('#userPosts').slideUp('fast');
     $('#profileSideBar').slideDown('slow');
@@ -99,4 +101,6 @@ _$.display.loggedOut = function() {
     $('#loginDiv').show();
     $('#splash').show();
     $('#profileSideBar').hide();
+    $('#tweetForm').hide();
+    $('#loggedIn').hide();
 }

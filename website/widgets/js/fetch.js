@@ -58,16 +58,13 @@ _$.fetch.followers = function(userid, offset, limit) {
 
 _$.fetch.feed = function(lastTweet) {
     if (_$.global.alreadyFetchingFeed == true) return;
-    $('#loading').show();
     _$.global.alreadyFetchingFeed = true;
     if (lastTweet == undefined) {
         if (localStorage.feed != undefined) {
             if (document.getElementById('newsFeed').children.length == JSON.parse(localStorage.feed).length) {
-                $('#loading').hide();
                 return;
             }
             _$.render.feed(JSON.parse(localStorage.feed));
-            $('#loading').hide();
             return;
         }
         localStorage.feed = "[]";
@@ -90,7 +87,6 @@ _$.fetch.feed = function(lastTweet) {
         }
     }).done(function(data, textStatus, response) {
         _$.global.alreadyFetchingFeed = false;
-        $('#loading').hide();
         localStorage.lastTweet = response.responseJSON[response.responseJSON.length - 1].tweetid;
         var existingFeed = JSON.parse(localStorage.feed);
         var newFeed = existingFeed.concat(response.responseJSON);

@@ -46,7 +46,8 @@ window.onload = function() {
 };
 
 _$.utils.init = function() {
-	_$.global.serverAddress = "http://172.16.138.138:8080/";
+	//_$.global.serverAddress = "http://172.16.138.138:8080/";
+	_$.global.serverAddress = "http://localhost:8080/";
 }
 
 window.onhashchange = function() {
@@ -114,7 +115,10 @@ _$.utils.detectURL = function() {
 		_$.global.hashtag = path[1];
 		_$.display.hashTag();
 	}
-	else _$.display.homePage();
+
+	else if (path[0] == "login"){
+		_$.display.loggedOut();
+	}
 }
 //boot.js
 
@@ -179,6 +183,7 @@ _$.display.hashTag = function() {
 }
 
 _$.display.loggedIn = function() {
+    $('#loggedIn').show();
     $('#navBarLoggedOut').hide();
     $('#navBarLoggedIn').show();
     $('#loginDiv').hide();
@@ -195,6 +200,7 @@ _$.display.homePage = function() {
         _$.fetch.feed();
         _$.render.profileSideBar(_$.global.viewingUser);
     });
+    if(_$.authentication.loggedIn()) _$.display.loggedIn();
     $('#searchResults').hide();
     $('#userPosts').slideUp('fast');
     $('#profileSideBar').slideDown('slow');
@@ -217,6 +223,8 @@ _$.display.loggedOut = function() {
     $('#loginDiv').show();
     $('#splash').show();
     $('#profileSideBar').hide();
+    $('#tweetForm').hide();
+    $('#loggedIn').hide();
 }//boot.js
 _$.utils.changeTweetButtonState = function() {
     document.getElementById("characterCount").innerHTML = (140-document.getElementById("tweetBox").value.length) + " characters left";
@@ -341,16 +349,13 @@ _$.fetch.followers = function(userid, offset, limit) {
 
 _$.fetch.feed = function(lastTweet) {
     if (_$.global.alreadyFetchingFeed == true) return;
-    $('#loading').show();
     _$.global.alreadyFetchingFeed = true;
     if (lastTweet == undefined) {
         if (localStorage.feed != undefined) {
             if (document.getElementById('newsFeed').children.length == JSON.parse(localStorage.feed).length) {
-                $('#loading').hide();
                 return;
             }
             _$.render.feed(JSON.parse(localStorage.feed));
-            $('#loading').hide();
             return;
         }
         localStorage.feed = "[]";
@@ -373,7 +378,6 @@ _$.fetch.feed = function(lastTweet) {
         }
     }).done(function(data, textStatus, response) {
         _$.global.alreadyFetchingFeed = false;
-        $('#loading').hide();
         localStorage.lastTweet = response.responseJSON[response.responseJSON.length - 1].tweetid;
         var existingFeed = JSON.parse(localStorage.feed);
         var newFeed = existingFeed.concat(response.responseJSON);
@@ -567,7 +571,8 @@ _$.authentication.login = function() {
             localStorage.username = response.responseJSON.user.username;
             localStorage.name = response.responseJSON.user.name;
             localStorage.tweetsFetched = 0;
-            _$.display.page();
+            document.location.href="./#";
+            //_$.display.page();
     });
     return false;
 }
@@ -588,8 +593,8 @@ _$.authentication.logout = function() {
         }
     }).done(function(data, textStatus, response) {
         localStorage.clear();
-        document.location.href="./#";
-        document.location.reload();
+        document.location.href="./#login";
+        _$.display.loggedOut();
     });
 }
 _$.utils.checkKeyRegister = function(event) {

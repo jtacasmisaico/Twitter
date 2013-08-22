@@ -41,7 +41,8 @@ _$.authentication.login = function() {
             localStorage.username = response.responseJSON.user.username;
             localStorage.name = response.responseJSON.user.name;
             localStorage.tweetsFetched = 0;
-            _$.display.page();
+            document.location.href="./#";
+            //_$.display.page();
     });
     return false;
 }
@@ -62,8 +63,8 @@ _$.authentication.logout = function() {
         }
     }).done(function(data, textStatus, response) {
         localStorage.clear();
-        document.location.href="./#";
-        document.location.reload();
+        document.location.href="./#login";
+        _$.display.loggedOut();
     });
 }
 _$.utils.checkKeyRegister = function(event) {
