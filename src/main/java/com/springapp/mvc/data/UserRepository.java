@@ -54,9 +54,9 @@ public class UserRepository {
             if(cacheManager.exists("followersCount:"+userid)) {
                 return cacheManager.getInt("followersCount:"+userid);
             }
-            int followersCount = jdbcTemplate.queryForInt("SELECT count(*) FROM followers WHERE followed = ?",
+            int followersCount = jdbcTemplate.queryForInt("SELECT count(*) FROM followers WHERE followed = ? and unfollowedat > \'now()\'",
                     new Object[]{userid});
-            cacheManager.set("followersCount:"+userid, followersCount, 300);
+            cacheManager.set("followersCount:"+userid, followersCount);
             return followersCount;
         }
         catch(Exception e) {
@@ -70,9 +70,9 @@ public class UserRepository {
             if(cacheManager.exists("followingCount:"+userid)) {
                 return cacheManager.getInt("followingCount:"+userid);
             }
-            int followingCount = jdbcTemplate.queryForInt("SELECT count(*) FROM followers WHERE follower = ?",
+            int followingCount = jdbcTemplate.queryForInt("SELECT count(*) FROM followers WHERE follower = ? and unfollowedat > 'now()'",
                     new Object[]{userid});
-            cacheManager.set("followingCount:"+userid, followingCount, 300);
+            cacheManager.set("followingCount:"+userid, followingCount);
             return followingCount;
         }
         catch(Exception e) {
@@ -128,6 +128,10 @@ public class UserRepository {
             try {
                 jdbcTemplate.update("update followers set unfollowedat='infinity' where follower=? and followed=?",
                         new Object[]{follower, followed});
+                if(cacheManager.exists("followersCount:"+followed))
+                    cacheManager.set("followersCount:"+followed,cacheManager.getInt("followersCount:"+followed)+1);
+                if(cacheManager.exists("followingCount:"+follower))
+                    cacheManager.set("followingCount:"+follower,cacheManager.getInt("followingCount:"+follower)+1);
                 return "Success";
             }
             catch(Exception e) {
@@ -156,6 +160,10 @@ public class UserRepository {
         try{
             jdbcTemplate.update("update followers set unfollowedat=? where follower=? and followed=?",
                     new Object[]{new Timestamp(new Date().getTime()), follower, followed});
+            if(cacheManager.exists("followersCount:"+followed))
+                cacheManager.set("followersCount:"+followed,cacheManager.getInt("followersCount:"+followed)-1);
+            if(cacheManager.exists("followingCount:"+follower))
+                cacheManager.set("followingCount:"+follower,cacheManager.getInt("followingCount:"+follower)-1);
             return "Success";
         }
         catch(Exception e){

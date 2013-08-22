@@ -167,6 +167,7 @@ _$.fetch.followersCount = function(userid) {
             _$.authentication.logout();
         }
     }).done(function(data, textStatus, response) {
+        _$.global.viewingUser.followerCount = parseInt(response.responseText);
         _$.render.followersCount(parseInt(response.responseText));
     });
 }
@@ -182,6 +183,7 @@ _$.fetch.followingCount = function(userid) {
             _$.authentication.logout();
         }
     }).done(function(data, textStatus, response) {
+        _$.global.viewingUser.followingCount = parseInt(response.responseText);
         _$.render.followingCount(parseInt(response.responseText));
     });
 }

@@ -1,4 +1,36 @@
 //boot.js
+
+_$.render.clearSidebar = function() {
+    $('#followers')[0].innerHTML = '<li class="divider"></li>';
+    $('#following')[0].innerHTML = '<li class="divider"></li>';
+}
+
+_$.render.clearUserPosts = function() {
+    $('#userPosts')[0].innerHTML = '';
+}
+
+_$.render.showUnFollowButton = function(alreadyFollowing) {
+    if(alreadyFollowing) {
+        $('#followButton')[0].setAttribute('class','btn btn-warning');
+        $('#followButton')[0].innerHTML = "Unfollow";
+        $('#followButton')[0].onclick = function() {
+            _$.post.unfollow(parseInt(localStorage.userid), _$.global.viewingUser.userid);
+        };
+    }
+    else {
+        $('#followButton')[0].setAttribute('class','btn btn-success');
+        $('#followButton')[0].innerHTML = "Follow";
+        $('#followButton')[0].onclick = function() {
+            _$.post.follow(parseInt(localStorage.userid), _$.global.viewingUser.userid);
+        };                    
+    }
+    $('#followButton').show(); 
+}
+_$.render.removeAndAddFollowButton = function() {
+    $('#followButtonDiv').empty();
+    document.getElementById('followButtonDiv').innerHTML = '<button id="followButton" class="btn btn-warning" style="display:none;width:198px;">Unfollow</button>';
+}
+
 _$.render.following = function(following) {
     for (var i = 0; i < following.length; i++) {
         _$.render.push.following(following[i]);
@@ -77,9 +109,11 @@ _$.render.push.following = function(user) {
 
 _$.render.push.followers = function(user) {
     var element = document.createElement('li');
+    element.setAttribute('id','followerElement'+user.userid);
     element.innerHTML = '<a href="#users/' + user.username + '">' + user.username + '</a>';
     var separator = document.createElement('li');
     separator.setAttribute('class', 'divider');
+    separator.setAttribute('id', 'followerDivider'+user.userid);
     var followerDiv = document.getElementById('followers');
     followerDiv.appendChild(element);
     followerDiv.appendChild(separator);

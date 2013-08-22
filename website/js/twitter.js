@@ -244,37 +244,6 @@ _$.utils.setProfileImage = function(image, reload) {
     else document.getElementById('profileImageDiv').innerHTML = '<img id="profileImage" src = "' + image + '?lastModified=' + new Date().getTime() + '">';
 }
 
-_$.render.clearSidebar = function() {
-    $('#followers')[0].innerHTML = '<li class="divider"></li>';
-    $('#following')[0].innerHTML = '<li class="divider"></li>';
-}
-
-_$.render.clearUserPosts = function() {
-    $('#userPosts')[0].innerHTML = '';
-}
-
-_$.render.showUnFollowButton = function(alreadyFollowing) {
-    if(alreadyFollowing) {
-        $('#followButton')[0].setAttribute('class','btn btn-warning');
-        $('#followButton')[0].innerHTML = "Unfollow";
-        $('#followButton').click(function() {
-            _$.post.unfollow(parseInt(localStorage.userid), _$.global.viewingUser.userid);
-        });
-    }
-    else {
-        $('#followButton')[0].setAttribute('class','btn btn-success');
-        $('#followButton')[0].innerHTML = "Follow";
-        $('#followButton').click(function() {
-            _$.post.follow(parseInt(localStorage.userid), _$.global.viewingUser.userid);
-        });                    
-    }
-    $('#followButton').show(); 
-}
-_$.render.removeAndAddFollowButton = function() {
-    $('#followButtonDiv').empty();
-    document.getElementById('followButtonDiv').innerHTML = '<button id="followButton" class="btn btn-warning" style="display:none;width:198px;">Unfollow</button>';
-}
-
 _$.utils.initUpload = function() {
     document.getElementById('imageName').value = localStorage.username;
     document.getElementById('profileImageForm').onsubmit = function() {
@@ -458,6 +427,7 @@ _$.fetch.followersCount = function(userid) {
             _$.authentication.logout();
         }
     }).done(function(data, textStatus, response) {
+        _$.global.viewingUser.followerCount = parseInt(response.responseText);
         _$.render.followersCount(parseInt(response.responseText));
     });
 }
@@ -473,6 +443,7 @@ _$.fetch.followingCount = function(userid) {
             _$.authentication.logout();
         }
     }).done(function(data, textStatus, response) {
+        _$.global.viewingUser.followingCount = parseInt(response.responseText);
         _$.render.followingCount(parseInt(response.responseText));
     });
 }
@@ -631,6 +602,7 @@ _$.authentication.register = function() {
         });
 }//boot.js
 _$.post.follow = function(followerid, followedid) {
+    console.error("following");
     $.ajax({
         url: _$.global.serverAddress + "users/follow",
         type: 'POST',
@@ -651,12 +623,17 @@ _$.post.follow = function(followerid, followedid) {
             _$.authentication.logout();
         }
     }).done(function(data, textStatus, response) {
-        document.location.reload();
+        _$.render.showUnFollowButton(true);
+        _$.global.viewingUser.followerCount++;
+        _$.render.followersCount(_$.global.viewingUser.followerCount);
+        _$.render.push.followers(JSON.parse(localStorage.user));
+        //document.location.reload();
     });
     return false;
 }
 
 _$.post.unfollow = function(followerid, followedid) {
+    console.error("unfollowing");
     $.ajax({
         url: _$.global.serverAddress + "users/unfollow",
         type: 'POST',
@@ -677,7 +654,12 @@ _$.post.unfollow = function(followerid, followedid) {
             _$.authentication.logout();
         }
     }).done(function(data, textStatus, response) {
-        document.location.reload();
+        _$.render.showUnFollowButton(false);
+        _$.global.viewingUser.followerCount--;
+        _$.render.followersCount(_$.global.viewingUser.followerCount);
+        $('#followerElement'+localStorage.userid).remove();
+        $('#followerDivider'+localStorage.userid).remove();
+        //document.location.reload();
     });
     return false;
 }
@@ -739,6 +721,38 @@ _$.post.tweet = function() {
     return false;
 }
 //boot.js
+
+_$.render.clearSidebar = function() {
+    $('#followers')[0].innerHTML = '<li class="divider"></li>';
+    $('#following')[0].innerHTML = '<li class="divider"></li>';
+}
+
+_$.render.clearUserPosts = function() {
+    $('#userPosts')[0].innerHTML = '';
+}
+
+_$.render.showUnFollowButton = function(alreadyFollowing) {
+    if(alreadyFollowing) {
+        $('#followButton')[0].setAttribute('class','btn btn-warning');
+        $('#followButton')[0].innerHTML = "Unfollow";
+        $('#followButton')[0].onclick = function() {
+            _$.post.unfollow(parseInt(localStorage.userid), _$.global.viewingUser.userid);
+        };
+    }
+    else {
+        $('#followButton')[0].setAttribute('class','btn btn-success');
+        $('#followButton')[0].innerHTML = "Follow";
+        $('#followButton')[0].onclick = function() {
+            _$.post.follow(parseInt(localStorage.userid), _$.global.viewingUser.userid);
+        };                    
+    }
+    $('#followButton').show(); 
+}
+_$.render.removeAndAddFollowButton = function() {
+    $('#followButtonDiv').empty();
+    document.getElementById('followButtonDiv').innerHTML = '<button id="followButton" class="btn btn-warning" style="display:none;width:198px;">Unfollow</button>';
+}
+
 _$.render.following = function(following) {
     for (var i = 0; i < following.length; i++) {
         _$.render.push.following(following[i]);
@@ -817,9 +831,11 @@ _$.render.push.following = function(user) {
 
 _$.render.push.followers = function(user) {
     var element = document.createElement('li');
+    element.setAttribute('id','followerElement'+user.userid);
     element.innerHTML = '<a href="#users/' + user.username + '">' + user.username + '</a>';
     var separator = document.createElement('li');
     separator.setAttribute('class', 'divider');
+    separator.setAttribute('id', 'followerDivider'+user.userid);
     var followerDiv = document.getElementById('followers');
     followerDiv.appendChild(element);
     followerDiv.appendChild(separator);

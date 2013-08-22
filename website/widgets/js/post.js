@@ -1,5 +1,6 @@
 //boot.js
 _$.post.follow = function(followerid, followedid) {
+    console.error("following");
     $.ajax({
         url: _$.global.serverAddress + "users/follow",
         type: 'POST',
@@ -20,12 +21,17 @@ _$.post.follow = function(followerid, followedid) {
             _$.authentication.logout();
         }
     }).done(function(data, textStatus, response) {
-        document.location.reload();
+        _$.render.showUnFollowButton(true);
+        _$.global.viewingUser.followerCount++;
+        _$.render.followersCount(_$.global.viewingUser.followerCount);
+        _$.render.push.followers(JSON.parse(localStorage.user));
+        //document.location.reload();
     });
     return false;
 }
 
 _$.post.unfollow = function(followerid, followedid) {
+    console.error("unfollowing");
     $.ajax({
         url: _$.global.serverAddress + "users/unfollow",
         type: 'POST',
@@ -46,7 +52,12 @@ _$.post.unfollow = function(followerid, followedid) {
             _$.authentication.logout();
         }
     }).done(function(data, textStatus, response) {
-        document.location.reload();
+        _$.render.showUnFollowButton(false);
+        _$.global.viewingUser.followerCount--;
+        _$.render.followersCount(_$.global.viewingUser.followerCount);
+        $('#followerElement'+localStorage.userid).remove();
+        $('#followerDivider'+localStorage.userid).remove();
+        //document.location.reload();
     });
     return false;
 }
