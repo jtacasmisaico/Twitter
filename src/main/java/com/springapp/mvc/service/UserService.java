@@ -1,5 +1,6 @@
 package com.springapp.mvc.service;
 
+import com.springapp.mvc.cache.CacheManager;
 import com.springapp.mvc.data.UserRepository;
 import com.springapp.mvc.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import java.util.regex.Pattern;
 public class UserService {
     private final UserRepository userRepository;
     private final AuthenticationService authenticationService;
+    private final CacheManager cacheManager;
     private Trie userNames;
 
     public class TrieNode
@@ -60,30 +62,6 @@ public class UserService {
                     curNode.map.put(letters[i],new TrieNode(letters[i], i == l-1 ? true : false));
                 curNode = (TrieNode) curNode.map.get(letters[i]);
             }
-        }
-
-        public boolean find(TrieNode root, String word)
-
-        {
-            char[] letters = word.toCharArray();
-            int l = letters.length;
-            TrieNode curNode = root;
-
-            int i;
-            for (i = 0; i < l; i++)
-            {
-                if (curNode == null)
-                    return false;
-                curNode = (TrieNode) curNode.map.get(letters[i]);
-            }
-
-            if (i == l && curNode == null)
-                return false;
-
-            if (curNode != null && !curNode.fullWord)
-                return false;
-
-            return true;
         }
 
         public TrieNode getPrefixNode(String word, StringBuilder testword) {
@@ -132,17 +110,22 @@ public class UserService {
 
 
     @Autowired
-    public UserService(UserRepository userRepository, AuthenticationService authenticationService) {
+    public UserService(UserRepository userRepository, AuthenticationService authenticationService, CacheManager cacheManager) {
         this.userRepository = userRepository;
         this.authenticationService = authenticationService;
+        this.cacheManager = cacheManager;
         instantiateAutoComplete();
     }
 
     public void instantiateAutoComplete() {
         userNames = new Trie();
-        List<String> usernames = userRepository.getAllUsers();
+        List<String> usernames;
+        if(cacheManager.exists("userlist")) usernames = Arrays.asList(cacheManager.getStringList("userlist"));
+        else {
+            usernames = userRepository.getAllUsers();
+            cacheManager.set("userlist", usernames, 3000000);
+        }
         for(String username : usernames) {
-            //System.out.println(username);
             try {
                 userNames.insertWord(userNames.root, username);
             }
@@ -220,6 +203,7 @@ public class UserService {
     }
 
     public List<String> searchUsers(String username) {
+        System.out.println(username);
         return userNames.getAllPrefixMatches(username.substring(1)).subList(0, 20);
     }
 
