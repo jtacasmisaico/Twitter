@@ -9,6 +9,7 @@ _$.authentication = {};
 _$.utils = {};
 _$.display = {};
 _$.global.serverAddress;
+_$.global.appAddress;
 _$.global.viewingUser;
 _$.global.query;
 _$.global.hashtag;
@@ -47,6 +48,7 @@ window.onload = function() {
 
 _$.utils.init = function() {
 	_$.global.serverAddress = "http://172.16.138.138:8080/";
+	_$.global.appAddress = "http://172.16.138.138/twitter/";
 	//_$.global.serverAddress = "http://localhost:8080/";
 }
 
@@ -242,7 +244,7 @@ _$.utils.changeTweetButtonState = function() {
 
 _$.utils.setProfileImage = function(image, reload) {
     if(reload == false) document.getElementById('profileImageDiv').innerHTML = '<img id="profileImage" src = "' + image + '">';
-    else document.getElementById('profileImageDiv').innerHTML = '<img id="profileImage" src = "' + image + '?lastModified=' + new Date().getTime() + '">';
+    else document.getElementById('profileImageDiv').innerHTML = '<img id="profileImage" src = "'+_$.global.appAddress+'scripts/timthumb.php?h=200&w=200&src=' + image + '">';
 }
 
 _$.utils.initUpload = function() {
@@ -385,8 +387,8 @@ _$.fetch.newFeed = function() {
 }
 
 _$.fetch.image = function(tweet) {
-    if (tweet.image == null) return "./img/profile/avatar.png";
-    return "./img/profile/" + tweet.image;
+    if (tweet.image == null) return _$.global.appAddress+"img/profile/avatar.png";
+    return _$.global.appAddress+"img/profile/" + tweet.image;
 }
 
 _$.fetch.userDetails = function(username) {
@@ -846,7 +848,7 @@ _$.render.push.followers = function(user) {
 _$.render.push.tweet = function(tweet, divId) {
     var element = document.createElement('div');
     element.setAttribute('class', 'media');
-    element.innerHTML = '<a class="pull-left" href="#users/' + tweet.username + '"><img class="media-object pthumbnail" src="' + _$.fetch.image(tweet) + '"></a><div class="media-body tweet"><h4 class="media-heading"><a href="#users/' + tweet.username + '">' + tweet.username + '</a></h4>' + _$.utils.hashTagsParser(_$.utils.youTubeParser(_$.utils.imageParser(_$.utils.smileyParser(tweet.content)))) + '</div><abbr class="timestamp" title="' + new Date(tweet.timestamp).toISOString() + '">' + new Date(tweet.timestamp).toString().substring(0, 21) + '</abbr></div>'
+    element.innerHTML = '<a class="pull-left" href="#users/' + tweet.username + '"><img class="media-object pthumbnail" src="' + _$.utils.compressImage(_$.fetch.image(tweet)) + '"></a><div class="media-body tweet"><h4 class="media-heading"><a href="#users/' + tweet.username + '">' + tweet.username + '</a></h4>' + _$.utils.hashTagsParser(_$.utils.youTubeParser(_$.utils.imageParser(_$.utils.smileyParser(tweet.content)))) + '</div><abbr class="timestamp" title="' + new Date(tweet.timestamp).toISOString() + '">' + new Date(tweet.timestamp).toString().substring(0, 21) + '</abbr></div>'
     var feedDiv = document.getElementById(divId);
     feedDiv.appendChild(element);
     jQuery("abbr.timestamp").timeago();
@@ -857,10 +859,14 @@ _$.render.push.latestFeed = function(tweets) {
         _$.render.push.newTweet(tweets[i], 'newsFeed');
 }
 
+_$.utils.compressImage = function(image) {
+    return _$.global.appAddress+'scripts/timthumb.php?h=100&src='+image;
+}
+
 _$.render.push.newTweet = function(tweet, divId) {
     var element = document.createElement('div');
     element.setAttribute('class', 'media');
-    element.innerHTML = '<a class="pull-left" href="#users/' + tweet.username + '"><img class="media-object pthumbnail" src="' + _$.fetch.image(tweet) + '"></a><div class="media-body tweet"><h4 class="media-heading"><a href="#users/' + tweet.username + '">' + tweet.username + '</a></h4>' + _$.utils.hashTagsParser(_$.utils.youTubeParser(_$.utils.imageParser(_$.utils.smileyParser(tweet.content)))) + '</div><abbr class="timestamp" title="' + new Date(tweet.timestamp).toISOString() + '">' + new Date(tweet.timestamp).toString().substring(0, 21) + '</abbr></div>'
+    element.innerHTML = '<a class="pull-left" href="#users/' + tweet.username + '"><img class="media-object pthumbnail" src="' + _$.utils.compressImage(_$.fetch.image(tweet)) + '"></a><div class="media-body tweet"><h4 class="media-heading"><a href="#users/' + tweet.username + '">' + tweet.username + '</a></h4>' + _$.utils.hashTagsParser(_$.utils.youTubeParser(_$.utils.imageParser(_$.utils.smileyParser(tweet.content)))) + '</div><abbr class="timestamp" title="' + new Date(tweet.timestamp).toISOString() + '">' + new Date(tweet.timestamp).toString().substring(0, 21) + '</abbr></div>'
     var feedDiv = document.getElementById(divId);
     feedDiv.insertBefore(element, feedDiv.firstChild);
     jQuery("abbr.timestamp").timeago();
@@ -885,7 +891,7 @@ _$.render.push.trending = function(trend) {
 
 _$.utils.imageParser = function(content) {
     var expression = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])\.(jpeg|jpg|png|gif)/ig;
-    return content.replace(expression, '<br><a href="$1.$3" target="_blank"><img src="$1.$3" style="width:100px;height:100px;"></a><br>')
+    return content.replace(expression, '<br><a href="$1.$3" target="_blank"><img src="'+_$.utils.compressImage("$1.$3")+'"></a><br>')
 }
 
 _$.utils.youTubeParser = function(content) {

@@ -124,8 +124,8 @@ _$.fetch.newFeed = function() {
 }
 
 _$.fetch.image = function(tweet) {
-    if (tweet.image == null) return "./img/profile/avatar.png";
-    return "./img/profile/" + tweet.image;
+    if (tweet.image == null) return _$.global.appAddress+"img/profile/avatar.png";
+    return _$.global.appAddress+"img/profile/" + tweet.image;
 }
 
 _$.fetch.userDetails = function(username) {

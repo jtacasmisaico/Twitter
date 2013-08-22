@@ -9,6 +9,7 @@ _$.authentication = {};
 _$.utils = {};
 _$.display = {};
 _$.global.serverAddress;
+_$.global.appAddress;
 _$.global.viewingUser;
 _$.global.query;
 _$.global.hashtag;
@@ -47,6 +48,7 @@ window.onload = function() {
 
 _$.utils.init = function() {
 	_$.global.serverAddress = "http://172.16.138.138:8080/";
+	_$.global.appAddress = "http://172.16.138.138/twitter/";
 	//_$.global.serverAddress = "http://localhost:8080/";
 }
 

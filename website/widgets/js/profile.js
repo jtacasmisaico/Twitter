@@ -14,7 +14,7 @@ _$.utils.changeTweetButtonState = function() {
 
 _$.utils.setProfileImage = function(image, reload) {
     if(reload == false) document.getElementById('profileImageDiv').innerHTML = '<img id="profileImage" src = "' + image + '">';
-    else document.getElementById('profileImageDiv').innerHTML = '<img id="profileImage" src = "' + image + '?lastModified=' + new Date().getTime() + '">';
+    else document.getElementById('profileImageDiv').innerHTML = '<img id="profileImage" src = "'+_$.global.appAddress+'scripts/timthumb.php?h=200&w=200&src=' + image + '">';
 }
 
 _$.utils.initUpload = function() {
