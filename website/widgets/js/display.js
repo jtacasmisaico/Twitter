@@ -11,6 +11,7 @@ _$.display.page = function() {
 _$.display.profile = function(username) {
     document.getElementById('navHomeButton').setAttribute('class', '');
     if(username != localStorage.username) document.getElementById('navProfileButton').setAttribute('class', '');
+    else document.getElementById('navProfileButton').setAttribute('class', 'active');
     _$.render.removeAndAddFollowButton();
     $('#searchResults').hide();
     $('#newsFeed').hide();

@@ -1,3 +1,4 @@
+<!-- Thankyou Shilp for the idea :P -->
 <html>
 <head>
     <title>Twitter.2</title>
@@ -15,61 +16,88 @@ body {
     color: rgb(0, 90, 180);
 }
 </style>
-<script src="../js/jquery.js"></script>
-<script>
-var content = [
-    "Twitter.2",
-    "Stack",
-    "Database Schema",
-    "Numbers",
-    "Uhmm...",
-    "UI",
-    "Single Page App",
-    "No refreshes. Ever.",
-    "Cool stuff learned",
-    "Regex",
-    "Module loader"        
-]
 
-var index = 0;
 
-var loadContent = function() {
-    var speed = 'fast';
-    $('#content').fadeOut(speed, function() {
-        document.getElementById('content').innerHTML = content[index];
-        $('#content').fadeIn(speed);
-    });
-}
-
-var back = function() {
-    if(index > 0) {
-        index--;
-        loadContent();
-    }
-}
-
-var forward = function() {
-    if(index < content.length-1) {
-        index++;
-        loadContent();
-    }
-}
-
-var keyPress = function(event) {
-    var move_forward = [13, 32, 39];
-    var move_backword = [37];
-    if(move_backword.indexOf(event.keyCode) > -1)
-        back();
-    else if(move_forward.indexOf(event.keyCode) > -1)
-        forward();
-}
-
-window.onload = function() {
-    loadContent();
-}
-
-</script>
-<body onkeydown="return keyPress(event)">
+<body onkeydown="return keyPress(event)" onclick="return forward()">
     <div id="content"></div>
+
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script>
+    var content = [
+        "Twitter.2",
+        "Stack",
+        "Database Schema",
+        "Numbers",
+        "646,438 Users",
+        "1,310,421 Tweets",
+        "318,604 #hashtags",
+        "2,593,615 Connections",
+        "Uhmm...",
+        "UI",
+        "Single Page App",
+        "No refreshes. Ever.",
+        "Demo. <br>*fingers crossed*",
+        "The flow",
+        "The flow",
+        "Regex",
+        "Module loader",
+        "Duplicate Hashtags :|"    
+    ]
+
+    var index = 0;
+
+    var loadContent = function() {
+        var speed = 'fast';
+        $('#content').fadeOut(speed, function() {
+            document.getElementById('content').innerHTML = content[index];
+            $('#content').fadeIn(speed);
+        });
+    }
+
+    var back = function() {
+        if(index > 0) {
+            index--;
+            loadContent();
+        }
+    }
+
+    var forward = function() {
+        if(index < content.length-1) {
+            index++;
+            loadContent();
+        }
+    }
+
+    var reset = function() {
+        index = 0;
+        loadContent();
+    }
+
+    var end = function() {
+        index = content.length-1;
+        loadContent();
+    }
+
+    var keyPress = function(event) {
+        var move_home = [36];
+        var move_end = [35];
+        var move_forward = [13, 32, 39];
+        var move_backword = [8, 37];
+        if(move_backword.indexOf(event.keyCode) > -1)
+            back();
+        else if(move_forward.indexOf(event.keyCode) > -1)
+            forward();
+        else if(move_home.indexOf(event.keyCode) > -1)
+            reset();
+        else if(move_end.indexOf(event.keyCode) > -1)
+            end();
+    }
+
+    window.onload = function() {
+        loadContent();
+    }
+
+    </script>
+    
 </body>
 </html>

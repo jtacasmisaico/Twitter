@@ -97,6 +97,7 @@ _$.fetch.feed = function(lastTweet) {
 
 _$.fetch.newFeed = function() {
     if (localStorage.feed != undefined) {
+        if(localStorage.feed == []) {_$.fetch.feed(); return;}
         var finalTweet = JSON.parse(localStorage.feed)[0].tweetid;
         $.ajax({
             url: _$.global.serverAddress + "fetch/feed/latest?tweetid=" + finalTweet,

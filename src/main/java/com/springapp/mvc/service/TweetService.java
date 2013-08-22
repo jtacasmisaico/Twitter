@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -89,7 +91,9 @@ public class TweetService {
             System.out.println(result);
             hashTags.add(result.toLowerCase());
         }
-        tweetRepository.insertHashTag(id, hashTags);
+        Set uniqueHashTags = new TreeSet(String.CASE_INSENSITIVE_ORDER);
+        uniqueHashTags.addAll(hashTags);
+        tweetRepository.insertHashTag(id, new ArrayList(uniqueHashTags));
     }
 
     public void refreshHashes(int tweetId) {

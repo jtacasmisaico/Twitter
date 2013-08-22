@@ -46,8 +46,8 @@ window.onload = function() {
 };
 
 _$.utils.init = function() {
-	//_$.global.serverAddress = "http://172.16.138.138:8080/";
-	_$.global.serverAddress = "http://localhost:8080/";
+	_$.global.serverAddress = "http://172.16.138.138:8080/";
+	//_$.global.serverAddress = "http://localhost:8080/";
 }
 
 window.onhashchange = function() {
@@ -133,6 +133,7 @@ _$.display.page = function() {
 _$.display.profile = function(username) {
     document.getElementById('navHomeButton').setAttribute('class', '');
     if(username != localStorage.username) document.getElementById('navProfileButton').setAttribute('class', '');
+    else document.getElementById('navProfileButton').setAttribute('class', 'active');
     _$.render.removeAndAddFollowButton();
     $('#searchResults').hide();
     $('#newsFeed').hide();
@@ -357,6 +358,7 @@ _$.fetch.feed = function(lastTweet) {
 
 _$.fetch.newFeed = function() {
     if (localStorage.feed != undefined) {
+        if(localStorage.feed == []) {_$.fetch.feed(); return;}
         var finalTweet = JSON.parse(localStorage.feed)[0].tweetid;
         $.ajax({
             url: _$.global.serverAddress + "fetch/feed/latest?tweetid=" + finalTweet,

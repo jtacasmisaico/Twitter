@@ -46,8 +46,8 @@ window.onload = function() {
 };
 
 _$.utils.init = function() {
-	//_$.global.serverAddress = "http://172.16.138.138:8080/";
-	_$.global.serverAddress = "http://localhost:8080/";
+	_$.global.serverAddress = "http://172.16.138.138:8080/";
+	//_$.global.serverAddress = "http://localhost:8080/";
 }
 
 window.onhashchange = function() {

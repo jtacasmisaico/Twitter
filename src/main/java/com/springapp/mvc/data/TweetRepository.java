@@ -148,12 +148,12 @@ public class TweetRepository {
         insert.setTableName("hashtags");
         insert.setColumnNames(Arrays.asList("tweetid", "tag"));
         for(int i = 0; i< hashTags.size(); i++) {
+            if(cacheManager.exists("hashtag:"+hashTags.get(i))) cacheManager.delete("hashtag:"+hashTags.get(i));
             Map<String, Object> param = new HashMap<>();
             param.put("tweetid", tweetId);
             param.put("tag", hashTags.get(i));
             batch[i] = param;
         }
-
         try{
             insert.executeBatch(batch);
         }
