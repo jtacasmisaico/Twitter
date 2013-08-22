@@ -1,14 +1,5 @@
 $(function () {
 	var inputFields = document.getElementsByTagName('input');
-	/*
-	for(var field=0; field<inputFields.length; field++) {
-		if(inputFields.hasOwnProperty(field)) {
-		  	inputFields[field].onblur = $.proxy(function(id) {
-		  		validate(id);
-		  	}, null, inputFields[field].getAttribute('id'));
-		}
-	}
-	*/
 });
 
 var validate = function(fieldId, event) {	
@@ -27,7 +18,7 @@ var validate = function(fieldId, event) {
 				alertElement.innerHTML = "Required Field";
 				field.parentNode.appendChild(alertElement);
 			}
-			$('#'+fieldId+"_alert").show(200).delay(5000).hide(200);			
+			$('#'+fieldId+"_alert").show(200);			
 			field.parentNode.parentNode.setAttribute('class','control-group warning');
 			field.focus();
 			return false;
@@ -50,7 +41,7 @@ var validate = function(fieldId, event) {
 				alertElement.innerHTML = "Invalid Email ID";
 				field.parentNode.appendChild(alertElement);
 			}
-			$('#'+fieldId+"_alert").show(200).delay(5000).hide(200);			
+			$('#'+fieldId+"_alert").show(200);			
 			field.parentNode.parentNode.setAttribute('class','control-group warning');
 			field.focus();
 			return false;
@@ -72,7 +63,7 @@ var validate = function(fieldId, event) {
 				alertElement.innerHTML = "Minimum Length : "+field.getAttribute('min-length-value');
 				field.parentNode.appendChild(alertElement);
 			}
-			$('#'+fieldId+"_alert").show(200).delay(5000).hide(200);			
+			$('#'+fieldId+"_alert").show(200);		
 			field.parentNode.parentNode.setAttribute('class','control-group warning');
 			field.focus();
 			return false;

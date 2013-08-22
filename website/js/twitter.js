@@ -603,12 +603,12 @@ _$.authentication.register = function() {
             password: document.getElementById('inputPasswordRegistration').value, 
             name: document.getElementById('inputNameRegistration').value 
         }),
-        error: function(jqXHR){console.log(jqXHR.responseText);}
+        error: function(jqXHR){bootbox.alert(jqXHR.responseText);}
         }).done(function(data, textStatus, jqXHR) {
             document.getElementById('registrationForm').reset();
             bootbox.alert("Registeration complete. You can now sign in :)");
             document.getElementById('inputEmail').focus();
-        });
+    });
 }//boot.js
 _$.post.follow = function(followerid, followedid) {
     console.error("following");
