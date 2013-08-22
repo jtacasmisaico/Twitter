@@ -103,14 +103,13 @@ _$.utils.detectURL = function() {
 		return;
 	}
 	path = path.split(/\?|\//);
-	if (path[0] == "users") _$.display.profile(path[1]);
+	if (path[0] == "users") 
+		_$.display.profile(path[1]);
 	else if (path[0] == "search") {
 		_$.display.homePage();
 		_$.display.search();
 	} 
 	else if (path[0] == "profile") {
-		document.getElementById('navProfileButton').setAttribute("class","active");
-		document.getElementById('navHomeButton').setAttribute("class","");
 		_$.display.profile(localStorage.username);
 	}
 	else if (path[0] == "hashtag") {
@@ -139,13 +138,16 @@ _$.display.profile = function(username) {
     _$.render.removeAndAddFollowButton();
     $('#searchResults').hide();
     $('#newsFeed').hide();
-    $('#tweetForm').slideUp('slow');
-    $('#newsFeed').slideUp('slow');
-    $('#userPosts').slideDown('slow');
-    $('#profileSideBar').slideUp('fast', function() {
-        $('#editProfileImage').hide();
-        _$.fetch.userDetails(username);
-    });
+    $('#tweetForm').slideUp();
+    $('#newsFeed').slideUp();
+    $('#userPosts').slideDown();
+    if(username != localStorage.username) {
+        $('#profileSideBar').slideUp('fast', function() {
+            $('#editProfileImage').hide();
+            _$.fetch.userDetails(username);
+        });
+    }
+    else _$.fetch.userDetails(username);
     _$.utils.initUpload();
     _$.fetch.trending();
 }
@@ -334,8 +336,7 @@ _$.fetch.feed = function(lastTweet) {
         lastTweet = 2147483647;
     }
     $.ajax({
-        url: _$.global.serverAddress + "fetch/feed?lastTweet=" + lastTweet + "&limit=30",
-        type: 'GET',
+        url: _$.global.serverAddress + "fetch/feed?lastTweet=" + lastTweet + "&limit=20",        type: 'GET',
         xhrFields: {
             withCredentials: true
         },
@@ -346,6 +347,7 @@ _$.fetch.feed = function(lastTweet) {
             'userid': localStorage.userid
         },
         error: function(jqXHR) {
+            _$.global.alreadyFetchingFeed = false;
             _$.authentication.logout();
         }
     }).done(function(data, textStatus, response) {
@@ -568,6 +570,9 @@ _$.authentication.logout = function() {
         }
     }).done(function(data, textStatus, response) {
         localStorage.clear();
+        $('#newsFeed')[0].innerHTML = "";
+        $('#userPosts')[0].innerHTML = "";
+        $('#searchResults')[0].innerHTML = '<div id="searchResultsHeader"></div>';
         document.location.href="./#login";
         _$.display.loggedOut();
     });

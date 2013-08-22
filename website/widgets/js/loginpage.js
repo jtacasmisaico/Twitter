@@ -63,6 +63,9 @@ _$.authentication.logout = function() {
         }
     }).done(function(data, textStatus, response) {
         localStorage.clear();
+        $('#newsFeed')[0].innerHTML = "";
+        $('#userPosts')[0].innerHTML = "";
+        $('#searchResults')[0].innerHTML = '<div id="searchResultsHeader"></div>';
         document.location.href="./#login";
         _$.display.loggedOut();
     });

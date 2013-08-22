@@ -103,14 +103,13 @@ _$.utils.detectURL = function() {
 		return;
 	}
 	path = path.split(/\?|\//);
-	if (path[0] == "users") _$.display.profile(path[1]);
+	if (path[0] == "users") 
+		_$.display.profile(path[1]);
 	else if (path[0] == "search") {
 		_$.display.homePage();
 		_$.display.search();
 	} 
 	else if (path[0] == "profile") {
-		document.getElementById('navProfileButton').setAttribute("class","active");
-		document.getElementById('navHomeButton').setAttribute("class","");
 		_$.display.profile(localStorage.username);
 	}
 	else if (path[0] == "hashtag") {

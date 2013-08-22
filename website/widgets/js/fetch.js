@@ -71,8 +71,7 @@ _$.fetch.feed = function(lastTweet) {
         lastTweet = 2147483647;
     }
     $.ajax({
-        url: _$.global.serverAddress + "fetch/feed?lastTweet=" + lastTweet + "&limit=30",
-        type: 'GET',
+        url: _$.global.serverAddress + "fetch/feed?lastTweet=" + lastTweet + "&limit=20",        type: 'GET',
         xhrFields: {
             withCredentials: true
         },
@@ -83,6 +82,7 @@ _$.fetch.feed = function(lastTweet) {
             'userid': localStorage.userid
         },
         error: function(jqXHR) {
+            _$.global.alreadyFetchingFeed = false;
             _$.authentication.logout();
         }
     }).done(function(data, textStatus, response) {

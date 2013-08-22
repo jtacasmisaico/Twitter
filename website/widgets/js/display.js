@@ -15,13 +15,16 @@ _$.display.profile = function(username) {
     _$.render.removeAndAddFollowButton();
     $('#searchResults').hide();
     $('#newsFeed').hide();
-    $('#tweetForm').slideUp('slow');
-    $('#newsFeed').slideUp('slow');
-    $('#userPosts').slideDown('slow');
-    $('#profileSideBar').slideUp('fast', function() {
-        $('#editProfileImage').hide();
-        _$.fetch.userDetails(username);
-    });
+    $('#tweetForm').slideUp();
+    $('#newsFeed').slideUp();
+    $('#userPosts').slideDown();
+    if(username != localStorage.username) {
+        $('#profileSideBar').slideUp('fast', function() {
+            $('#editProfileImage').hide();
+            _$.fetch.userDetails(username);
+        });
+    }
+    else _$.fetch.userDetails(username);
     _$.utils.initUpload();
     _$.fetch.trending();
 }
